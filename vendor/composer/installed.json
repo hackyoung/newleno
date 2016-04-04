@@ -606,110 +606,18 @@
         ]
     },
     {
-        "name": "leno/view",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/hackyoung/lenoview.git",
-            "reference": "cea2accab09b3889ee7fe8e5f9a095d5a8c17da7"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/cea2accab09b3889ee7fe8e5f9a095d5a8c17da7",
-            "reference": "cea2accab09b3889ee7fe8e5f9a095d5a8c17da7",
-            "shasum": ""
-        },
-        "time": "2016-02-28 05:43:46",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Leno\\View\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/"
-    },
-    {
-        "name": "propel/propel",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/propelorm/Propel2.git",
-            "reference": "af6d5b6e1ac12370f8714a90110714ac23356ea6"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/propelorm/Propel2/zipball/af6d5b6e1ac12370f8714a90110714ac23356ea6",
-            "reference": "af6d5b6e1ac12370f8714a90110714ac23356ea6",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.5",
-            "psr/log": "~1.0",
-            "symfony/config": "~2.3||~3.0",
-            "symfony/console": "~2.3||~3.0",
-            "symfony/filesystem": "~2.3||~3.0",
-            "symfony/finder": "~2.3||~3.0",
-            "symfony/validator": "~2.3||~3.0",
-            "symfony/yaml": "~2.3||~3.0"
-        },
-        "require-dev": {
-            "behat/behat": "~2.4",
-            "monolog/monolog": "~1.3",
-            "phpunit/phpunit": "~4.0||~5.0"
-        },
-        "suggest": {
-            "monolog/monolog": "The recommended logging library to use with Propel."
-        },
-        "time": "2016-02-20 17:11:31",
-        "bin": [
-            "bin/propel"
-        ],
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "Propel": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "William Durand",
-                "email": "william.durand1@gmail.com"
-            }
-        ],
-        "description": "Propel2 is an open-source Object-Relational Mapping (ORM) for PHP 5.5 and up.",
-        "homepage": "http://www.propelorm.org/",
-        "keywords": [
-            "Active Record",
-            "orm",
-            "persistence"
-        ]
-    },
-    {
         "name": "guzzlehttp/psr7",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "1.2.3",
+        "version_normalized": "1.2.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/psr7.git",
-            "reference": "82eb530e2ffa6a3781c5620cfd418f8a6830f81d"
+            "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/psr7/zipball/82eb530e2ffa6a3781c5620cfd418f8a6830f81d",
-            "reference": "82eb530e2ffa6a3781c5620cfd418f8a6830f81d",
+            "url": "https://api.github.com/repos/guzzle/psr7/zipball/2e89629ff057ebb49492ba08e6995d3a6a80021b",
+            "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b",
             "shasum": ""
         },
         "require": {
@@ -722,7 +630,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2016-03-21 00:39:36",
+        "time": "2016-02-18 21:54:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -756,5 +664,97 @@
             "stream",
             "uri"
         ]
+    },
+    {
+        "name": "propel/propel",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/propelorm/Propel2.git",
+            "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/propelorm/Propel2/zipball/4782ebdcf9f85e2f54f95d231e098a6334387b86",
+            "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5",
+            "psr/log": "~1.0",
+            "symfony/config": "~2.3||~3.0",
+            "symfony/console": "~2.3||~3.0",
+            "symfony/filesystem": "~2.3||~3.0",
+            "symfony/finder": "~2.3||~3.0",
+            "symfony/validator": "~2.3||~3.0",
+            "symfony/yaml": "~2.3||~3.0"
+        },
+        "require-dev": {
+            "behat/behat": "~2.4",
+            "monolog/monolog": "~1.3",
+            "phpunit/phpunit": "~4.0||~5.0"
+        },
+        "suggest": {
+            "monolog/monolog": "The recommended logging library to use with Propel."
+        },
+        "time": "2016-03-31 18:35:19",
+        "bin": [
+            "bin/propel"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "Propel": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "William Durand",
+                "email": "william.durand1@gmail.com"
+            }
+        ],
+        "description": "Propel2 is an open-source Object-Relational Mapping (ORM) for PHP 5.5 and up.",
+        "homepage": "http://www.propelorm.org/",
+        "keywords": [
+            "Active Record",
+            "orm",
+            "persistence"
+        ]
+    },
+    {
+        "name": "leno/view",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hackyoung/lenoview.git",
+            "reference": "43b1e532a1fa25a36fdeb1dfc41e74f76922310d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/43b1e532a1fa25a36fdeb1dfc41e74f76922310d",
+            "reference": "43b1e532a1fa25a36fdeb1dfc41e74f76922310d",
+            "shasum": ""
+        },
+        "time": "2016-04-04 04:39:47",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Leno\\View\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/"
     }
 ]

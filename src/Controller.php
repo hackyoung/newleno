@@ -19,6 +19,14 @@ abstract class Controller
 
     public function __construct($request, $response)
     {
+        $this->request = $request;
+        $this->response = $response;
+        $this->initialize();
+    }
+
+    protected function initialize()
+    {
+    
     }
 
     protected function set($key, $val)

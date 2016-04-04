@@ -6,7 +6,7 @@
         "monolog/monolog": "1.0.*",
         "propel/propel": "~2.0@dev",
         "leno/view": "dev-master",
-        "guzzlehttp/psr7": "dev-master"
+        "guzzlehttp/psr7": "1.2.*"
     },
     "autoload": {
         "psr-4": {"Leno\\": "src"},

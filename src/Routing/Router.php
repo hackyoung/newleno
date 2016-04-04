@@ -3,13 +3,17 @@ namespace Leno\Routing;
 
 /**
  * Router 通过一个Uri路由到正确的controller and action
+ * 这个Router可以通过规则路由到其他Router，也可以路由到controller
  */
 class Router
 {
-
     const TYPE_ROUTER = 'Router';
 
     const TYPE_CONTROLLER = 'Controller';
+
+    const MOD_NORMAL = 0;
+
+    const MOD_RESTFUL = 1;
 
     protected $request;
 
@@ -20,6 +24,15 @@ class Router
     protected $rules = [];
 
     protected $base = 'controller';
+
+    protected $mode = self::MOD_NORMAL;
+
+    protected $restful = [
+        'GET' => 'index',
+        'POST' => 'add',
+        'DELETE' => 'delete',
+        'PUT' => 'edit',
+    ];
 
     public function __construct($request, $response)
     {
@@ -32,37 +45,15 @@ class Router
     public function route()
     {
         $this->beforeRoute();
-        $target = [
-            'controller' => false,
-            'action' => false,
-            'parameters' => []
-        ];
         foreach($this->rules as $reg => $rule) {
             if(preg_match($reg, $this->path)) {
                 return $this->handleRule($reg, $rule);
             }
         }
-        var_dump('hello');
-        if(!$target['controller']) {
-            $patharr = array_merge(
-                explode('/', $this->base),
-                explode('/', $this->path)
-            );
-            $path = array_filter(array_map(function($p) {
-                return \camelCase($p);
-            }, $patharr));
-        
-            var_dump($path);
-            $target['action'] = preg_replace_callback('/^\w/', function($matches) {
-                if(isset($matches[0])) {
-                    return strtolower($matches[0]);
-                }
-            }, preg_replace('/\..*$/', '', array_pop($path)));
-            $target['controller'] = implode('\\', $path);
-            $this->response = $this->invoke($target);
-        }
-        $this->send($this->response);
+        $target = $this->getTarget();
+        $this->response = $this->invoke($target);
         $this->afterRoute();
+        $this->send($this->response);
     }
 
     protected function invoke($target)
@@ -70,17 +61,20 @@ class Router
         try {
             $rs = new \ReflectionClass($target['controller']);
         } catch(\Exception $e) {
-            $response = $this->response->withStatus(404);
-            $response->getBody()->write('<h1><center>404 '.$response->getReasonPhrase().'</center></h1>');
-            return $response;
+            return $this->_404();
         }
+        $controller = $rs->newInstance($this->request, $this->response);
         if(!$rs->hasMethod($target['action'])) {
-            $response = $this->response->withStatus(404);
-            $response->getBody()->write('<h1><center>404 '.$response->getReasonPhrase().'</center></h1>');
-            return $response;
+            return $this->_404();
         }
-        $action = $rc->getMethod($target['action']);
+        if($rs->hasMethod('beforeExecute')) {
+            $rs->getMethod('beforeExecute')->invoke($controller);
+        }
+        $action = $rs->getMethod($target['action']);
         $result = $action->invoke($controller, $target['parameters']);
+        if($rs->hasMethod('afterExecute')) {
+            $rs->getMethod('afterExecute')->invoke($controller);
+        }
         $this->response->getBody()->write($result);
         return $this->response;
     }
@@ -97,7 +91,13 @@ class Router
                     )
                 )
             );
-            $rc = new \ReflectionClass($rule['target']);
+            try {
+                $rc = new \ReflectionClass($rule['target']);
+            } catch(\Exception $e) {
+                throw new \Leno\Exception(
+                    'router:'.$rule['target'].' not found'
+                );
+            }
             $rc->getMethod('route')->invoke(
                 $rc->newInstance($request, $this->response)
             );
@@ -106,12 +106,10 @@ class Router
 
     protected function beforeRoute()
     {
-    
     }
 
     protected function afterRoute()
     {
-    
     }
 
     protected function normalizeRule($rule)
@@ -158,10 +156,65 @@ class Router
 
     private function getPath()
     {
-        $path = preg_replace(
+        $path = trim(preg_replace(
             '/^.*index\.php/U', '', 
             (string)$this->request->getUri()
-        ) ?: 'index/index';
+        ), '\/') ?: (
+            ($this->mode === self::MOD_RESTFUL) ?
+            'index' : 'index/index'
+        );
         return $path;
+    }
+
+    private function getTarget()
+    {
+        $patharr = array_merge(
+            explode('/', $this->base),
+            explode('/', $this->path)
+        );
+        $path = array_filter(array_map(function($p) {
+            return \camelCase($p);
+        }, $patharr));
+    
+        if($this->mode == self::MOD_RESTFUL) {
+            return $this->getRestFulTarget($path);
+        } else {
+            $target = [
+                'controller' => false,
+                'action' => false,
+                'parameters' => [],
+            ];
+            $target['action'] = preg_replace_callback('/^\w/', function($matches) {
+                if(isset($matches[0])) {
+                    return strtolower($matches[0]);
+                }
+            }, preg_replace('/\..*$/', '', array_pop($path)));
+            $target['controller'] = implode('\\', $path);
+            return $target;
+        }
+    }
+
+    private function getRestfulTarget($path)
+    {
+        $method =strtoupper(
+            isset($_POST['_method']) ? 
+            $_POST['_method'] : $this->request->getMethod()
+        );
+        if(!isset($this->restful[$method])) {
+            throw new \Leno\Exception($method . ' not supported!');
+        }
+        $target = [
+            'controller' => implode('\\', $path),
+            'action' => $this->restful[$method],
+            'parameters' => [],
+        ];
+        return $target;
+    }
+
+    private function _404()
+    {
+        $response = $this->response->withStatus(404);
+        $response->getBody()->write('<h1><center>404 '.$response->getReasonPhrase().'</center></h1>');
+        return $response;
     }
 }
