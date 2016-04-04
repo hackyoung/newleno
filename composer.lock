@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "727694691353c060591a7a2e8c6f2493",
-    "content-hash": "7930705921db8f69b4a4115e27df1360",
+    "hash": "5f6b14fa736e682b2ac947095c3d2207",
+    "content-hash": "4ce6de2785034a54f30c2c9de3aa9441",
     "packages": [
         {
             "name": "guzzlehttp/psr7",
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "0edec79e2acf5df0105046af7f1eebcf31656462"
+                "reference": "82eb530e2ffa6a3781c5620cfd418f8a6830f81d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/0edec79e2acf5df0105046af7f1eebcf31656462",
-                "reference": "0edec79e2acf5df0105046af7f1eebcf31656462",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/82eb530e2ffa6a3781c5620cfd418f8a6830f81d",
+                "reference": "82eb530e2ffa6a3781c5620cfd418f8a6830f81d",
                 "shasum": ""
             },
             "require": {
@@ -63,7 +63,30 @@
                 "stream",
                 "uri"
             ],
-            "time": "2016-03-24 02:39:15"
+            "time": "2016-03-21 00:39:36"
+        },
+        {
+            "name": "leno/view",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hackyoung/lenoview.git",
+                "reference": "cea2accab09b3889ee7fe8e5f9a095d5a8c17da7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/cea2accab09b3889ee7fe8e5f9a095d5a8c17da7",
+                "reference": "cea2accab09b3889ee7fe8e5f9a095d5a8c17da7",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Leno\\View\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2016-02-28 05:43:46"
         },
         {
             "name": "monolog/monolog",
@@ -114,12 +137,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/propelorm/Propel2.git",
-                "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86"
+                "reference": "af6d5b6e1ac12370f8714a90110714ac23356ea6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/4782ebdcf9f85e2f54f95d231e098a6334387b86",
-                "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86",
+                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/af6d5b6e1ac12370f8714a90110714ac23356ea6",
+                "reference": "af6d5b6e1ac12370f8714a90110714ac23356ea6",
                 "shasum": ""
             },
             "require": {
@@ -171,7 +194,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2016-03-31 18:35:19"
+            "time": "2016-02-20 17:11:31"
         },
         {
             "name": "psr/http-message",
@@ -720,6 +743,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "propel/propel": 20,
+        "leno/view": 20,
         "guzzlehttp/psr7": 20
     },
     "prefer-stable": false,
