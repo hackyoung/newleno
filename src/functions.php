@@ -45,3 +45,62 @@ if(!function_exists('getallheaders')) {
         return $headers;
     }
 }
+
+const RAND_MOD_ALL = 'all';
+const RAND_MOD_ONLY_NUMBER = 'number';
+const RAND_MOD_ONLY_LOWER = 'lower';
+const RAND_MOD_ONLY_UPPER = 'upper';
+const RAND_MOD_LETTER = 'letter';
+const RAND_MOD_LOWER = 'lower_number';
+const RAND_MOD_UPPER = 'upper_number';
+
+function randString($len = 32, $mode = RAND_MOD_ALL)
+{
+    $number = '0123456789';
+    $lower = 'abcdefghijklmnopqrstuvwxyz';
+    $upper = strtoupper($lower);
+    switch($mode) {
+        case RAND_MOD_ONLY_NUMBER:
+            $template = $number;
+            break;
+        case RAND_MOD_ONLY_LOWER:
+            $template = $lower;
+            break;
+        case RAND_MOD_ONLY_UPPER:
+            $template = $upper;
+            break;
+        case RAND_MOD_LETTER:
+            $template = $lower . $upper;
+            break;
+        case RAND_MOD_LOWER:
+            $template = $number . $lower;
+            break;
+        case RAND_MOD_UPPER:
+            $template = $number . $upper;
+            break;
+        case RAND_MOD_ALL:
+            $template = $number . $upper . $lower;
+            break;
+        default:
+            $template = $mode;
+    }
+    $tl = strlen($template);
+    $ret = '';
+    for($i = 0; $i < $len; ++$i) {
+        $ret .= $template(rand(0, $tl-1));
+    }
+    return $ret;
+}
+
+function uuid()
+{
+    $template = '0123456789abcdef';
+    $arr = [
+        randString(8, $template),
+        randString(4, $template),
+        randString(4, $template),
+        randString(4, $template),
+        randString(12, $template),
+    ]
+    return implode('-', $arr);
+}
