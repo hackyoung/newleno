@@ -124,7 +124,7 @@ class Validator
 
             if (!array_key_exists($key, $values)) {
                 if ($rule['required']) {
-                    $this->handleNotPass($key, 'required', $rule);
+                    return $this->handleNotPass($key, 'required', $rule);
                 }
 
                 continue;
@@ -133,7 +133,7 @@ class Validator
             $value = $values[$key];
             if ($value === '' || $value === [] || $value === null) {
                 if (!$rule['allow_empty']) {
-                    throw $this->handleNotPass($key, 'not allow empty');
+                    return $this->handleNotPass($key, 'not allow empty', $rule);
                 }
 
                 continue;
@@ -170,50 +170,50 @@ class Validator
                 return true;
             }
 
-            $this->handleNotPass($key, sprintf('must strict equal [%s], current value is [%s]', $rule['same'], $value), $rule);
+            return $this->handleNotPass($key, sprintf('must strict equal [%s], current value is [%s]', $rule['same'], $value), $rule);
         } elseif (isset($rule['eq'])) {
             if ($value == $rule['eq']) {
                 return true;
             }
 
-            $this->handleNotPass($key, sprintf('must equal [%s], current value is [%s]', $rule['eq'], $value), $rule);
+            return $this->handleNotPass($key, sprintf('must equal [%s], current value is [%s]', $rule['eq'], $value), $rule);
         } elseif (isset($rule['enum_same'])) {
             if (in_array($value, $rule['enum_same'], true)) {
                 return true;
             }
 
-            $this->handleNotPass($key, sprintf('must be strict equal one of [%s], current value is "%s"', implode(', ', $rule['enum_same']), $value), $rule);
+            return $this->handleNotPass($key, sprintf('must be strict equal one of [%s], current value is "%s"', implode(', ', $rule['enum_same']), $value), $rule);
         } elseif (isset($rule['enum_eq'])) {
             if (in_array($value, $rule['enum_eq'])) {
                 return true;
             }
 
-            $this->handleNotPass($key, sprintf('must be equal one of [%s], current value is "%s"', implode(', ', $rule['enum_eq']), $value), $rule);
+            return $this->handleNotPass($key, sprintf('must be equal one of [%s], current value is "%s"', implode(', ', $rule['enum_eq']), $value), $rule);
         } elseif ($regexp = $rule['regexp']) {
             if (!preg_match($regexp, $value)) {
-                $this->handleNotPass($key, sprintf('mismatch regexp %s, current value is "%s"', $regexp, $value), $rule);
+                return $this->handleNotPass($key, sprintf('mismatch regexp %s, current value is "%s"', $regexp, $value), $rule);
             }
         }
 
         if ($rule['type'] === 'boolean') {
             if (!is_bool($value)) {
-                $this->handleNotPass($key, sprintf('must be TRUE or FALSE, current value is "%s"', $value), $rule);
+                return $this->handleNotPass($key, sprintf('must be TRUE or FALSE, current value is "%s"', $value), $rule);
             }
         } elseif ($rule['type'] === 'integer' || $rule['type'] === 'numeric') {
             if ($value < 0 && !$rule['allow_negative']) {
-                $this->handleNotPass($key, sprintf('not allow negative numeric, current value is "%s"', $value), $rule);
+                return $this->handleNotPass($key, sprintf('not allow negative numeric, current value is "%s"', $value), $rule);
             }
 
             if ($value == 0 && !$rule['allow_zero']) {
-                $this->handleNotPass($key, sprintf('not allow zero, current value is "%s"', $value), $rule);
+                return $this->handleNotPass($key, sprintf('not allow zero, current value is "%s"', $value), $rule);
             }
-        } elseif (!$rule['allow_tags'] && \Owl\str_has_tags($value)) {
-            $this->handleNotPass($key, sprintf('content not allow tags, current value is "%s"', $value), $rule);
+        } elseif (!$rule['allow_tags'] && str_has_tags($value)) {
+            return $this->handleNotPass($key, sprintf('content not allow tags, current value is "%s"', $value), $rule);
         }
 
         if ($validate = $rule['validate']) {
             if (!call_user_func_array($validate, [$value, $key, $rule])) {
-                $this->handleNotPass($key, 'custom test failed', $rule);
+                return $this->handleNotPass($key, 'custom test failed', $rule);
             }
         }
 
@@ -223,11 +223,11 @@ class Validator
     protected function checkArray($key, $value, array $rule)
     {
         if (!is_array($value)) {
-            $this->handleNotPass($key, 'is not array type', $rule);
+            return $this->handleNotPass($key, 'is not array type', $rule);
         }
 
         if (!isset($rule['keys']) && !isset($rule['value'])) {
-            $this->handleNotPass($key, 'rule missing "keys" or "value"', $rule);
+            return $this->handleNotPass($key, 'rule missing "keys" or "value"', $rule);
         }
 
         if (isset($rule['keys']) && $rule['keys']) {
@@ -254,7 +254,7 @@ class Validator
         try {
             $value = \Owl\safe_json_decode($value, true);
         } catch (\UnexpectedValueException $ex) {
-            $this->handleNotPass($key, 'json_decode() falied, '. $ex->getMessage(), $rule);
+            return $this->handleNotPass($key, 'json_decode() falied, '. $ex->getMessage(), $rule);
         }
 
         return $this->checkArray($key, $value, $rule);
@@ -263,11 +263,11 @@ class Validator
     protected function checkObject($key, $value, array $rule)
     {
         if (!is_object($value)) {
-            $this->handleNotPass($key, 'is not object', $rule);
+            return $this->handleNotPass($key, 'is not object', $rule);
         }
 
         if (isset($rule['instanceof']) && !($value instanceof $rule['instanceof'])) {
-            $this->handleNotPass($key, sprintf('must instanceof "%s"', $rule['instanceof']), $rule);
+            return $this->handleNotPass($key, sprintf('must instanceof "%s"', $rule['instanceof']), $rule);
         }
 
         return true;
@@ -314,8 +314,7 @@ class Validator
     private function handleNotPass($key, $message, $rule)
     {
         if(isset($rule['notPass'])) {
-            $rule['notPass']($key, $rule);
-            return;
+            return $rule['notPass']($key, $rule);
         }
         $this->path[] = $key;
         $message = 'Key ['.implode('=>', $this->path).'], '.$message;

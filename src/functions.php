@@ -1,4 +1,12 @@
 <?php
+
+function str_has_tags($string)
+{
+    return is_string($string)
+        && strlen($string) > 2
+        && $string !== strip_tags($string);
+}
+
 function camelCase($string, $hackFirst=true)
 {
     $string = str_replace(' ', '', ucwords(
@@ -101,6 +109,6 @@ function uuid()
         randString(4, $template),
         randString(4, $template),
         randString(12, $template),
-    ]
+    ];
     return implode('-', $arr);
 }

@@ -6,6 +6,7 @@ use \Leno\View\Template as Template;
 
 abstract class Controller
 {
+    protected $view_dir = ROOT . '/View';
 
     protected $request;
 
@@ -26,7 +27,6 @@ abstract class Controller
 
     protected function initialize()
     {
-    
     }
 
     protected function set($key, $val)
@@ -34,16 +34,26 @@ abstract class Controller
         $this->data[$key] = $val;
     }
 
-    protected function loadView($view, $data=[])
+    protected function render($view, $data=[])
     {
-        View::addViewDir(ROOT.'/View');
-        Template::setCacheDir(ROOT . '/tmp/view');
         $data = array_merge($this->data, $data);
         (new View($view, $data))->display();
     }
 
     protected function checkParameters($var, $rules)
     {
-        return (new Validator)->execute($var, $rules);
+        try {
+            return (new \Leno\Validator)->execute($var, $rules);
+        } catch(\Exception $e) {
+            $this->response($e->getCode(), $e->getMessage());
+            return false;
+        }
+    }
+
+    protected function response($code, $message)
+    {
+        $response = $this->response->withStatus($code);
+        $response->write($message);
+        $this->response = $response;
     }
 }

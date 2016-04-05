@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "29df53fec42a505136da24e918e1ee46",
+    "hash": "36a7da50691135cf69cba9ebb82d3e1c",
     "content-hash": "7f1ca1c1feefb329f26bdd63b8a8df7f",
     "packages": [
         {
@@ -137,12 +137,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/propelorm/Propel2.git",
-                "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86"
+                "reference": "14377a8c468dd8a5ca01064f140ab36f6cb117df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/4782ebdcf9f85e2f54f95d231e098a6334387b86",
-                "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86",
+                "url": "https://api.github.com/repos/propelorm/Propel2/zipball/14377a8c468dd8a5ca01064f140ab36f6cb117df",
+                "reference": "14377a8c468dd8a5ca01064f140ab36f6cb117df",
                 "shasum": ""
             },
             "require": {
@@ -194,7 +194,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2016-03-31 18:35:19"
+            "time": "2016-04-04 10:03:45"
         },
         {
             "name": "psr/http-message",

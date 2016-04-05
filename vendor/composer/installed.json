@@ -51,6 +51,91 @@
         ]
     },
     {
+        "name": "guzzlehttp/psr7",
+        "version": "1.2.3",
+        "version_normalized": "1.2.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/guzzle/psr7.git",
+            "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/guzzle/psr7/zipball/2e89629ff057ebb49492ba08e6995d3a6a80021b",
+            "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0",
+            "psr/http-message": "~1.0"
+        },
+        "provide": {
+            "psr/http-message-implementation": "1.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0"
+        },
+        "time": "2016-02-18 21:54:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "GuzzleHttp\\Psr7\\": "src/"
+            },
+            "files": [
+                "src/functions_include.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Michael Dowling",
+                "email": "mtdowling@gmail.com",
+                "homepage": "https://github.com/mtdowling"
+            }
+        ],
+        "description": "PSR-7 message implementation",
+        "keywords": [
+            "http",
+            "message",
+            "stream",
+            "uri"
+        ]
+    },
+    {
+        "name": "leno/view",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hackyoung/lenoview.git",
+            "reference": "43b1e532a1fa25a36fdeb1dfc41e74f76922310d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/43b1e532a1fa25a36fdeb1dfc41e74f76922310d",
+            "reference": "43b1e532a1fa25a36fdeb1dfc41e74f76922310d",
+            "shasum": ""
+        },
+        "time": "2016-04-04 04:39:47",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Leno\\View\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/"
+    },
+    {
         "name": "monolog/monolog",
         "version": "1.0.2",
         "version_normalized": "1.0.2.0",
@@ -96,77 +181,22 @@
         ]
     },
     {
-        "name": "symfony/filesystem",
+        "name": "symfony/yaml",
         "version": "v3.0.4",
         "version_normalized": "3.0.4.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/filesystem.git",
-            "reference": "f82499a459dcade2ea56df94cc58b19c8bde3d20"
+            "url": "https://github.com/symfony/yaml.git",
+            "reference": "0047c8366744a16de7516622c5b7355336afae96"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/filesystem/zipball/f82499a459dcade2ea56df94cc58b19c8bde3d20",
-            "reference": "f82499a459dcade2ea56df94cc58b19c8bde3d20",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/0047c8366744a16de7516622c5b7355336afae96",
+            "reference": "0047c8366744a16de7516622c5b7355336afae96",
             "shasum": ""
         },
         "require": {
             "php": ">=5.5.9"
-        },
-        "time": "2016-03-27 10:24:39",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\Filesystem\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Filesystem Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "symfony/config",
-        "version": "v3.0.4",
-        "version_normalized": "3.0.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/config.git",
-            "reference": "980ee40c28f00acff8906c11b778aab5f0db74c2"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/config/zipball/980ee40c28f00acff8906c11b778aab5f0db74c2",
-            "reference": "980ee40c28f00acff8906c11b778aab5f0db74c2",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.5.9",
-            "symfony/filesystem": "~2.8|~3.0"
-        },
-        "suggest": {
-            "symfony/yaml": "To use the yaml reference dumper"
         },
         "time": "2016-03-04 07:55:57",
         "type": "library",
@@ -178,7 +208,7 @@
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "Symfony\\Component\\Config\\": ""
+                "Symfony\\Component\\Yaml\\": ""
             },
             "exclude-from-classmap": [
                 "/Tests/"
@@ -198,7 +228,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Config Component",
+        "description": "Symfony Yaml Component",
         "homepage": "https://symfony.com"
     },
     {
@@ -453,6 +483,57 @@
         "homepage": "https://symfony.com"
     },
     {
+        "name": "symfony/filesystem",
+        "version": "v3.0.4",
+        "version_normalized": "3.0.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/filesystem.git",
+            "reference": "f82499a459dcade2ea56df94cc58b19c8bde3d20"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/filesystem/zipball/f82499a459dcade2ea56df94cc58b19c8bde3d20",
+            "reference": "f82499a459dcade2ea56df94cc58b19c8bde3d20",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.5.9"
+        },
+        "time": "2016-03-27 10:24:39",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\Filesystem\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony Filesystem Component",
+        "homepage": "https://symfony.com"
+    },
+    {
         "name": "symfony/console",
         "version": "v3.0.4",
         "version_normalized": "3.0.4.0",
@@ -515,22 +596,26 @@
         "homepage": "https://symfony.com"
     },
     {
-        "name": "symfony/yaml",
+        "name": "symfony/config",
         "version": "v3.0.4",
         "version_normalized": "3.0.4.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/symfony/yaml.git",
-            "reference": "0047c8366744a16de7516622c5b7355336afae96"
+            "url": "https://github.com/symfony/config.git",
+            "reference": "980ee40c28f00acff8906c11b778aab5f0db74c2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/0047c8366744a16de7516622c5b7355336afae96",
-            "reference": "0047c8366744a16de7516622c5b7355336afae96",
+            "url": "https://api.github.com/repos/symfony/config/zipball/980ee40c28f00acff8906c11b778aab5f0db74c2",
+            "reference": "980ee40c28f00acff8906c11b778aab5f0db74c2",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.5.9"
+            "php": ">=5.5.9",
+            "symfony/filesystem": "~2.8|~3.0"
+        },
+        "suggest": {
+            "symfony/yaml": "To use the yaml reference dumper"
         },
         "time": "2016-03-04 07:55:57",
         "type": "library",
@@ -542,7 +627,7 @@
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "Symfony\\Component\\Yaml\\": ""
+                "Symfony\\Component\\Config\\": ""
             },
             "exclude-from-classmap": [
                 "/Tests/"
@@ -562,7 +647,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Yaml Component",
+        "description": "Symfony Config Component",
         "homepage": "https://symfony.com"
     },
     {
@@ -606,78 +691,18 @@
         ]
     },
     {
-        "name": "guzzlehttp/psr7",
-        "version": "1.2.3",
-        "version_normalized": "1.2.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/guzzle/psr7.git",
-            "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/psr7/zipball/2e89629ff057ebb49492ba08e6995d3a6a80021b",
-            "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0",
-            "psr/http-message": "~1.0"
-        },
-        "provide": {
-            "psr/http-message-implementation": "1.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~4.0"
-        },
-        "time": "2016-02-18 21:54:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "GuzzleHttp\\Psr7\\": "src/"
-            },
-            "files": [
-                "src/functions_include.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Michael Dowling",
-                "email": "mtdowling@gmail.com",
-                "homepage": "https://github.com/mtdowling"
-            }
-        ],
-        "description": "PSR-7 message implementation",
-        "keywords": [
-            "http",
-            "message",
-            "stream",
-            "uri"
-        ]
-    },
-    {
         "name": "propel/propel",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/propelorm/Propel2.git",
-            "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86"
+            "reference": "14377a8c468dd8a5ca01064f140ab36f6cb117df"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/propelorm/Propel2/zipball/4782ebdcf9f85e2f54f95d231e098a6334387b86",
-            "reference": "4782ebdcf9f85e2f54f95d231e098a6334387b86",
+            "url": "https://api.github.com/repos/propelorm/Propel2/zipball/14377a8c468dd8a5ca01064f140ab36f6cb117df",
+            "reference": "14377a8c468dd8a5ca01064f140ab36f6cb117df",
             "shasum": ""
         },
         "require": {
@@ -698,7 +723,7 @@
         "suggest": {
             "monolog/monolog": "The recommended logging library to use with Propel."
         },
-        "time": "2016-03-31 18:35:19",
+        "time": "2016-04-04 10:03:45",
         "bin": [
             "bin/propel"
         ],
@@ -708,7 +733,7 @@
                 "dev-master": "2.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-0": {
                 "Propel": "src/"
@@ -731,30 +756,5 @@
             "orm",
             "persistence"
         ]
-    },
-    {
-        "name": "leno/view",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/hackyoung/lenoview.git",
-            "reference": "43b1e532a1fa25a36fdeb1dfc41e74f76922310d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/43b1e532a1fa25a36fdeb1dfc41e74f76922310d",
-            "reference": "43b1e532a1fa25a36fdeb1dfc41e74f76922310d",
-            "shasum": ""
-        },
-        "time": "2016-04-04 04:39:47",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Leno\\View\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/"
     }
 ]
