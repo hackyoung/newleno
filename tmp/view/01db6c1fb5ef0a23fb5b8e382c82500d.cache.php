@@ -1,7 +1,7 @@
 <head>
     <title><?php echo $title; ?></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="keywords" content="<?php echo $keyword; ?>" />
+    <meta name="keywords" content="<?php echo $keywords; ?>" />
     <meta name='description' content="<?php echo $description; ?>" />
     <meta name='author' content="<?php echo $author; ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />

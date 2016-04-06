@@ -1,5 +1,5 @@
-<extend name="default.Layout.two_col">
-    <fragment name="one">
+<?php $this->extend('default.Layout.two_col'); ?>
+<?php $this->startFragment('one'); ?>
         <div class="leno-piece-common">
             hello world
         </div>
@@ -21,10 +21,10 @@
         <div class="leno-piece-common">
             hello world
         </div>
-    </fragment>
-    <fragment name="two">
+<?php $this->endFragment(); ?>
+<?php $this->startFragment('two'); ?>
         <div class="leno-piece-common">
             hello world
         </div>
-    </fragment>
-</extend>
+<?php $this->endFragment(); ?>
+<?php $this->parent->display(); ?>
