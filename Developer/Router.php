@@ -9,20 +9,22 @@ class Router extends \Leno\Routing\Router
 
     protected function beforeRoute()
     {
-        \Leno\View\View::addViewDir(ROOT . '/Developer/View');
+        \Leno\View::addViewDir(ROOT . '/Developer/View');
     }
 
     protected function handleResult($response)
     {
+        return true;
+        /*
         $data = [];
         if(is_array($response)) {
             $data = $response;
         } elseif($response instanceof \Leno\Http\Response) {
             $this->response = $response;
         }
-
         $this->response = $this->response->withHeader('Content-Type', 'application/json')
             ->write(json_encode($data));
         return false;
+         */
     }
 }

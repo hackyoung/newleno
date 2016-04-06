@@ -1,7 +1,7 @@
 <?php
 namespace Leno;
 
-use \Leno\View\View as View;
+use \Leno\View as View;
 use \Leno\View\Template as Template;
 
 abstract class Controller
@@ -12,9 +12,15 @@ abstract class Controller
 
     protected $response;
 
-    protected $title;
+    protected $title = 'leno';
 
-    protected $keyword;
+    protected $keywords = '';
+
+    protected $description = '';
+
+    protected $js = [];
+
+    protected $css = [];
 
     protected $data = [];
 
@@ -36,7 +42,29 @@ abstract class Controller
 
     protected function render($view, $data=[])
     {
-        $data = array_merge($this->data, $data);
+        if(!isset($data['__head__'])) {
+            $data['__head__'] = [];
+        }
+        if(!empty($this->title)) {
+            $data['__head__']['title'] = $this->title;
+        }
+        if(!empty($this->description)) {
+            $data['__head__']['description'] = $this->description;
+        }
+        if(!empty($this->keywords)) {
+            $data['__head__']['keywords'] = $this->keywords;
+        }
+
+        if(!empty($this->js)) {
+            $data['__head__']['js'] = $this->js;
+        }
+
+        if(!empty($this->js)) {
+            $data['__head__']['css'] = $this->css;
+        }
+        foreach($this->data as $k=>$d) {
+            $data[$k] = $d;
+        }
         (new View($view, $data))->display();
     }
 

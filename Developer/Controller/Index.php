@@ -5,6 +5,9 @@ class Index extends \Developer\Controller
 {
     public function index()
     {
+        $this->title = 'hello world';
+        $this->keywords = 'hello,world';
+        $this->description = 'hello world';
         if(!$this->checkParameters([
             'hello' => 'jjj',
             'world' => 'world'

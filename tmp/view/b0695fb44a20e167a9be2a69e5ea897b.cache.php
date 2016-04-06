@@ -1,9 +1,8 @@
 <!doctype html>
 <html>
-    <head>
-        <title>hello world</title>
-    </head>
+<?php $this->view("v", new \Leno\View("Element.head", $__head__)) ?>
+<?php $this->e("v")->display(); ?>
     <body>
-<?php $this->getFragment('head')->display(); ?>
+<?php $this->getFragment('body')->display(); ?>
     </body>
 </html>

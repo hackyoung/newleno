@@ -1,9 +1,7 @@
 <!doctype html>
 <html>
-    <head>
-        <title>hello world</title>
-    </head>
+    <view name="Element.head" data="__head__" />
     <body>
-        <fragment name="head" />
+        <fragment name="body" />
     </body>
 </html>
