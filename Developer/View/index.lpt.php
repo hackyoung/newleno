@@ -1,7 +1,7 @@
 <extend name="default.Layout.two_col">
     <fragment name="one">
         <div class="leno-piece-common">
-            hello world
+            <view name="default.Element.item.requirement" />
         </div>
         <div class="leno-piece-common">
             hello world
