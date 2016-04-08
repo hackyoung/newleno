@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <?php if(gettype($js) !== "array") { $js = []; } ?>
 <?php foreach($js as $j) { ?>
-        <script src="<?php echo $j; ?>" type="text/javascript"></script>
+        <script src="<?php echo $j; ?>" type="javascript"></script>
 <?php } ?>
 <?php if(gettype($css) !== "array") { $css = []; } ?>
 <?php foreach($css as $c) { ?>

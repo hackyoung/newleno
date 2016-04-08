@@ -4,7 +4,7 @@
             <div class="tc-one">
                 <fragment name="one" />
             </div>
-            <div class="tc-two">
+            <div class="tc-two leno-ml leno-lg">
                 <fragment name="two" />
             </div>
         </div>

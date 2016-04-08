@@ -8,6 +8,7 @@ class Controller extends \Leno\Controller
         '/lib/leno/js/leno.js',
     ];   
     protected $css = [
-        '/lib/leno/css/leno.css'
+        '/lib/leno/css/leno.css',
+        '/css/style.css',
     ];
 }

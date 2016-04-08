@@ -1,16 +1,23 @@
 <style>
-.item-requirement header{
+.item.requirement header {
     font-size: 20px;
     font-weight: bold;
 }
 
-.item-requirement header>span {
+.item.requirement label {
+    max-width: calc(100% - 100px);
+    display: inline-block;
+    height: 31px;
+    text-overflow: ellipsis;
+}
+
+.item.requirement header>span {
     font-size: 16px;
     float: right;
     margin-left: 20px;
 }
 
-.item-requirement>div {
+.item.requirement>div {
     padding: 10px;
 }
 
@@ -20,9 +27,9 @@
 }
 
 </style>
-<section class="item-requirement">
+<section class="item requirement">
     <header>
-        <a href="">Java程序，设计一个软键盘</a>
+        <label href="">Java程序，设计一个软键盘</label>
         <span class="price">￥13090.00</span>
     </header>
     <div>
