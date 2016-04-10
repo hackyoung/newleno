@@ -12,6 +12,7 @@ class Router extends \Leno\Routing\Router
             'target' => 'Comsumer\\Router',
         ]
     ];
+
     public function beforeRoute()
     {
     }

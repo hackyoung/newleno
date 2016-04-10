@@ -15,6 +15,8 @@ class Router
 
     const MOD_RESTFUL = 1;
 
+	const MOD_MIX = 2;
+
     protected $request;
 
     protected $response;
@@ -25,13 +27,13 @@ class Router
 
     protected $base = 'controller';
 
-    protected $mode = self::MOD_NORMAL;
+    protected $mode = self::MOD_RESTFUL;
 
     protected $restful = [
         'GET' => 'index',
         'POST' => 'add',
         'DELETE' => 'delete',
-        'PUT' => 'edit',
+        'PUT' => 'modify',
     ];
 
     public function __construct($request, $response)
@@ -50,8 +52,33 @@ class Router
                 return $this->handleRule($reg, $rule);
             }
         }
-        $target = $this->getTarget();
-        $this->response = $this->invoke($target);
+		if($this->mode === self::MOD_MIX) {
+			$this->mode = self::MOD_RESTFUL;
+			$target = $this->getTarget();
+			try {
+				$this->response = $this->invoke($target);
+			} catch(\Exception $e) {
+				$this->mode = self::MOD_NORMAL;
+				$target = $this->getTarget();
+				try {
+					$this->response = $this->invoke($target);
+				} catch(\Exception $e) {
+					$response = $this->response->withStatus($target->getCode());
+					$response->getBody()->write('<h1><center> '.$target->getCode() .' ' . $response->getReasonPhrase().'</center></h1>');
+        			$this->response = $response;
+				}
+			}
+			$this->mode = self::MOD_MIX;
+		} else {
+			$target = $this->getTarget();
+			try {
+				$this->response = $this->invoke($target);
+			} catch(\Leno\Exception\HttpException $e) {
+				$response = $this->response->withStatus($target->getCode());
+				$response->getBody()->write('<h1><center> '.$target->getCode() .' ' . $response->getReasonPhrase().'</center></h1>');
+				$this->response = $response;
+			}
+		}
         $this->afterRoute();
         $this->send($this->response);
     }
@@ -146,7 +173,7 @@ class Router
             explode('/', $this->path)
         );
         $path = array_filter(array_map(function($p) {
-            return \camelCase($p);
+            return \camelCase($p, true, '-');
         }, $patharr));
         if($this->mode == self::MOD_RESTFUL) {
             return $this->getRestFulTarget($path);
@@ -185,9 +212,7 @@ class Router
 
     private function _404()
     {
-        $response = $this->response->withStatus(404);
-        $response->getBody()->write('<h1><center>404 '.$response->getReasonPhrase().'</center></h1>');
-        return $response;
+		throw new \Leno\Exception\HttpException('not found', 404);
     }
 
     private function handleRule($regexp, $rule)

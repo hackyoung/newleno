@@ -7,10 +7,10 @@ function str_has_tags($string)
         && $string !== strip_tags($string);
 }
 
-function camelCase($string, $hackFirst=true)
+function camelCase($string, $hackFirst=true, $limiter='_')
 {
     $string = str_replace(' ', '', ucwords(
-        str_replace('_', ' ', $string)
+        str_replace($limiter, ' ', $string)
     ));
     if($hackFirst) {
         return preg_replace_callback('/^\w/', function($matches) {
@@ -22,9 +22,9 @@ function camelCase($string, $hackFirst=true)
     return $string;
 }
 
-function unCamelCase($string)
+function unCamelCase($string, $limiter='_')
 {
-    $string = preg_replace('/\B([A-Z])/', '_$1', $string);
+    $string = preg_replace('/\B([A-Z])/', $limiter.'$1', $string);
     return strtolower($string);
 }
 

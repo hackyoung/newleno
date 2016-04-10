@@ -1,4 +1,4 @@
-<extend name="default.Layout.vertical">
+<extend name="Layout.vertical">
     <fragment name="content">
         <div class="tc-container">
             <div class="tc-one">

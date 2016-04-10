@@ -4,11 +4,7 @@
     font-weight: bold;
 }
 
-.item.requirement label {
-    max-width: calc(100% - 100px);
-    display: inline-block;
-    height: 31px;
-    text-overflow: ellipsis;
+.item.requirement a {
 }
 
 .item.requirement header>span {
@@ -29,7 +25,7 @@
 </style>
 <section class="item requirement">
     <header>
-        <label href="">Java程序，设计一个软键盘</label>
+        <a href="">Java程序，设计一个软键盘</a>
         <span class="price">￥13090.00</span>
     </header>
     <div>

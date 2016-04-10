@@ -46,18 +46,19 @@ input[type=password] {
 /**leno-list**/
 
 .leno-list {
-	border: 1px solid #eee;
+	/*
 	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
 	-moz-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
 	-webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+	*/
 	border-radius: 2px;
 	padding: 0px;
+	margin: 0px;
 }
 
 .leno-list .item,
 .leno-list .tool {
-	list-style: none;
-	line-height: 50px;
+	padding: 10px 20px;
 	display: block;
 	background-color: white;
 }
@@ -71,7 +72,6 @@ input[type=password] {
 }
 
 .leno-list .item {
-	padding: 0px 10px 0px 20px; 
 	border-bottom: 1px solid #ccc;
 	border-top: 1px solid #ddd;
 }
@@ -387,6 +387,7 @@ input[type=password] {
 	background-image: -webkit-linear-gradient(top, #eee, #fff);
 	background-image: -o-linear-gradient(top, #eee, #fff);
 	resize: none;
+    color: #444;
 }
 
 input[type=text].leno-input {

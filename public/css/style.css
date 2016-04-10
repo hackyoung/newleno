@@ -76,6 +76,41 @@
     margin-top: 3px;
 }
 
+.glb-header .person img:hover {
+    cursor: pointer;
+}
+
+.recommend {
+	margin-bottom: 20px;
+}
+
+.recommend .item span:nth-child(2) {
+	float: right;
+	color: green;
+}
+
+/**.form.log**/
+.form.log {
+	width: 300px;
+	margin-left: calc(50% - 150px);
+	overflow: hidden;
+}
+
+.log .leno-input {
+	width: 100%;
+	margin: 10px 0px;
+}
+
+.log header {
+	text-align: center;
+	font-size: 20px;
+}
+
+.log header a.focus {
+	color: red;
+}
+
+/**.form.log end**/
 @media screen and (min-width: 0px) and (max-width: 768px) {
     .content {
         width: 100%;
@@ -125,6 +160,7 @@
     .tc-one,
     .tc-two {
         display: table-cell;
+		vertical-align: top;
     }
 
     .tc-two {
