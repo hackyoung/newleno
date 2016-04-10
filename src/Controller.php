@@ -73,7 +73,7 @@ abstract class Controller
         try {
             return (new \Leno\Validator)->execute($var, $rules);
         } catch(\Exception $e) {
-            $this->response($e->getCode(), $e->getMessage());
+            $this->response(400, $e->getMessage());
             return false;
         }
     }

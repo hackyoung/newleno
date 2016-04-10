@@ -18,6 +18,7 @@ class Index extends \Developer\Controller
             'world' => [
                 'type' => 'uuid',
                 'notPass' => function($key, $rule) {
+					throw new \Exception('请填写world');
                 }
             ]
         ])) {

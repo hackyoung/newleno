@@ -2,7 +2,7 @@
     <fragment name="one">
         <llist name="list" id="l">
         <div class="leno-piece-common">
-            <view name="Element.item.requirement" />
+            <view name="Element.item.task" />
         </div>
         </llist>
     </fragment>

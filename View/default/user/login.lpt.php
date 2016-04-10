@@ -23,9 +23,8 @@
 $(document).ready(function() {
 	$('.form>header>a').click(function() {
 		var id = $(this).attr('href');
-		$('.form form').fadeOut('normal', function() {
-			$(id).fadeIn();
-		});
+		$('.form form').hide();
+		$(id).show();
 	});
 });
 		</script>

@@ -1,3 +1,4 @@
+/**header**/
 .glb-header {
     background-color: #eee;
     height: 51px;
@@ -79,6 +80,7 @@
 .glb-header .person img:hover {
     cursor: pointer;
 }
+/**header end**/
 
 .recommend {
 	margin-bottom: 20px;
@@ -111,6 +113,38 @@
 }
 
 /**.form.log end**/
+
+/**task-item**/
+.item.task header {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.item.task a {
+}
+
+.item.task header>span {
+    font-size: 16px;
+    float: right;
+    margin-left: 20px;
+}
+
+.item.task>div {
+    padding: 10px;
+}
+
+.price {
+    color: red;
+}
+
+.item.task>footer>span {
+	display: inline-block;
+	margin-right: 10px;
+	font-size: 14px;
+	color: #FFC125;
+	text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.4);
+}
+/**task-item end**/
 @media screen and (min-width: 0px) and (max-width: 768px) {
     .content {
         width: 100%;
