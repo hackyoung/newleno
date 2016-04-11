@@ -1,5 +1,30 @@
 [
     {
+        "name": "leno/view",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hackyoung/lenoview.git",
+            "reference": "b1976c85a0d06b4497352769f607cc9cd97673bd"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/b1976c85a0d06b4497352769f607cc9cd97673bd",
+            "reference": "b1976c85a0d06b4497352769f607cc9cd97673bd",
+            "shasum": ""
+        },
+        "time": "2016-04-08 12:26:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Leno\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/"
+    },
+    {
         "name": "monolog/monolog",
         "version": "1.0.2",
         "version_normalized": "1.0.2.0",
@@ -597,7 +622,7 @@
                 "dev-master": "2.0-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-0": {
                 "Propel": "src/"
@@ -731,30 +756,5 @@
             "stream",
             "uri"
         ]
-    },
-    {
-        "name": "leno/view",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/hackyoung/lenoview.git",
-            "reference": "b1976c85a0d06b4497352769f607cc9cd97673bd"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/b1976c85a0d06b4497352769f607cc9cd97673bd",
-            "reference": "b1976c85a0d06b4497352769f607cc9cd97673bd",
-            "shasum": ""
-        },
-        "time": "2016-04-08 12:26:00",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Leno\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/"
     }
 ]

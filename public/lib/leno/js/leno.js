@@ -580,7 +580,11 @@ var leno = leno || {};
 	leno.clone = function(elem) {
 		var obj = {};
 		for(var i in elem) {
-			obj[i] = elem[i];
+            if(typeof elem[i] === 'object') {
+			    obj[i] = leno.clone(elem[i]);
+            } else {
+                obj[i] = elem[i];
+            }
 		}
 		return obj;
 	}
@@ -959,9 +963,7 @@ var Layer = layer = (function() {
 			wmid = wmid < 0 ? 0 : wmid;
 			var ret = {
 				left: 'auto',
-				top: 'auto',
-				right: 'auto',
-				bottom: 'auto'
+				top: 'auto'
 			};
 			switch(position) {
 				case layer.left_top:
@@ -973,32 +975,32 @@ var Layer = layer = (function() {
 					ret['top'] = '0px';
 					break;
 				case layer.right_top:
-					ret['right'] = '0px';
+					ret['left'] = (swidth - thiswidth) + 'px';
 					ret['top'] = '0px';
 					break;
 				case layer.left:
-					ret['top'] = hmid + 'px';
 					ret['left'] = '0px';
+					ret['top'] = hmid + 'px';
 					break;
 				case layer.center:
 					ret['left'] = wmid + 'px';
 					ret['top'] = hmid + 'px';
 					break;
 				case layer.right:
-					ret['right'] = 0 + 'px';
+					ret['left'] = (swidth - thiswidth) + 'px';
 					ret['top'] = hmid + 'px';
 					break;
 				case layer.bottom:
+					ret['top'] = (sheight - thisheight) + 'px' ;
 					ret['left'] = wmid + 'px';
-					ret['bottom'] = '0px' ;
 					break;
 				case layer.left_bottom:
-					ret['bottom'] = '0px';
+					ret['top'] = (sheight - thisheight) + 'px' ;
 					ret['left'] = '0px';
 					break;
 				case layer.right_bottom:
-					ret['right'] = '0px';
-					ret['bottom'] = '0px';
+					ret['top'] = (sheight - thisheight) + 'px' ;
+					ret['left'] = (swidth - thiswidth) + 'px';
 					break;
 				default:
 					ret['top'] = position.y + 'px';
@@ -1020,8 +1022,6 @@ var Layer = layer = (function() {
 			this.content.css({
 				top: pos['top'],
 				left: pos['left'],
-				bottom: pos['bottom'],
-				right: pos['right'],
 				maxWidth: swidth,
 				maxHeight: sheight
 			});
