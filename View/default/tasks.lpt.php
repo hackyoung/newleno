@@ -13,6 +13,7 @@
     </fragment>
 </extend>
 <script>
+/*
 $(document).ready(function() {
     var iu = new ImageUploader({
         id: "hello_world",
@@ -28,4 +29,5 @@ $(document).ready(function() {
         position = (position + 1)%10;
     }, 500);
 });
+ */
 </script>
