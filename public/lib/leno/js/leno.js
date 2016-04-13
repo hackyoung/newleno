@@ -2386,7 +2386,6 @@ leno.editor = (function() {
 			var height = newHeight;
 			var width = this.opts.width;
 		}
-		console.log(height);
 		this.resize(width, height);
 		return this;
 	}
