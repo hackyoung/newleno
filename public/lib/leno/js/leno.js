@@ -963,7 +963,9 @@ var Layer = layer = (function() {
 			wmid = wmid < 0 ? 0 : wmid;
 			var ret = {
 				left: 'auto',
-				top: 'auto'
+				top: 'auto',
+                bottom: 'auto',
+                right: 'auto'
 			};
 			switch(position) {
 				case layer.left_top:
@@ -975,7 +977,7 @@ var Layer = layer = (function() {
 					ret['top'] = '0px';
 					break;
 				case layer.right_top:
-					ret['left'] = (swidth - thiswidth) + 'px';
+					ret['right'] = '0px';
 					ret['top'] = '0px';
 					break;
 				case layer.left:
@@ -987,20 +989,20 @@ var Layer = layer = (function() {
 					ret['top'] = hmid + 'px';
 					break;
 				case layer.right:
-					ret['left'] = (swidth - thiswidth) + 'px';
+					ret['right'] = '0px';
 					ret['top'] = hmid + 'px';
 					break;
 				case layer.bottom:
-					ret['top'] = (sheight - thisheight) + 'px' ;
+					ret['bottom'] = '0px' ;
 					ret['left'] = wmid + 'px';
 					break;
 				case layer.left_bottom:
-					ret['top'] = (sheight - thisheight) + 'px' ;
+					ret['bottom'] = '0px' ;
 					ret['left'] = '0px';
 					break;
 				case layer.right_bottom:
-					ret['top'] = (sheight - thisheight) + 'px' ;
-					ret['left'] = (swidth - thiswidth) + 'px';
+					ret['right'] = '0px' ;
+					ret['bottom'] = '0px';
 					break;
 				default:
 					ret['top'] = position.y + 'px';
