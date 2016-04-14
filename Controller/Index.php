@@ -1,6 +1,5 @@
 <?php
 namespace Controller;
-
 class Index extends App
 {
     public function index()
