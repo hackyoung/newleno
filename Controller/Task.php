@@ -8,6 +8,7 @@ class Task extends \Controller\App
 	 */
 	public function index()
 	{
+        $this->render('task');
 	}
 
 	/**
