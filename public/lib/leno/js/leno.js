@@ -622,6 +622,7 @@ var leno = leno || {};
 				id: 'big',
 				node: node,
 				shelter: true,
+                css: 'empty',
 				position: layer.center,
 				close: true
 			});
@@ -828,7 +829,6 @@ var Layer = layer = (function() {
 			opts.style = opts.style || {};
 			opts.style.position = opts.style.position || 'fixed';
 			opts.style.overflow = opts.style.overflow || 'auto';
-
 			this.content = $('<div></div>').css({
 				display: 'none',
 				overflow: opts.style.overflow,
@@ -850,7 +850,7 @@ var Layer = layer = (function() {
 				var close = $('<div class="l-win-close"></div>')
 				.click(function() {
 					_this.hide();
-				}).append('<span>×</span>')
+				}).append('<span class="zmdi zmdi-close"></span>')
 				.prependTo(this.content);
 				this.content.css('overflow', 'visible');
 			}
@@ -1148,9 +1148,9 @@ var Layer = layer = (function() {
 		return l;
 	}
 
-	layer.win = function(opts) {
+	layer.modal = layer.win = function(opts) {
 		if(opts.position == null) {
-			opts.position = leno.randomNum(1, 9);
+			opts.position = layer.center;
 		}
 		var $node = $('<div></div>');
 		layer.win.down = false;

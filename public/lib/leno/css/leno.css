@@ -468,12 +468,6 @@ hr {
 	border-top: 1px solid green;
 }
 
-/*
-datalist {
-	background-color: grey;
-	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
-}
-*/
 .leno-input-group {
 	vertical-align: center;
 }
@@ -650,11 +644,10 @@ a: visited {
 }
 
 .l-win-close>span {
-	font-size: 23px;
-	display: inline-block;
+    line-height: 30px;
+    font-size: 18px;
 	position: relative;
-/*	right: -3px;*/
-	top: -2px;
+    top: -2px;
 	font-weight: bold;
 	color: white;
 }

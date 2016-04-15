@@ -1,20 +1,29 @@
-<extend name="Layout.default">
-	<fragment name="body">
-		<header class="user-header">
-				<ul class="no-decaration-ul menu">
-					<li><a href="">项目</a></li>
-					<li><a href="">文章</a></li>
-					<li>
-						<img src="" class="user-portrait" />
-					</li>
-					<li><a href="">个人设置</a></li>
-					<li><a href="">消息</a></li>
-				</div>
-			</div>
-		</header>
-		<section>
-		</section>
-		<footer>
-		</footer>
+<extend name="Layout.one_col">
+	<fragment name="one">
+        <div class="tc-container">
+            <div class="tc-row">
+                <div class="tc-cell user-col-one">
+                    <div class="leno-piece-common user-profile">
+                        <img src="https://avatars2.githubusercontent.com/u/3030341?v=3" />
+                        <div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tc-cell user-col-two user-info">
+                    <div class="leno-piece-common">
+                    </div>
+                </div>
+            </div>
+            <div class="tc-row">
+                <div class="tc-cell user-col-one">
+                    <div class="leno-piece-common">
+                    </div>
+                </div>
+                <div class="tc-cell user-col-two">
+                    <div class="leno-piece-common">
+                    </div>
+                </div>
+            </div>
+        </div>
 	</fragment>
 </extend>
