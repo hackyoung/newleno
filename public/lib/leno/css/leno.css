@@ -82,7 +82,7 @@ input[type=password] {
 
 .leno-list .item:last-child {
 	border-bottom: none;
-	border-radius: 0px 0px 2px 2px;
+	5order-radius: 0px 0px 2px 2px;
 }
 
 .leno-list .active {
@@ -120,13 +120,9 @@ input[type=password] {
 		width: 100%;
 		border-bottom: 1px solid #999;
 		background-color: #f4f4f4;
-		box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.4) inset;
-		-moz-box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.4) inset;
-		-webkit-box-shadow: 0px -1px 1px rgba(0, 0, 0, 0.4) inset;
 	}
-
 	.leno-tab .item {
-		padding: 10px 20px;
+		padding: 4px 20px;
 		display: inline-block;
 		position: relative;
 		bottom: -1px;
@@ -146,9 +142,6 @@ input[type=password] {
 		border-left: 1px solid #999;
 		border-right: 1px solid #999;
 		background-color: #f4f4f4;
-		box-shadow: 0px -2px 2px rgba(0, 0, 0, 0.4);
-		-moz-box-shadow: 0px -2px 2px rgba(0, 0, 0, 0.4);
-		-webkit-box-shadow: 0px -2px 2px rgba(0, 0, 0, 0.4);
 		border-radius: 5px 5px 0px 0px;
 	}
 /**leno-tab end**/

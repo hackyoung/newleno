@@ -4,7 +4,7 @@
     <ol class="leno-piece-section leno-list">
 		<llist name="l" id="l">
         <li class="item">
-			<span>hackyoung@163.com</span>
+			<span>杨忠</span>
 			<span>100/小时</span>
         </li>
 		</llist>

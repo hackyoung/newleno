@@ -19,6 +19,7 @@
 			</div>
 		</div>
 		<div>
+			热门分类
 			<llist name="l" id="la">
 			<div class="tag">{$la}</div>
 			</llist>
@@ -37,6 +38,7 @@
 			</div>
 		</div>
 		<div>
+			热门技术
 			<llist name="l" id="la">
 			<div class="tag">{$la}</div>
 			</llist>
@@ -58,6 +60,7 @@
 			</div>
 		</div>
 		<div>
+			热门预算
 			<llist name="l" id="la">
 			<div class="tag">{$la}</div>
 			</llist>
