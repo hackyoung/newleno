@@ -116,28 +116,80 @@
         color: green;
     }
 /**recommend end**/
-/**.form.log**/
-    .form.log {
-        width: 300px;
-        margin-left: calc(50% - 150px);
-        overflow: hidden;
-    }
-
-    .log .leno-input {
-        width: 100%;
-        margin: 10px 0px;
-    }
-
-    .log header {
-        text-align: center;
-        font-size: 20px;
-    }
-
-    .log header a.focus {
-        color: red;
-    }
-/**.form.log end**/
-
+/**tasks-filter**/
+	.tasks-filter {
+		height: 200px;
+		border-top: 1px solid #999;
+		margin: 10px 0px;
+		box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3) inset;
+		-moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3) inset;
+		-webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.3) inset;
+	}
+	.tasks-filter>div {
+		padding: 1px;
+	}
+	.tasks-filter .leno-dropdown {
+		display: block;
+	}
+	.tasks-filter div[data-toggle=dropdown] {
+		border: 1px solid #aaa;
+		text-align: center;
+	}
+	.select-menu {
+		padding: 10px;
+		max-width: 300px;
+	}
+	.select-menu>div {
+		overflow: auto;
+		max-height: 300px;
+	}
+	.select-menu .leno-input {
+		width: 100%;
+	}
+	.select-menu .flat-input {
+		width: 50px;
+	}
+	.select-menu .tag,
+	.tasks-filter .tag {
+		padding: 5px;
+		margin: 5px;
+		background-color: white;
+		font-size: 12px;
+		border: 1px solid #ccc;
+	}
+/**tasks-filter end**/
+/**form log**/
+	.form button {
+		width: 100%;
+	}
+	.log .leno-input-group {
+		width: 100%;
+	}
+	.log .leno-input-group input {
+		width: calc(100% - 30px);
+	}
+	.log .leno-input-group label {
+		display: inline-block;
+		width: 20px;
+	}
+	.user.body {
+		background: rgba(0, 0, 0, 0) url("https://dn-proceson.qbox.me/login.jpg") no-repeat fixed 0 0 / cover ;
+		position: absolute;
+		height: 100%;
+		width: 100%;
+	}
+	.show {
+		max-width: 400px;
+		width: 100%;
+		padding: 40px 20px;
+		background-color: rgba(255, 255, 255, 0.3);
+	}
+	.empty {
+		box-shadow: 0px 0px 3px rgba(0, 0, 0,0.4);
+		-moz-box-shadow: 0px 0px 3px rgba(0, 0, 0,0.4);
+		-webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0,0.4);
+	}
+/**form log end**/
 /**task-item**/
     .item.task header {
         font-size: 20px;
@@ -187,7 +239,7 @@
 /**tag**/
     .tag {
         background-color: #efefef;
-        margin: 5px;
+        margin: 10px 5px 5px 0px;
         padding: 5px;
         display: inline-block;
     }
@@ -199,13 +251,8 @@
     }
 /**tag end**/
 /**user**/
-    .user-profile {
-        
-    }
-
-    .user-profile>img {
-        width: 100%;
-        max-height: 300px;
+    .user>img {
+		width: 300px;
     }
 /**user end**/
 @media screen and (min-width: 0px) and (max-width: 768px) {
@@ -260,11 +307,6 @@
         display: table-cell;
         vertical-align: top;
     }
-
-    .user-col-two {
-        width: 70%;
-    }
-
     .tc-two {
         width: 30%;
     }
@@ -298,9 +340,6 @@
     .tc-cell {
         display: table-cell;
         vertical-align: top;
-    }
-    .user-col-two {
-        width: 70%;
     }
 
     .tc-two {

@@ -422,8 +422,12 @@ input[type=password] {
 	background-image: -moz-linear-gradient(top, #eee, #fff);
 	background-image: -webkit-linear-gradient(top, #eee, #fff);
 	background-image: -o-linear-gradient(top, #eee, #fff);
-	resize: none;
     color: #444;
+}
+
+textarea,
+.textarea {
+	resize: vertical;
 }
 
 input[type=text].leno-input {
@@ -523,6 +527,18 @@ hr {
 	display: inline-block;
 }
 
+.input-warning {
+	border-color: yellow;
+}
+
+.input-error {
+	border-color: red;
+}
+
+.input-success {
+	border-color: green;
+}
+
 .select-single span,
 .select-multiple span {
 	padding:5px 10px;
@@ -606,7 +622,7 @@ a:active {
 	outline: none;
 }
 
-a: visited {
+a:visited {
 	color: grey;
 }
 
@@ -683,6 +699,8 @@ select.flat-input {
 	border-radius: 0px;
 	box-shadow: none;
 	padding: 0px;
+	color: #444;
+	text-align: center;
 }
 
 input.flat-input:hover,
@@ -875,33 +893,30 @@ select.flat-input:active {
 .leno-dropdown {
 	display: inline-block;
 }
-
+.leno-dropdown [data-toggle=dropdown]:hover {
+	cursor: pointer;
+}
 .leno-dropdown-menu {
 	padding: 0px;
 	margin: 0px;
 	min-height: 30px;
 	display: none;
 }
-
 .leno-dropdown-menu li {
 	list-style: none;
 	padding: 5px 5px 5px 10px;
-	border: 1px solid #aaa;
+	border: 1px solid rgba(0, 0, 0, 0);
 }
-
 .leno-dropdown-menu li a {
 	display: block;
 	width: 100%;
 }
-
 .leno-dropdown-menu li:first-child {
 	border-top: 1px solid rgba(0, 0, 0, 0);
 }
-
 .leno-dropdown-menu li:last-child {
 	border-bottom: 1px solid rgba(0, 0, 0, 0);
 }
-
 .leno-dropdown-menu li:hover,
 .leno-dropdown-menu li.active {
 	background-color: #ccc;
@@ -911,17 +926,14 @@ select.flat-input:active {
 /**leno-dropdown end**/
 
 /**table */
-
 .leno-table {
 	width: 100%;
 	box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.7);
 }
-
 .leno-row {
 	display: table-row;
 	width: 100%;
 }
-
 .leno-table td {
 	font-size: 1.2em;
 	font-weight: bold;

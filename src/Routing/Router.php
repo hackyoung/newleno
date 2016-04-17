@@ -74,8 +74,8 @@ class Router
 			try {
 				$this->response = $this->invoke($target);
 			} catch(\Leno\Exception\HttpException $e) {
-				$response = $this->response->withStatus($target->getCode());
-				$response->getBody()->write('<h1><center> '.$target->getCode() .' ' . $response->getReasonPhrase().'</center></h1>');
+				$response = $this->response->withStatus($e->getCode());
+				$response->getBody()->write('<h1><center> '.$e->getCode() .' ' . $response->getReasonPhrase().'</center></h1>');
 				$this->response = $response;
 			}
 		}

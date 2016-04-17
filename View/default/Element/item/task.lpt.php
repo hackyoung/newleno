@@ -6,6 +6,9 @@
     <div>
         用Java实现一个全键盘的软件盘，该键盘要能够输入英文，中文，以及特殊符号
     </div>
+	<span class="tag">PHP</span>
+	<span class="tag">Java</span>
+	<span class="tag">Javascript</span>
     <footer>
 		<span>
 			工时7天

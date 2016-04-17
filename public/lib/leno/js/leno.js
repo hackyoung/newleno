@@ -826,6 +826,7 @@ var Layer = layer = (function() {
 				throw 'ID Not Found!';
 				return;
 			}
+			this.opts.position = opts.position || layer.center;
 			opts.style = opts.style || {};
 			opts.style.position = opts.style.position || 'fixed';
 			opts.style.overflow = opts.style.overflow || 'auto';
@@ -2466,8 +2467,8 @@ leno.editor = (function() {
 				after(l);
 			}
 		}
-//		opts.showType = 'click';
-		opts.css = opts.css || 'black-profile';
+		opts.showType = 'click';
+//		opts.css = opts.css || 'black-profile';
 		leno.hiddenBox(opts);
 		$(item).attr('data-drapdown', opts.id);
 	}

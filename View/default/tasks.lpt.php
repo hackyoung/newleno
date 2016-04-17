@@ -1,8 +1,8 @@
 <extend name="Layout.two_col">
     <fragment name="one">
-		<div style="height: 100px"></div>
 		<div class="leno-piece-common-none">
-			<view name="Element.tab" />
+			<view name="Element.tasks.filter" />
+			<view name="Element.tasks.tab" />
 		</div>
         <llist name="list" id="l">
         <div class="leno-piece-common">
@@ -11,27 +11,9 @@
         </llist>
     </fragment>
     <fragment name="two">
+		<div style="height: 20px"></div>
 		<view name="Element.recommend" />
 		<view name="Element.recommend" />
 		<view name="Element.recommend" />
     </fragment>
 </extend>
-<script>
-/*
-$(document).ready(function() {
-    var iu = new ImageUploader({
-        id: "hello_world",
-        position: layer.center
-    });
-    var l = layer.get('hello_world').content;
-    l.css('transition', 'all 0.5s ease-in');
-    l.css('-moz-transition', 'all 0.5s ease-in');
-    l.css('-webkit-transition', 'all 0.5s ease-in');
-    var position = 1;
-    setInterval(function() {
-        layer.get('hello_world').setPosition(position);
-        position = (position + 1)%10;
-    }, 500);
-});
- */
-</script>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="8k">
+	<table name="tech" phpName="Tech">
+		<column name="tech_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="label" type="varchar" size="32" required="true" />
+		<column name="description" type="varchar" size="256" />
+		<column name="url" type="varchar" size="1024" />
+		<column name="hot" type="integer" required="true" />
+		<column name="created" type="datetime" required="true" />
+		<column name="updated" type="datetime" required="true" />
+		<column name="deleted" type="datetime" required="true" />
+	</table>
+	<table name="category" phpName="Cate">
+		<column name="cat_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="label" type="varchar" size="32" required="true" />
+	</table>
+	<table name="task" phpName="Task">
+		<column name="task_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="title" type="varchar" size="64" required="true" />
+		<column name="description" type="varchar" size="256" required="true" />
+		<column name="requirement" type="varchar" size="128" required="true" />
+		<column name="tech_ids" type="varchar" size="128" required="true" />
+		<column name="status" type="varchar" size="16" required="true" />
+		<column name="min_price" type="integer" required="true" />
+		<column name="max_price" type="integer" required="true" />
+		<column name="price" type="integer" required="true" />
+		<column name="created" type="datetime" required="true" />
+		<column name="updated" type="datetime" required="true" />
+		<column name="deleted" type="datetime" required="true" />
+	</table>
+</database>

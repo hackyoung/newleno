@@ -31,7 +31,7 @@ class Configure
 
 	public static function init() {
 		$files = array(
-			ROOT . '/Config/default.php',
+			ROOT . '/config/default.php',
 		);
 		foreach($files as $file) {
 			self::addConfigFile($file);

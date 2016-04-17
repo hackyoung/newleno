@@ -42,7 +42,7 @@
         <input class="leno-input" placeholder="输入过滤" />
     </div>
     <div>
-    <?php $iii = [1, 2,3,4,5,67,8,6,5,4,4,4324,2]; ?>
+    <?php $iii = [1, 2,3,4,5,67,8,6,5,4,4,4,3,2,4,2, 3,4,3,32,3,32,3]; ?>
         <llist name="iii" id="i">
             <span class="tag">PHP</span>
             <span class="tag">Javascript</span>
