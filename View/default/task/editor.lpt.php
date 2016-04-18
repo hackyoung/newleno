@@ -21,6 +21,11 @@
                     <span class="tag">Python</span>
                 </div>
             </div>
+			<div class="input-line">
+				<label>分类</label><a name="">没有你需要的分类？</a>
+				<div>
+				</div>
+			</div>
             <div class="input-line">
                 <label>工期</label>
                 <input class="flat-input" style="width: 60px" />天

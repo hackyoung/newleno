@@ -118,7 +118,7 @@
 /**recommend end**/
 /**tasks-filter**/
 	.tasks-filter {
-		margin: 10px 0px;
+		margin: 10px 0px 20px 0px;
 	}
 	.tasks-filter>div {
 		padding: 1px;
@@ -127,7 +127,6 @@
 		display: block;
 	}
 	.tasks-filter div[data-toggle=dropdown] {
-		border: 1px solid #aaa;
 		text-align: center;
 	}
 	.select-menu {
@@ -147,6 +146,11 @@
 	.select-menu .tag,
 	.tasks-filter .tag {
 		background-color: white;
+	}
+	.tasks-filter .label {
+		color: #999;
+		display: inline-block;
+		margin-right: 10px;
 	}
 /**tasks-filter end**/
 /**form log**/
@@ -222,7 +226,6 @@
 /**editor end**/
 /**tag**/
     .tag {
-		border: 1px solid #aaa;
 		font-size: 13px;
         background-color: #efefef;
         margin: 5px 5px 0px 0px;

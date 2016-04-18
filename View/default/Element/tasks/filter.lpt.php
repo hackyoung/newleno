@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		<div>
-			热门分类
+			<span class="label">热门分类</span>
 			<llist name="l" id="la">
 			<div class="tag">{$la}</div>
 			</llist>
@@ -38,7 +38,7 @@
 			</div>
 		</div>
 		<div>
-			热门技术
+			<span class="label">热门技术</span>
 			<llist name="l" id="la">
 			<div class="tag">{$la}</div>
 			</llist>
@@ -60,7 +60,7 @@
 			</div>
 		</div>
 		<div>
-			热门预算
+			<span class="label">热门预算</span>
 			<llist name="l" id="la">
 			<div class="tag">{$la}</div>
 			</llist>
