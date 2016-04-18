@@ -196,8 +196,8 @@ var leno = leno || {};
 				target.mover.css('position', target.css_position);
 				target.mover.css('top', target.css_top);
 				target.mover.css('left', target.css_left);
-				target.mover.css('z-index', target.css_z_index);
 			}
+			target.mover.css('z-index', target.css_z_index);
 		});
 		$(window).mousemove(function(e) {
 			if(!target.down) {
@@ -1270,7 +1270,7 @@ var Layer = layer = (function() {
 		var toolbar = $('<div></div>').css('text-align', 'center')
 					.appendTo(content);
 		$('<button class="leno-btn leno-btn-blue">'+opts.ok+'</button>')
-		.css({margin-right: '20px'}).click(function() {
+		.css({marginRight: '20px'}).click(function() {
 			callback(true);
 			Layer.get('confirm').hide();
 		}).appendTo(toolbar);
@@ -1423,7 +1423,7 @@ var ImageUploader = (function() {
 			var _this = this;
 			if(this.on_off == upload.dft) {
 				var node = imageUploadView(this);
-				new layer.win({
+				new layer.modal({
 					id: this.id,
 					position: _this.position,
 //					shelter: true,
@@ -1485,19 +1485,21 @@ var ImageUploader = (function() {
 		upload.on_off = node.find('[name=image_selector_fack]');
 		upload.empty = node.find('[name=image-empty]');
 		upload.upload = node.find('[name=image-upload]');
-		upload.preview.css('height', 'calc(100% - 60px)')
-						.css('overflow', 'auto')
-						.css('padding', '5px');
-		node.find('[name=image_selector]').css('display', 'inline-block')
-				.css('width', '0px')
-				.css('position', 'relative')
-				.css('padding', '0px')
-				.css('margin', '0px')
-				.css('opacity', '0').hover(function() {
+		upload.preview.css({
+			height: 'calc(100% - 60px)',
+			overflow: 'auto',
+			padding: '5px'
+		});
+		node.find('[name=image_selector]').css({
+			display: 'inline-block',
+			width: '0px',
+			position: 'relative',
+			padding: '0px',
+			margin: '0px',
+			opacity: '0'
+		}).hover(function() {
 			$(this).css('cursor', 'pointer');		
 		});
-		node.find('.btn').css('margin-right', '20px');
-
 		return node;
 	}
 
@@ -1526,23 +1528,22 @@ var ImageUploader = (function() {
 			return;
 		}
 		upload.files[file.size] = file;
-
 		reader.onload = function(e) {
 			var url = e.target.result;
 			var pic = $('<div class="pic-show" data-id="'+file.size+'">'+
 						'<img src="'+url+'" title="单击查看大图" />'+
 						'<div title="点击删除该图片">删除</div>'+
 						'</div>');
-			pic.css('display', 'inline-block')
-				.css('height', '100px')
-				.css('padding', '5px')
-				.css('margin', '5px')
-				.css('border', '1px solid grey');
-
+			pic.css({
+				display: 'inline-block',
+				height: '100px',
+				padding: '5px',
+				margin: '5px',
+				border: '1px solid grey'
+			}).prependTo(preview);
 			pic.find('img').click(function() {
 				leno.imgFullShow($(this));
 			}).css('height', '90px');
-
 			pic.find('div').click(function() {
 				var idx = $(this).attr('name');
 				delete upload.files[file.size];
@@ -1553,21 +1554,20 @@ var ImageUploader = (function() {
 				}
 			}).hover(function() {
 				$(this).css('cursor', 'pointer');
-			})
-			.css('display', 'block')
-			.css('color', 'white')
-			.css('height', '20px')
-			.css('position', 'relative')
-			.css('top', '-20px')
-			.css('text-align', 'center')
-			.css('background-color', 'rgba(0, 0, 0, 0.7)');
-			pic.prependTo(preview);
+			}).css({
+				display: 'block',
+				color: 'white',
+				height: '20px',
+				position: 'relative',
+				top: '-20px',
+				textAlign: 'center',
+				backgroundColor: 'rgba(0, 0, 0, 0.7)'
+			});
 			$('.image-preview .tips').remove();
-			Layer.get(upload.id).resize();
+			layer.get(upload.id).resize();
 		}
 		reader.readAsDataURL(file);
 	}
-
 	function getXhr() {
 		var xhr = new window.XMLHttpRequest();
 		xhr.addEventListener("progress", function(evt){
@@ -1581,7 +1581,6 @@ var ImageUploader = (function() {
 		}, false);
 		return xhr;
 	}
-
 	function initEvent(upload) {
 		$('[name=image_selector]').change(function() {
 			var files = this.files;
@@ -1600,19 +1599,26 @@ var ImageUploader = (function() {
 		upload.on_off.click(function() {
 			$('[name=image_selector]').click();
 		});
+		var deleteNode = function(node) {
+			node.fadeOut('fast', function() {
+				delete upload.files[$(this).attr('data-id')];
+				var next = $(this).next();
+				$(this).remove();
+				layer.get(upload.id).resize();
+				if(next.hasClass('pic-show')) {
+					deleteNode(next);
+				}
+			});
+		}
 		upload.empty.click(function() {
 			if(leno.empty(upload.files)) {
 				leno.alert('当前没有选择照片');
 				return;
 			}
 			leno.confirm('点清空你将丢失还未上传到服务器上的照片?',
-			{ok: '清空', cancel: '不清空'}, 
-			function(e) {
+			{ok: '清空', cancel: '不清空'}, function(e) {
 				if(e) {
-					upload.preview.empty();
-					upload.files = {};
-					Layer.get(upload.id).resize();
-					leno.alert('图片已清空');
+					deleteNode(upload.preview.find('.pic-show').first());
 				}
 			});
 		});
@@ -1784,7 +1790,6 @@ leno.imgEditor = (function() {
 						}
 					});
 				});
-
 				root.find('[name=img-up]').click(function() {
 					var t = new ImageUploader({
 						id: 'img_up',
