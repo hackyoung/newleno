@@ -520,15 +520,15 @@ hr {
 	display: inline-block;
 }
 
-.input-warning {
+.leno-warning {
 	border-color: yellow;
 }
 
-.input-error {
+.leno-error {
 	border-color: red;
 }
 
-.input-success {
+.leno-success {
 	border-color: green;
 }
 

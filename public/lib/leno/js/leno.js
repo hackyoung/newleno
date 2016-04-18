@@ -1,8 +1,6 @@
 
 var leno = leno || {};
-
 (function(leno) {
-
 	/*
 	 * calculate the length of object,array,string
 	 * 计算一个对象，数组，字符串的长度
@@ -111,18 +109,14 @@ var leno = leno || {};
 		}
 		return true;
 	}
-
 	leno.query_list = {};
-
 	leno.query = function(opts) {
-	
 		this.exec = function() {
 			var _this = this;
 			var dft = {
 				type: 'post',
 				async: true,
 				cache: true,
-				dataType: 'json',
 				timeout: opts.timeout || 20*1000,
 				error: function(req) {
 					_this.querying = false;
@@ -134,7 +128,7 @@ var leno = leno || {};
 					_this.querying = false;
 					if(typeof opts.done === 'function') {
 						var complete = opts.done;
-						complete(req.responseJSON);
+						complete(req);
 					}
 				}
 			};
@@ -144,11 +138,9 @@ var leno = leno || {};
 			this.querying = true;
 			$.ajax($.extend(dft, opts));
 		};
-
 		if(leno.query_list[opts.id] == null) {
 			lenoo.query_list[opts.id] = this;
 		}
-
 		leno.query_list[opts.id].exec();
 	}
 
@@ -207,15 +199,14 @@ var leno = leno || {};
 				target.mover.css('z-index', target.css_z_index);
 			}
 		});
-
 		$(window).mousemove(function(e) {
 			if(!target.down) {
 				return;
 			}
 			var content = target.mover;
 			var position = {
-				x: target.begin.x + e.screenX - target.pointer.x - 20,
-				y: target.begin.y + e.screenY - target.pointer.y - 20
+				x: target.begin.x + e.screenX - target.pointer.x,
+				y: target.begin.y + e.screenY - target.pointer.y
 			}
 			target.mover.css('left', position.x);
 			target.mover.css('top', position.y);
@@ -242,7 +233,6 @@ var leno = leno || {};
 	}
 
 	leno.profile = function(opts) {
-
 		var getPos = function(opts, showTop, showLeft) {
 			var orientation = opts.orientation || 'vertical';
 			var toggle = opts.toggle;
@@ -250,30 +240,15 @@ var leno = leno || {};
 			var arrow = (function(size) {
 				switch(size) {
 					case 1:
-						return {
-							width: 5,
-							cls: 'arrow-1'
-						};
+						return { width: 5, cls: 'arrow-1' };
 					case 3:
-						return {
-							width: 15,
-							cls: 'arrow-3'
-						};
+						return { width: 15, cls: 'arrow-3' };
 					case 4:
-						return {
-							width: 20,
-							cls: 'arrow-4'
-						};
+						return { width: 20, cls: 'arrow-4' };
 					case 5:
-						return {
-							width: 25,
-							cls: 'arrow-5'
-						};
+						return { width: 25, cls: 'arrow-5' };
 					default:
-						return {
-							width: 10,
-							cls: 'arrow-2'
-						};
+						return { width: 10, cls: 'arrow-2' };
 				}
 			})(opts.arrow_size);
 			if(opts.width == null || opts.width == 0) {
@@ -282,7 +257,6 @@ var leno = leno || {};
 			if(opts.height == null || opts.height == 0) {
 				opts.height = leno.height(opts.node);
 			}
-
 			// 箭头在上下的情况
 			if(orientation == 'vertical') {
 				if(tp.y < leno.scrollTop() + opts.height - 40) {
@@ -531,7 +505,6 @@ var leno = leno || {};
 		};
 		return colorSelector;
 	};
-
 	leno.shelter = { 
 		show: function(id, isloading) {
 			var cover = $('<div></div>');
@@ -545,9 +518,7 @@ var leno = leno || {};
 				node: cover,
 				position: layer.left_top,
 				css: 'leno-shelter',
-				style: {
-					overflow: 'hidden'
-				},
+				style: { overflow: 'hidden' },
 				showAnimation: function(layer, after) {
 					layer.content.show();
 					after(layer);
@@ -762,15 +733,12 @@ var leno = leno || {};
 		};
 		leno.hiddenBox(opts);
 	}
-
 	leno.disableDropdown = function(id) {
 		$('#'+id).find('[data-toggle=dropdown]').attr('disabled', true);
 	}
-
 	leno.enableDropdown = function(id) {
 		$('#'+id).find('[data-toggle=dropdown]').removeAttr('disabled');
 	}
-
 	leno.scrollTo = function(node, relate, timeout) {
 		var relate = relate || 70;
 		if(timeout == null) {
@@ -802,9 +770,7 @@ var leno = leno || {};
 		}, 1);
 	}
 })(leno);
-
 var Layer = layer = (function() {
-
 	var dfunc = function(layer) { return true; }
 
 	$(window).resize(function() {
@@ -813,8 +779,10 @@ var Layer = layer = (function() {
 
 	var layer = function(opts) {
 		this.init = function(opts) {
-			var callback = $.extend(leno.clone(layer.default.callback), 
-															opts.callback);
+			var callback = $.extend(
+                leno.clone(layer.default.callback), 
+                opts.callback
+            );
 			delete opts.callback;
 			this.opts = $.extend(leno.clone(layer.default.options), opts);
 			this.opts.callback = callback;
@@ -1130,23 +1098,8 @@ var Layer = layer = (function() {
 			l.resize(timeout);
 		}
 	}
-
 	layer.get = function(id) {
 		return layer.instance[id];
-	}
-
-	layer.ajax = function(url, opts) {
-		var id = '__ajax_layer_'+opts.id;
-		var container = $('<iframe id='+id+'></iframe>');
-		container.attr({
-			width: opts.width,
-			frameborder: none,
-			height: opts.height,
-			src: url
-		});
-		opts.node = container;
-		var l = new layer(opts);
-		return l;
 	}
 
 	layer.modal = layer.win = function(opts) {
@@ -1198,17 +1151,17 @@ var Layer = layer = (function() {
 			opts.css = 'leno-window';
 		}
 		var beforeShow = opts.callback.beforeShow;
-		opts.callback.beforeShow = function(layer, after) {
+        var setContentSize = function(layer) {
 			var opts = layer.opts;
 			var width = opts.width;
 			var height = opts.height;
 			var maxWidth = leno.clientWidth() * 0.9;
 			var maxHeight = leno.clientHeight() * 0.9;
 			if(width == null) {
-				width = layer.content.width();
+				width = layer.content.width() + 2;
 			}
 			if(height == null) {
-				height = layer.content.height();
+				height = layer.content.height() + 2;
 			}
 			if(width > maxWidth) {
 				width = maxWidth;
@@ -1218,43 +1171,30 @@ var Layer = layer = (function() {
 				height = maxHeight;
 				opts.height = height;
 			}
-			layer.content.css('width', width+'px');
-			layer.content.css('height', height+'px');
+			layer.content.css({width: width, height: height});
 			var iframe = layer.content.find('iframe');
 			if(iframe.length > 0) {
-				iframe.attr('width', width - 2);
-				iframe.attr('height', height - 52);
+				iframe.attr({width: width - 2, height: height - 52});
 			}
-			var height = leno.clientHeight();
-			if(height > layer.content.height()) {
-				height = layer.content.height();
-			}
-			var node = layer.content.find('.lw-section');
 			if(opts.node.find('.lw-toolbox').length > 0) {
-				node = opts.node.find('.lw-toolbox').next();
-				node.css('max-height', (height - 90)+'px')
-					.css('overflow', 'auto');
-				$(window).resize(function() {
-					$node.css('width', leno.width(layer.content));
-					$node.css('height', leno.height(layer.content));
-					var height = leno.clientHeight();
-					if(height > leno.height(layer.content)) {
-						height = leno.height(layer.content);
-					}
-					node.css('max-height', (height - 90)+'px');
-				});
+				var node = opts.node.find('.lw-toolbox').next();
+				node.css({maxHeight: (height - 90)+'px', overflow: 'auto'});
 			} else {
-				node.css('max-height', (height - 50)+'px');
-				$(window).resize(function() {
-					$node.css('width', leno.width(layer.content));
-					$node.css('height', leno.height(layer.content));
-					var height = leno.clientHeight();
-					if(height > leno.height(layer.content)) {
-						height = leno.height(layer.content);
-					}
-					node.css('max-height', height - 50);
-				});
+			    opts.node.css('max-height', (height - 50)+'px');
 			}
+        };
+		opts.callback.beforeShow = function(layer, after) {
+            setContentSize(layer);
+			if(typeof beforeShow == 'function') {
+				beforeShow(layer, after);
+			} else {
+				after(layer);
+			}
+		};
+        opts.callback.onCreate = function(layer) {
+            $(window).resize(function() {
+                setContentSize(layer);
+            });
 			leno.dragAndDrop({
 				toggle: $header,
 				mover: layer.content,
@@ -1264,15 +1204,8 @@ var Layer = layer = (function() {
 					}
 				}
 			});
-			if(typeof beforeShow == 'function') {
-				beforeShow(layer, after);
-			} else {
-				after(layer);
-			}
-		}
-		opts.style = {
-			overflow: 'hidden'
-		};
+        };
+		opts.style = { overflow: 'hidden' };
 		opts.maxWidth = '95%';
 		opts.maxHeight = '95%';
 		opts.shelter = opts.shelter || false;
@@ -1288,9 +1221,7 @@ var Layer = layer = (function() {
 	}
 	return layer;
 })();
-
 //leno.layer = Layer;
-
 (function(L) {
 	var t = 20;
 	L.alert = function(msg, timeout, func, data) {
@@ -1327,19 +1258,19 @@ var Layer = layer = (function() {
 	L.confirm = function(msg, opts, callback) {
 		var content = $('<div></div>');
 		if(typeof msg === 'string') {
-			$('<div class="zmdi zmdi-help">'+msg+'</div>')
-				.css('color', 'red')
-				.css('min-height', '60px')
-				.css('padding', '10px 0px')
-				.css('text-align', 'center')
-				.appendTo(content);
+			$('<div class="zmdi zmdi-help">'+msg+'</div>').css({
+                color: 'red',
+                minHeight: '60px',
+                padding: '10px 0px',
+                textAlign: 'center'
+            }).appendTo(content);
 		} else {
 			content.append(msg);
 		}
 		var toolbar = $('<div></div>').css('text-align', 'center')
 					.appendTo(content);
 		$('<button class="leno-btn leno-btn-blue">'+opts.ok+'</button>')
-		.css('margin-right', '20px').click(function() {
+		.css({margin-right: '20px'}).click(function() {
 			callback(true);
 			Layer.get('confirm').hide();
 		}).appendTo(toolbar);
@@ -1357,12 +1288,11 @@ var Layer = layer = (function() {
 		});
 	}
 })(leno);
-
-
 var Form = (function(L) {
 	var form = function(opts) {
 		var dft_opts = {
 			node: null,
+            method: 'put',
 			callback: {
 				beforeSubmit: function() {
 					return true;
@@ -1376,6 +1306,19 @@ var Form = (function(L) {
 		this.form_opts.callback = $.extend(dft_opts.callback,
 														opts.callback);
 		this.form_id = opts.id;
+        opts.node.find('input, textarea, select').bind('input propertychange', function() {
+            var regexp = $(this).attr('data-regexp');
+            var val = $.trim($(this).val());
+            var node = $(this).parent();
+            if(!node.hasClass('leno-input-group')) {
+                node = $(this);
+            }
+            if(regexp != null && regexp != '' && !(new RegExp(regexp).test(val))) {
+                node.addClass('leno-error').removeClass('leno-success');
+            } else {
+                node.addClass('leno-success').removeClass('leno-error');
+            }
+        });
 		(function(f) {
 			var submit = f.form_opts.node.find('[data-id=submit]');
 			var url = f.form_opts.url;
@@ -1384,59 +1327,31 @@ var Form = (function(L) {
 			}
 			submit.click(function() {
 				var data = form.validate(f);
+                data._method = f.form_opts.method;
 				if(!data) {
 					return false;
 				}
 				var beforeSubmit = f.form_opts.callback.beforeSubmit;
-				if(	typeof beforeSubmit !== 'function') {
-					var beforeSubmit = function() {
-						return true;
-					}
-				} 
 				var a = beforeSubmit(data);
 				if(a != false) {
 					if(leno.empty(f.form_opts.url.submit)) {
 						throw 'submit url is empty';
 						return false;
 					}
-					if(f.form_opts.straight) {
-						var url = f.form_opts.url.submit+'?';
-						for(var i in data) {
-							url += i+'='+data[i]+'&';
-						}
-						window.location.href = url;
-						return;
-					}
 					submit.attr('disabled', true);
-					$.post(f.form_opts.url.submit, data, function(ret) {
-					try {
-						submit.removeAttr('disabled');
-						var ret = JSON.parse(ret);
-						var afterReturn = f.form_opts.callback.afterReturn;
-						leno.alert(ret.message);
-						if(typeof afterReturn !== 'function') {
-							afterReturn = function(data) { return true; }
-						}
-						if(afterReturn(ret, data)) {
-							if(ret.status == 200) {
-								leno.alert(ret.message, 1000, 
-								function() {
-									var opts = f.form_opts;
-									var href = opts.url.go;
-									if(!leno.empty(href)) {
-										window.location = href;
-									}
-								});
-							} else {
-								leno.alert(ret.message);
-							}
-						}
-					} catch(e) {
-						var error = '系统异常';
-						leno.alert(error);
-						console.log(ret);
-					}
-				});
+                    $.ajax({
+                        url: f.form_opts.url,
+                        type: 'post',
+                        data: data,
+                        complete: function(response) {
+                            submit.removeAttr('disabled');
+                            if(response.status != 200) {
+                                return;
+                            }
+                            var after = f.form_opts.callback.afterReturn;
+                            after(response);
+                        }
+                    });
 				}
 			});
 			if(f.form_opts.enter == null) {
@@ -1444,10 +1359,6 @@ var Form = (function(L) {
 			}
 			if(f.form_opts.enter) {
 				f.form_opts.node.children().keydown(function(e) {
-					var data = form.validate(f, true);
-					if(!data) {
-						return true;
-					}
 					if(e.keyCode == 13) {
 						submit.click();
 					}
@@ -1457,46 +1368,28 @@ var Form = (function(L) {
 		})(this);
 	};
 
-	form.validate = function(f, notice) {
+	form.validate = function(f) {
 		var node = f.form_opts.node;
 		var error = false;
 		var data = {};
-		node.find('input, textarea').each(function() {
-			var regstr = $(this).attr('data-reg');
+		node.find('input, textarea, select').each(function() {
+			var regstr = $(this).attr('data-regexp');
 			var val = $.trim($(this).val());
 			var name = $.trim($(this).attr('name'));
 			var reg = new RegExp(regstr);
-			if(reg.test(val)) {
-				data[name] = val;
-				return true;
-			} else {
-				if(notice == null || notice == false) {
-					var msg = $.trim($(this).attr('data-msg'));
-					leno.alert(msg);
-				}
+            if(!reg.test(val)) {
+                var node = $(this).parent();
+                if(!node.hasClass('leno-input-group')) {
+                    node = $(this);
+                }
+                node.addClass('leno-error').removeClass('leno-success');
+                var msg = $.trim($(this).attr('data-msg'));
+                leno.alert(msg);
 				error = true;
 				return false;
-			}
-		});
-		node.find('.select-single').each(function() {
-			data[$(this).attr('name')] = $(this).find('.select-value').attr('value');
-		});
-		node.find('.select-multiple').each(function() {
-			var key = $(this).attr('name');
-			var val = '';
-			$(this).find('.select-value').each(function() {
-				val += $(this).attr('value') + ',';
-			});
-			data[key] = val.substr(0, val.length - 1);
-		});
-
-		node.find('.input-img').each(function() {
-			var key = $(this).attr('name');
-			var val = '';
-			$(this).find('img').each(function() {
-				val += $(this).attr('md5') + ',';
-			});
-			data[key] = val.substr(0, val.length - 1);
+            }
+            data[name] = val;
+            return true;
 		});
 		if(error) {
 			return false;
@@ -1505,11 +1398,8 @@ var Form = (function(L) {
 	}
 	return form;
 })();
-
 leno.form = Form;
-
 var ImageUploader = (function() {
-
 	var upload = function(opts) {
 		this.init = function(opts) {
 			var dft_opts = leno.clone(upload.dft_opts);
@@ -1819,9 +1709,7 @@ var ImageUploader = (function() {
 	upload.dft = 'default';
 	return upload;
 })();
-
 leno.imgEditor = (function() {
-
 	var imgEditor = function(opts) {
 
 		function add_to_preview(url, md5, preview, limit) {
@@ -1954,9 +1842,7 @@ leno.imgEditor = (function() {
 	}
 	return imgEditor;
 })();
-
 leno.editor = (function() {
-
 	var ViewConstructor = function(editor) {
 		var opts = editor.config;
 		var root = document.getElementById(opts.id);
@@ -2119,23 +2005,17 @@ leno.editor = (function() {
 		}
 		config.operation = opts.operation;
 		this.config = config;
-
 		var html = ViewConstructor(this);
 		var editor = this;
-
-
 		window.onload = function () {
 			lenoEditor.toolbar.init(editor, lenoEditor.toolbar.items);
 			editor.setContent(html);
 			editor.focus();
 			editor.resize();
-
 			var doc = editor.editorContent.getDocument();
 			var body = doc.getElementsByTagName('body');
 			var head = doc.getElementsByTagName('head');
-
 			$(head).append('<style>td {border: 1px solid #999;}</style>');
-
 			$(body[0]).bind('input propertychange', function(e) {
 				var state = editor.editorContent.getStatusBar();
 				var c = $.trim(editor.getTxt().length);
@@ -2577,36 +2457,29 @@ leno.editor = (function() {
 			$(item).html(formatblock);
 
 			// 对齐方式
-			var alignset = false;
 			if(doc.queryCommandState('justifyleft')) {
 				lenoEditor.toolbar.switchToggle(
 					editor, 'align', 'align_left'
 				);
-				alignset = true;
 			} else if(doc.queryCommandState('justifyright')) {
 				lenoEditor.toolbar.switchToggle(
 					editor, 'align', 'align_right'
 				);
-				alignset = true;
 			} else if(doc.queryCommandState('justifycenter')) {
 				lenoEditor.toolbar.switchToggle(
 					editor, 'align', 'align_center'
 				);
-				alignset = true;
 			} else if(doc.queryCommandState('justifyfull')) {
 				lenoEditor.toolbar.switchToggle(
 					editor, 'align', 'align_full'
 				);
-				alignset = true;
-			}
-			if(!alignset) {
+			} else {
 				lenoEditor.toolbar.switchToggle(
 					editor, 'align', 'align_left'
 				);
 			}
 		},
 		init: function(editor, items) {
-
 			var addToView = function (itemwrapper, configitems) {
 				for(var i = 0; i < configitems.length; ++i) {
 					var j = configitems[i];
@@ -3376,84 +3249,35 @@ leno.editor = (function() {
 	};
 	return lenoEditor;
 })();
-
 leno.getEditor = function(id) {
 	if(typeof leno.editorInstance === 'object') {
 		return leno.editorInstance[id];
 	}
 }
-
-leno.switch = (function() {
-	var swt = {
-		init: function() {
-			$('.leno-switch').click(function() {
-				if($(this).hasClass('open')) {
-					$(this).removeClass('open');
-				} else {
-					$(this).addClass('open');
-				}
-			});
-		}
-	};
-	return swt;
-})();
-
 $(document).ready(function() {
-
-	leno.switch.init();
 	$('.leno-input-group').click(function() {
 		$(this).find('.leno-input,input,textarea').first().focus();
 	});
-
 	$('.leno-dropdown').each(function() {
 		leno.dropdown($(this));
 	});
-
-	/*
-	$('.select-single-much').each(function() {
-		var dropdown = $(this).html();
-		var _this = this;
-		$(this).empty();
-		var selected = $('<div class="input-group">'+
-							'<div></div>'+
-							'<div class="ssm-down"></div>'+
-						'</div>');
-		selected.appendTo($(this)).hover(function() {
-			$(this).css('cursor', 'pointer');
-		});
-		var dropdown = $('<div class="ssm-dropdown"></div>')
-			.append(dropdown)
-			.appendTo($(this))
-		dropdown.find('span')
-		.click(function() {
-			selected.find('div').first().html($(this).html());	
-			$(_this).attr('value', $(this).attr('value'));
-			dropdown.css('height', '0px');
-		});
-		var dft = $.trim(dropdown.find('span').first().html());
-
-		selected.find('div').first().html(dft);
-		selected.click(function() {
-			if(dropdown.css('height') == '0px') {
-				dropdown.css('height', 'auto');
-			} else {
-				dropdown.css('height', '0px');
-			}
-		});
-		selected.css('min-width', dropdown.css('width'));
-	});
-
-	$('.select-single span').click(function() {
-		$(this).parent().children().removeClass('select-value');
-		$(this).addClass('select-value');
-	});
-
-	$('.select-multiple span').click(function() {
-		if($(this).hasClass('select-value')) {
-			$(this).removeClass('select-value');
-		} else {
-			$(this).addClass('select-value');
-		}
-	});
-	*/
+    $('.leno-form').each(function() {
+        var url = $(this).attr('href');
+        var id = $(this).attr('id');
+        var go = $(this).attr('go');
+        new leno.form({
+            url: url,
+            node: $(this),
+            method: $(this).attr('method'),
+            id: 'leno-form-'+id,
+            callback: {
+                beforeSubmit: function() {
+                    return true;
+                },
+                afterReturn: function() {
+                    window.location.href = go;
+                }
+            }
+        });
+    });
 });

@@ -25,6 +25,12 @@
 							<label>余额：</label>
 							￥0.00元
 						</div>
+						<div class="input-line">
+                            <div class="leno-switch open">
+                                <span>开</span>
+                                <span>关</span>
+                            </div>
+						</div>
                     </div>
                 </div>
             </div>
