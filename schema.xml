@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database name="8k">
-	<table name="tech" phpName="Tech">
+<database name="leno">
+	<table name="tech">
 		<column name="tech_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="label" type="varchar" size="32" required="true" />
 		<column name="description" type="varchar" size="256" />
 		<column name="url" type="varchar" size="1024" />
 		<column name="hot" type="integer" required="true" />
-		<column name="created" type="datetime" required="true" />
-		<column name="updated" type="datetime" required="true" />
-		<column name="deleted" type="datetime" required="true" />
+		<column name="created" type="timestamp" required="true" />
+		<column name="updated" type="timestamp" required="true" />
+		<column name="deleted" type="timestamp" required="true" />
 	</table>
 	<table name="category" phpName="Cate">
 		<column name="cat_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="label" type="varchar" size="32" required="true" />
 	</table>
-	<table name="task" phpName="Task">
+	<table name="task">
 		<column name="task_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="title" type="varchar" size="64" required="true" />
 		<column name="description" type="varchar" size="256" required="true" />
@@ -24,8 +24,25 @@
 		<column name="min_price" type="integer" required="true" />
 		<column name="max_price" type="integer" required="true" />
 		<column name="price" type="integer" required="true" />
-		<column name="created" type="datetime" required="true" />
-		<column name="updated" type="datetime" required="true" />
-		<column name="deleted" type="datetime" required="true" />
+		<column name="creator_id" type="integer" required="true" />
+		<column name="helper_id" type="integer" required="true" />
+		<column name="cat_id" type="integer" required="true" />
+		<column name="created" type="timestamp" required="true" />
+		<column name="updated" type="timestamp" required="true" />
+		<column name="deleted" type="timestamp" required="true" />
+        <foreign-key foreignTable="user">
+            <reference local="creator_id" foreign="user_id" />
+            <reference local="helper_id" foreign="user_id" />
+        </foreign-key>
+        <foreign-key foreignTable="category">
+            <reference local="cat_id" foreign="cat_id" />
+        </foreign-key>
 	</table>
+    <table name="user">
+        <column name="user_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="email" type="varchar" size="64" required="true" />
+        <column name="name" type="varchar" size="64" />
+        <column name="age" type="integer" />
+        <column name="password" type="varchar" size="32" />
+    </table>
 </database>

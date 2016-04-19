@@ -154,7 +154,7 @@
 	}
 /**tasks-filter end**/
 /**form log**/
-	.form button {
+	.leno-form button {
 		width: 100%;
 	}
 	.log .leno-input-group {
@@ -168,7 +168,7 @@
 		width: 20px;
 	}
 	.user.body {
-		background: rgba(0, 0, 0, 0) url("https://dn-proceson.qbox.me/login.jpg") no-repeat fixed 0 0 / cover ;
+		background: rgba(0, 0, 0, 0) url("https://dn-proceson.qbox.me/login.jpg") no-repeat fixed 0 0 / cover;
 		position: absolute;
 		height: 100%;
 		width: 100%;

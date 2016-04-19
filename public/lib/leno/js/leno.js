@@ -109,6 +109,7 @@ var leno = leno || {};
 		}
 		return true;
 	}
+
 	leno.query_list = {};
 	leno.query = function(opts) {
 		this.exec = function() {
@@ -457,7 +458,10 @@ var leno = leno || {};
 		var colors = ['#000000', '#FFFFFF', '#FF0000', '#FF7F00',
 			'#FFFF00', '#00FFFF', '#0000FF', '#8B00FF'];
 		var node = $('<div class="leno-color-selector"></div>');	
-		var his = $('<div data-id="cs-f" style="border-bottom: 1px solid #999; margin: 0px 0px 5px 0px"></div>').appendTo(node);
+		var his = $('<div data-id="cs-f"></div>').css({
+            borderBottom: '1px solid #999',
+            margin: '0px 0px 5px 0px'
+        }).appendTo(node);
 		for(var i = 0; i < colors.length; ++i) {
 			$('<span class="selector-item" data-id="'+colors[i]+'" style="background-color: '+colors[i]+'"></span>').appendTo(his);
 		}
@@ -489,12 +493,13 @@ var leno = leno || {};
 						blue = blue.toString(16);
 					}
 					var rgb = red+green+blue;
-					$('<span style="background-color:#'+rgb+'" class="selector-item" data-id="#'+rgb+'"></span>').appendTo(container);
+					$('<span data-id="#'+rgb+'"></span>').css({
+                        backgroundColor: '#'+rgb
+                    }).addClass('selector-item').appendTo(container);
 				}
 			}
 		}
 		opts.node.append(node);
-
 		var colorSelector = {
 			init: function(node) {
 				node.find('.selector-item').click(function() {
@@ -772,11 +777,9 @@ var leno = leno || {};
 })(leno);
 var Layer = layer = (function() {
 	var dfunc = function(layer) { return true; }
-
 	$(window).resize(function() {
 		layer.resize();
 	});
-
 	var layer = function(opts) {
 		this.init = function(opts) {
 			var callback = $.extend(
@@ -1303,8 +1306,10 @@ var Form = (function(L) {
 			},
 		}
 		this.form_opts = $.extend(dft_opts, opts);
-		this.form_opts.callback = $.extend(dft_opts.callback,
-														opts.callback);
+		this.form_opts.callback = $.extend(
+                dft_opts.callback,
+			    opts.callback
+        );
 		this.form_id = opts.id;
         opts.node.find('input, textarea, select').bind('input propertychange', function() {
             var regexp = $(this).attr('data-regexp');
@@ -1426,7 +1431,6 @@ var ImageUploader = (function() {
 				new layer.modal({
 					id: this.id,
 					position: _this.position,
-//					shelter: true,
 					node: node,
 					title: '上传图片...',
 					callback: {
@@ -1435,8 +1439,7 @@ var ImageUploader = (function() {
 						},
 						afterHide: function() {
 							_this.files = {};
-							if( typeof _this.callback.onClose 
-														== 'function') {
+							if( typeof _this.callback.onClose == 'function') {
 								_this.callback.onClose(upload);
 							}
 						}
@@ -1446,13 +1449,8 @@ var ImageUploader = (function() {
 				initEvent(this);
 			}
 		}
-
 		this.getFiles = function() {
 			return this.files;
-		}
-
-		this.getUrl = function() {
-			
 		}
 		this.init(opts);
 	}
@@ -1630,7 +1628,6 @@ var ImageUploader = (function() {
 				upload.on_off.click();
 				return;
 			}
-
 			function uploading(upload, num) {
 				if(num == null) {
 					num = 0;
@@ -1698,7 +1695,6 @@ var ImageUploader = (function() {
 			uploading(upload, 0);
 		});
 	}
-
 	upload.dft_opts = {
 		id: '',
 		on_of: upload.dft,
@@ -1711,13 +1707,11 @@ var ImageUploader = (function() {
 			onError: function() { return true; }
 		}
 	};
-
 	upload.dft = 'default';
 	return upload;
 })();
 leno.imgEditor = (function() {
 	var imgEditor = function(opts) {
-
 		function add_to_preview(url, md5, preview, limit) {
 			if(preview.find('.img-item').length === limit) {
 				leno.alert('你只能在这里上传'+limit+'张图片');
@@ -1738,9 +1732,7 @@ leno.imgEditor = (function() {
 			}).appendTo(item);
 			preview.append(item);
 		}
-
 		this.init = function(opts) {
-
 			var hold_id = opts.hold_id;
 			var get_class = opts.get_class;
 			var upload_url = opts.upload_url;
@@ -1772,7 +1764,6 @@ leno.imgEditor = (function() {
 				});
 				after(layer);
 			};
-
 			opts.callback.afterShow = function(layer) {
 				var root = layer.content;
 				var images = {
@@ -1808,7 +1799,6 @@ leno.imgEditor = (function() {
 						}
 					});
 				});
-
 				root.find('[name=img-save]').click(function() {
 					var preview = root.find('.img-preview');
 					$('#'+hold_id).empty();

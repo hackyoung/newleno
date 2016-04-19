@@ -164,6 +164,7 @@ input[type=password] {
 	color: #333;
 	text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
 	white-space: nowrap;
+    font-size: 12px;
 }
 
 .leno-btn:disabled {
@@ -416,6 +417,7 @@ input[type=password] {
 	background-image: -webkit-linear-gradient(top, #eee, #fff);
 	background-image: -o-linear-gradient(top, #eee, #fff);
     color: #444;
+    vertical-align: middle;
 }
 
 textarea,

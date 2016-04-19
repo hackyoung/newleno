@@ -59,12 +59,9 @@
     </div>
 </div>
 <script>
-$(document).ready(function() {
-    new leno.editor({
-        id: 'editor'
-    });
+new leno.editor({
+    id: 'editor'
 });
-
 var selectTag = layer.win({
     id: "select-tag",
     hide: true,
