@@ -2,42 +2,57 @@
 <database name="leno">
 	<table name="tech">
 		<column name="tech_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-		<column name="label" type="varchar" size="32" required="true" />
-		<column name="description" type="varchar" size="256" />
-		<column name="url" type="varchar" size="1024" />
-		<column name="hot" type="integer" required="true" />
+		<column name="label" type="varchar" size="32" required="true" description="技术的标签名" />
+		<column name="description" type="varchar" size="256" description="描述信息" />
+		<column name="url" type="varchar" size="1024" description="指向该技术的官方网站" />
+		<column name="hot" type="integer" required="true" description="技术的热度" />
 		<column name="created" type="timestamp" required="true" />
 		<column name="updated" type="timestamp" required="true" />
-		<column name="deleted" type="timestamp" required="true" />
+		<column name="deleted" type="timestamp" />
 	</table>
 	<table name="category" phpName="Cate">
 		<column name="cat_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
-		<column name="label" type="varchar" size="32" required="true" />
+		<column name="label" type="varchar" size="32" required="true" description="分类名" />
 	</table>
 	<table name="task">
 		<column name="task_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="title" type="varchar" size="64" required="true" />
 		<column name="description" type="varchar" size="256" required="true" />
 		<column name="requirement" type="varchar" size="128" required="true" />
-		<column name="tech_ids" type="varchar" size="128" required="true" />
-		<column name="status" type="varchar" size="16" required="true" />
+		<column name="tech_ids" type="array" required="true" />
 		<column name="min_price" type="integer" required="true" />
 		<column name="max_price" type="integer" required="true" />
-		<column name="price" type="integer" required="true" />
 		<column name="creator_id" type="integer" required="true" />
-		<column name="helper_id" type="integer" required="true" />
 		<column name="cat_id" type="integer" required="true" />
 		<column name="created" type="timestamp" required="true" />
 		<column name="updated" type="timestamp" required="true" />
-		<column name="deleted" type="timestamp" required="true" />
+		<column name="deleted" type="timestamp" />
         <foreign-key foreignTable="user">
             <reference local="creator_id" foreign="user_id" />
-            <reference local="helper_id" foreign="user_id" />
         </foreign-key>
         <foreign-key foreignTable="category">
             <reference local="cat_id" foreign="cat_id" />
         </foreign-key>
 	</table>
+    <table name="order">
+        <column name="order_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+        <column name="task_id" type="integer" required="true" />
+        <column name="amount" type="integer" required="true" />
+        <column name="boss_id" type="integer" required="true" />
+        <column name="worker_id" type="integer" required="true" />
+        <column name="progress" type="integer" required="true" />
+        <column name="worker_deposit" type="integer" />
+        <column name="boss_deposit" type="integer" />
+        <column name="created" type="timestamp" required="true" />
+        <column name="updated" type="timestamp" required="true" />
+        <column name="deleted" type="timestamp" />
+        <foreign-key foreignTabl="task">
+            <reference local="task_id" foreign="task_id" />
+        </foreign-key>
+        <foreign-key foreignTabl="user">
+            <reference local="task_id" foreign="task_id" />
+        </foreign-key>
+    </table>
     <table name="user">
         <column name="user_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
         <column name="email" type="varchar" size="64" required="true" />
