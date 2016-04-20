@@ -59,7 +59,7 @@ class TaskTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 11;
+    const NUM_COLUMNS = 13;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class TaskTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 11;
+    const NUM_HYDRATE_COLUMNS = 13;
 
     /**
      * the column name for the id field
@@ -127,6 +127,16 @@ class TaskTableMap extends TableMap
     const COL_REMOVED = 'task.removed';
 
     /**
+     * the column name for the created_at field
+     */
+    const COL_CREATED_AT = 'task.created_at';
+
+    /**
+     * the column name for the updated_at field
+     */
+    const COL_UPDATED_AT = 'task.updated_at';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -138,11 +148,11 @@ class TaskTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Title', 'Description', 'Requirement', 'MinPrice', 'MaxPrice', 'CreatorId', 'CatId', 'Created', 'Updated', 'Removed', ),
-        self::TYPE_CAMELNAME     => array('id', 'title', 'description', 'requirement', 'minPrice', 'maxPrice', 'creatorId', 'catId', 'created', 'updated', 'removed', ),
-        self::TYPE_COLNAME       => array(TaskTableMap::COL_ID, TaskTableMap::COL_TITLE, TaskTableMap::COL_DESCRIPTION, TaskTableMap::COL_REQUIREMENT, TaskTableMap::COL_MIN_PRICE, TaskTableMap::COL_MAX_PRICE, TaskTableMap::COL_CREATOR_ID, TaskTableMap::COL_CAT_ID, TaskTableMap::COL_CREATED, TaskTableMap::COL_UPDATED, TaskTableMap::COL_REMOVED, ),
-        self::TYPE_FIELDNAME     => array('id', 'title', 'description', 'requirement', 'min_price', 'max_price', 'creator_id', 'cat_id', 'created', 'updated', 'removed', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id', 'Title', 'Description', 'Requirement', 'MinPrice', 'MaxPrice', 'CreatorId', 'CatId', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'title', 'description', 'requirement', 'minPrice', 'maxPrice', 'creatorId', 'catId', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(TaskTableMap::COL_ID, TaskTableMap::COL_TITLE, TaskTableMap::COL_DESCRIPTION, TaskTableMap::COL_REQUIREMENT, TaskTableMap::COL_MIN_PRICE, TaskTableMap::COL_MAX_PRICE, TaskTableMap::COL_CREATOR_ID, TaskTableMap::COL_CAT_ID, TaskTableMap::COL_CREATED, TaskTableMap::COL_UPDATED, TaskTableMap::COL_REMOVED, TaskTableMap::COL_CREATED_AT, TaskTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'title', 'description', 'requirement', 'min_price', 'max_price', 'creator_id', 'cat_id', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
     );
 
     /**
@@ -152,11 +162,11 @@ class TaskTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Title' => 1, 'Description' => 2, 'Requirement' => 3, 'MinPrice' => 4, 'MaxPrice' => 5, 'CreatorId' => 6, 'CatId' => 7, 'Created' => 8, 'Updated' => 9, 'Removed' => 10, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'title' => 1, 'description' => 2, 'requirement' => 3, 'minPrice' => 4, 'maxPrice' => 5, 'creatorId' => 6, 'catId' => 7, 'created' => 8, 'updated' => 9, 'removed' => 10, ),
-        self::TYPE_COLNAME       => array(TaskTableMap::COL_ID => 0, TaskTableMap::COL_TITLE => 1, TaskTableMap::COL_DESCRIPTION => 2, TaskTableMap::COL_REQUIREMENT => 3, TaskTableMap::COL_MIN_PRICE => 4, TaskTableMap::COL_MAX_PRICE => 5, TaskTableMap::COL_CREATOR_ID => 6, TaskTableMap::COL_CAT_ID => 7, TaskTableMap::COL_CREATED => 8, TaskTableMap::COL_UPDATED => 9, TaskTableMap::COL_REMOVED => 10, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'title' => 1, 'description' => 2, 'requirement' => 3, 'min_price' => 4, 'max_price' => 5, 'creator_id' => 6, 'cat_id' => 7, 'created' => 8, 'updated' => 9, 'removed' => 10, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Title' => 1, 'Description' => 2, 'Requirement' => 3, 'MinPrice' => 4, 'MaxPrice' => 5, 'CreatorId' => 6, 'CatId' => 7, 'Created' => 8, 'Updated' => 9, 'Removed' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'title' => 1, 'description' => 2, 'requirement' => 3, 'minPrice' => 4, 'maxPrice' => 5, 'creatorId' => 6, 'catId' => 7, 'created' => 8, 'updated' => 9, 'removed' => 10, 'createdAt' => 11, 'updatedAt' => 12, ),
+        self::TYPE_COLNAME       => array(TaskTableMap::COL_ID => 0, TaskTableMap::COL_TITLE => 1, TaskTableMap::COL_DESCRIPTION => 2, TaskTableMap::COL_REQUIREMENT => 3, TaskTableMap::COL_MIN_PRICE => 4, TaskTableMap::COL_MAX_PRICE => 5, TaskTableMap::COL_CREATOR_ID => 6, TaskTableMap::COL_CAT_ID => 7, TaskTableMap::COL_CREATED => 8, TaskTableMap::COL_UPDATED => 9, TaskTableMap::COL_REMOVED => 10, TaskTableMap::COL_CREATED_AT => 11, TaskTableMap::COL_UPDATED_AT => 12, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'title' => 1, 'description' => 2, 'requirement' => 3, 'min_price' => 4, 'max_price' => 5, 'creator_id' => 6, 'cat_id' => 7, 'created' => 8, 'updated' => 9, 'removed' => 10, 'created_at' => 11, 'updated_at' => 12, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
     );
 
     /**
@@ -187,6 +197,8 @@ class TaskTableMap extends TableMap
         $this->addColumn('created', 'Created', 'TIMESTAMP', true, null, null);
         $this->addColumn('updated', 'Updated', 'TIMESTAMP', true, null, null);
         $this->addColumn('removed', 'Removed', 'TIMESTAMP', false, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -223,6 +235,19 @@ class TaskTableMap extends TableMap
   ),
 ), null, null, 'TaskTeches', false);
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_created_at' => 'false', 'disable_updated_at' => 'false', 'created_column' => 'create_on', 'updated_column' => 'update_on', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -376,6 +401,8 @@ class TaskTableMap extends TableMap
             $criteria->addSelectColumn(TaskTableMap::COL_CREATED);
             $criteria->addSelectColumn(TaskTableMap::COL_UPDATED);
             $criteria->addSelectColumn(TaskTableMap::COL_REMOVED);
+            $criteria->addSelectColumn(TaskTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(TaskTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.title');
@@ -388,6 +415,8 @@ class TaskTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.created');
             $criteria->addSelectColumn($alias . '.updated');
             $criteria->addSelectColumn($alias . '.removed');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 

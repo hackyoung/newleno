@@ -31,6 +31,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrderQuery orderByCreated($order = Criteria::ASC) Order by the created column
  * @method     ChildOrderQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  * @method     ChildOrderQuery orderByRemoved($order = Criteria::ASC) Order by the removed column
+ * @method     ChildOrderQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildOrderQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildOrderQuery groupByOrderId() Group by the order_id column
  * @method     ChildOrderQuery groupByTaskId() Group by the task_id column
@@ -43,6 +45,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrderQuery groupByCreated() Group by the created column
  * @method     ChildOrderQuery groupByUpdated() Group by the updated column
  * @method     ChildOrderQuery groupByRemoved() Group by the removed column
+ * @method     ChildOrderQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildOrderQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildOrderQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildOrderQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -87,7 +91,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrder findOneByBossDeposit(int $boss_deposit) Return the first ChildOrder filtered by the boss_deposit column
  * @method     ChildOrder findOneByCreated(string $created) Return the first ChildOrder filtered by the created column
  * @method     ChildOrder findOneByUpdated(string $updated) Return the first ChildOrder filtered by the updated column
- * @method     ChildOrder findOneByRemoved(string $removed) Return the first ChildOrder filtered by the removed column *
+ * @method     ChildOrder findOneByRemoved(string $removed) Return the first ChildOrder filtered by the removed column
+ * @method     ChildOrder findOneByCreatedAt(string $created_at) Return the first ChildOrder filtered by the created_at column
+ * @method     ChildOrder findOneByUpdatedAt(string $updated_at) Return the first ChildOrder filtered by the updated_at column *
 
  * @method     ChildOrder requirePk($key, ConnectionInterface $con = null) Return the ChildOrder by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOne(ConnectionInterface $con = null) Return the first ChildOrder matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -103,6 +109,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrder requireOneByCreated(string $created) Return the first ChildOrder filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOneByUpdated(string $updated) Return the first ChildOrder filtered by the updated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOneByRemoved(string $removed) Return the first ChildOrder filtered by the removed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOrder requireOneByCreatedAt(string $created_at) Return the first ChildOrder filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOrder requireOneByUpdatedAt(string $updated_at) Return the first ChildOrder filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildOrder[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildOrder objects based on current ModelCriteria
  * @method     ChildOrder[]|ObjectCollection findByOrderId(int $order_id) Return ChildOrder objects filtered by the order_id column
@@ -116,6 +124,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrder[]|ObjectCollection findByCreated(string $created) Return ChildOrder objects filtered by the created column
  * @method     ChildOrder[]|ObjectCollection findByUpdated(string $updated) Return ChildOrder objects filtered by the updated column
  * @method     ChildOrder[]|ObjectCollection findByRemoved(string $removed) Return ChildOrder objects filtered by the removed column
+ * @method     ChildOrder[]|ObjectCollection findByCreatedAt(string $created_at) Return ChildOrder objects filtered by the created_at column
+ * @method     ChildOrder[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildOrder objects filtered by the updated_at column
  * @method     ChildOrder[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -214,7 +224,7 @@ abstract class OrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT order_id, task_id, amount, boss_id, worker_id, progress, worker_deposit, boss_deposit, created, updated, removed FROM order WHERE order_id = :p0';
+        $sql = 'SELECT order_id, task_id, amount, boss_id, worker_id, progress, worker_deposit, boss_deposit, created, updated, removed, created_at, updated_at FROM order WHERE order_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -768,6 +778,92 @@ abstract class OrderQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the created_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+     * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $createdAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function filterByCreatedAt($createdAt = null, $comparison = null)
+    {
+        if (is_array($createdAt)) {
+            $useMinMax = false;
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(OrderTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(OrderTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(OrderTableMap::COL_CREATED_AT, $createdAt, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(OrderTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(OrderTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(OrderTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
+    }
+
+    /**
      * Filter the query by a related \Model\Task object
      *
      * @param \Model\Task|ObjectCollection $task The related object(s) to use as filter
@@ -990,6 +1086,72 @@ abstract class OrderQuery extends ModelCriteria
 
             return $affectedRows;
         });
+    }
+
+    // timestampable behavior
+
+    /**
+     * Filter by the latest updated
+     *
+     * @param      int $nbDays Maximum age of the latest update in days
+     *
+     * @return     $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function recentlyUpdated($nbDays = 7)
+    {
+        return $this->addUsingAlias(OrderTableMap::COL_UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by update date desc
+     *
+     * @return     $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function lastUpdatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(OrderTableMap::COL_UPDATED_AT);
+    }
+
+    /**
+     * Order by update date asc
+     *
+     * @return     $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function firstUpdatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(OrderTableMap::COL_UPDATED_AT);
+    }
+
+    /**
+     * Order by create date desc
+     *
+     * @return     $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function lastCreatedFirst()
+    {
+        return $this->addDescendingOrderByColumn(OrderTableMap::COL_CREATED_AT);
+    }
+
+    /**
+     * Filter by the latest created
+     *
+     * @param      int $nbDays Maximum age of in days
+     *
+     * @return     $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function recentlyCreated($nbDays = 7)
+    {
+        return $this->addUsingAlias(OrderTableMap::COL_CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+    }
+
+    /**
+     * Order by create date asc
+     *
+     * @return     $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function firstCreatedFirst()
+    {
+        return $this->addAscendingOrderByColumn(OrderTableMap::COL_CREATED_AT);
     }
 
 } // OrderQuery

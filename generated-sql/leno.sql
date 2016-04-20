@@ -19,6 +19,8 @@ CREATE TABLE `user`
     `created` DATETIME NOT NULL COMMENT '用户的注册时间',
     `updated` DATETIME NOT NULL COMMENT '用户的更新时间',
     `removed` DATETIME COMMENT '用户的删除时间',
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='用户表';
 
@@ -38,6 +40,8 @@ CREATE TABLE `tech`
     `created` DATETIME NOT NULL COMMENT '技术的创建时间',
     `updated` DATETIME NOT NULL COMMENT '技术的更新时间',
     `removed` DATETIME COMMENT '技术的删除时间',
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='技术表';
 
@@ -54,6 +58,8 @@ CREATE TABLE `category`
     `created` DATETIME NOT NULL COMMENT '分类的创建时间',
     `updated` DATETIME NOT NULL COMMENT '分类的更新时间',
     `removed` DATETIME COMMENT '分类的删除时间',
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='分类表';
 
@@ -76,6 +82,8 @@ CREATE TABLE `task`
     `created` DATETIME NOT NULL COMMENT '任务的创建时间',
     `updated` DATETIME NOT NULL COMMENT '任务的最新修改时间',
     `removed` DATETIME COMMENT '任务的删除时间',
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
     PRIMARY KEY (`id`),
     INDEX `task_fi_7a25b2` (`creator_id`),
     INDEX `task_fi_288d00` (`cat_id`),
@@ -106,6 +114,8 @@ CREATE TABLE `order`
     `created` DATETIME NOT NULL COMMENT '订单的创建时间',
     `updated` DATETIME NOT NULL COMMENT '订单的最新修改时间',
     `removed` DATETIME COMMENT '订单的删除时间',
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
     PRIMARY KEY (`order_id`),
     INDEX `order_fi_031dc6` (`task_id`),
     INDEX `order_fi_725121` (`boss_id`, `worker_id`),

@@ -164,7 +164,7 @@ input[type=password] {
 	color: #333;
 	text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
 	white-space: nowrap;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 .leno-btn:disabled {
@@ -410,12 +410,12 @@ input[type=password] {
 	line-height: 16px;
 	background-color: white;
 	border: 1px solid #aaa;
-	box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
-	-moz-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
-	-webkit-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2);
-	background-image: -moz-linear-gradient(top, #eee, #fff);
-	background-image: -webkit-linear-gradient(top, #eee, #fff);
-	background-image: -o-linear-gradient(top, #eee, #fff);
+	box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.1);
+	background-image: -moz-linear-gradient(top, #f3f3f3, #fff);
+	background-image: -webkit-linear-gradient(top, #f3f3f3, #fff);
+	background-image: -o-linear-gradient(top, #f3d3f3, #fff);
     color: #444;
     vertical-align: middle;
 }
@@ -437,10 +437,10 @@ input[type=text].leno-input {
 	padding: 0px;
 	box-shadow: none;
 	border: none;
-	background-image: -moz-linear-gradient(top, #f2f2f2, #f8f8f8);
-	background-image: -webkit-linear-gradient(top, #f2f2f2, #f8f8f8);
-	background-image: -o-linear-gradient(top, #f2f2f2, #f8f8f8);
-	background-image: linear-gradient(top, #f2f2f2, #f8f8f8);
+	background-image: -moz-linear-gradient(top, #f6f6f6, #f9f9f9);
+	background-image: -webkit-linear-gradient(top, #f6f6f6, #f9f9f9);
+	background-image: -o-linear-gradient(top, #f6f6f6, #f9f9f9);
+	background-image: linear-gradient(top, #f6f6f6, #f9f9f9);
 	height: 18px;
 	font-size: 14px;
 	outline: none;
@@ -1066,10 +1066,13 @@ select.flat-input:active {
 .lw-toolbox {
 	width: 100%;
 	padding: 5px;
-	background-image: linear-gradient(top, #ccc, #aaa);
-	background-image: -moz-linear-gradient(top, #ccc, #aaa);
-	background-image: -webkit-linear-gradient(top, #ccc, #aaa);
-	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.6);
+	background-image: linear-gradient(top, #ccc, #bbb);
+	background-image: -moz-linear-gradient(top, #ccc, #bbb);
+	background-image: -webkit-linear-gradient(top, #ccc, #bbb);
+	border-bottom: 1px solid #999;
+	box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.6);
+	-moz-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.6);
+	-webkit-box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
 
 /**leno-window**/

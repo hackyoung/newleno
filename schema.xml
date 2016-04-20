@@ -7,6 +7,7 @@
 		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="email" type="varchar" size="64" required="true" description="用户的Email，也是登录名" />
 		<column name="name" type="varchar" size="64" description="用户姓名" />
+		<column name="portrait" type="varchar" size="1024" description="用户头像" />
 		<column name="age" type="integer" description="用户的年龄" />
 		<column name="password" type="varchar" size="32" description="登录密码" />
 		<column name="created" type="timestamp" required="true" description="用户的注册时间" />
@@ -49,6 +50,7 @@
 		<column name="requirement" type="varchar" size="128" required="true" description="任务的需求" />
 		<column name="min_price" type="integer" required="true" description="任务的最小报价" />
 		<column name="max_price" type="integer" required="true" description="任务的最大报价" />
+		<column name="needed" type="integer" required="true" description="工期，单位为小时" />
 		<column name="creator_id" type="integer" required="true" description="任务的发起者" />
 		<column name="cat_id" type="integer" required="true" description="任务的分类" />
 		<column name="created" type="timestamp" required="true" description="任务的创建时间" />
@@ -65,6 +67,28 @@
             <parameter name="updated_column" value="update_on" />
         </behavior>
 	</table>
+	<table name="" description="竞价表">
+		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="task_id" type="integer" required="true" description="任务ID" />
+		<column name="user_id" type="integer" required="true" description="发起竞价的用户ID" />
+		<column name="price" type="integer" required="true" description="价格" />
+		<column name="needed" type="integer" required="true" description="需要的工期,单位小时" />
+		<column name="message" type="varchar" size="256" required="true" description="留言" />
+		<column name="status" type="varchar" required="true" description="竞价状态，init|preorder|ordered" />
+		<column name="created" type="timestamp" required="true" />
+		<column name="updated" type="timestamp" required="true" />
+		<column name="removed" type="timestamp" />
+		<foreign-key foreignTable="task">
+			<reference local="task_id" foreign="id" />
+		</foreign-key>
+		<foreign-key foreignTable="user">
+			<reference local="user_id" foreign="id" />
+		</foreign-key>
+        <behavior name="timestampable">
+            <parameter name="created_column" value="create_on" />
+            <parameter name="updated_column" value="update_on" />
+        </behavior>
+	</table>
 	<table name="order" description="订单表">
 		<column name="order_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="task_id" type="integer" required="true" description="任务ID" />
@@ -74,6 +98,8 @@
 		<column name="progress" type="integer" required="true" description="任务的进度" />
 		<column name="worker_deposit" type="integer" description="接单用户提交的订金" />
 		<column name="boss_deposit" type="integer" description="发单用户提交的订金" />
+		<column name="done" type="timestamp" required="true" description="交付时间" />
+		<column name="status" type="varchar" required="true" description="状态, init|boss_promise|worker_promise|doing|test|done|exception" />
 		<column name="created" type="timestamp" required="true" description="订单的创建时间" />
 		<column name="updated" type="timestamp" required="true" description="订单的最新修改时间" />
 		<column name="removed" type="timestamp" description="订单的删除时间" />

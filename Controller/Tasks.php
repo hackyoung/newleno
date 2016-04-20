@@ -8,6 +8,7 @@ class Tasks extends \Controller\App
 	 */
 	public function index()
 	{
+		/*
         $user = new \Model\User();
         $user->setName('young');
         $user->setEmail('hackyoung@163.com');
@@ -25,6 +26,10 @@ class Tasks extends \Controller\App
         $task->setUser($user);
         $task->setCategory($category);
         $task->save();
+		 */
+		$this->set('list', [
+			1,2,3,4,4,5,4,3,2,2,43,4,23,23,
+		]);
         $this->render('tasks');
 	}
 }

@@ -2,7 +2,6 @@
     <fragment name="one">
 		<div class="leno-piece-common-none">
 			<view name="Element.tasks.filter" />
-
 <!--
 			<view name="Element.tasks.tab" />
 -->

@@ -59,7 +59,7 @@ class CategoryTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class CategoryTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -97,6 +97,16 @@ class CategoryTableMap extends TableMap
     const COL_REMOVED = 'category.removed';
 
     /**
+     * the column name for the created_at field
+     */
+    const COL_CREATED_AT = 'category.created_at';
+
+    /**
+     * the column name for the updated_at field
+     */
+    const COL_UPDATED_AT = 'category.updated_at';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -108,11 +118,11 @@ class CategoryTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Label', 'Created', 'Updated', 'Removed', ),
-        self::TYPE_CAMELNAME     => array('id', 'label', 'created', 'updated', 'removed', ),
-        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID, CategoryTableMap::COL_LABEL, CategoryTableMap::COL_CREATED, CategoryTableMap::COL_UPDATED, CategoryTableMap::COL_REMOVED, ),
-        self::TYPE_FIELDNAME     => array('id', 'label', 'created', 'updated', 'removed', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'Label', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'label', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID, CategoryTableMap::COL_LABEL, CategoryTableMap::COL_CREATED, CategoryTableMap::COL_UPDATED, CategoryTableMap::COL_REMOVED, CategoryTableMap::COL_CREATED_AT, CategoryTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'label', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -122,11 +132,11 @@ class CategoryTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Label' => 1, 'Created' => 2, 'Updated' => 3, 'Removed' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'label' => 1, 'created' => 2, 'updated' => 3, 'removed' => 4, ),
-        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID => 0, CategoryTableMap::COL_LABEL => 1, CategoryTableMap::COL_CREATED => 2, CategoryTableMap::COL_UPDATED => 3, CategoryTableMap::COL_REMOVED => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'label' => 1, 'created' => 2, 'updated' => 3, 'removed' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Label' => 1, 'Created' => 2, 'Updated' => 3, 'Removed' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'label' => 1, 'created' => 2, 'updated' => 3, 'removed' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
+        self::TYPE_COLNAME       => array(CategoryTableMap::COL_ID => 0, CategoryTableMap::COL_LABEL => 1, CategoryTableMap::COL_CREATED => 2, CategoryTableMap::COL_UPDATED => 3, CategoryTableMap::COL_REMOVED => 4, CategoryTableMap::COL_CREATED_AT => 5, CategoryTableMap::COL_UPDATED_AT => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'label' => 1, 'created' => 2, 'updated' => 3, 'removed' => 4, 'created_at' => 5, 'updated_at' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -151,6 +161,8 @@ class CategoryTableMap extends TableMap
         $this->addColumn('created', 'Created', 'TIMESTAMP', true, null, null);
         $this->addColumn('updated', 'Updated', 'TIMESTAMP', true, null, null);
         $this->addColumn('removed', 'Removed', 'TIMESTAMP', false, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -166,6 +178,19 @@ class CategoryTableMap extends TableMap
   ),
 ), null, null, 'Tasks', false);
     } // buildRelations()
+
+    /**
+     *
+     * Gets the list of behaviors registered for this table
+     *
+     * @return array Associative array (name => parameters) of behaviors
+     */
+    public function getBehaviors()
+    {
+        return array(
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_created_at' => 'false', 'disable_updated_at' => 'false', 'created_column' => 'create_on', 'updated_column' => 'update_on', ),
+        );
+    } // getBehaviors()
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -313,12 +338,16 @@ class CategoryTableMap extends TableMap
             $criteria->addSelectColumn(CategoryTableMap::COL_CREATED);
             $criteria->addSelectColumn(CategoryTableMap::COL_UPDATED);
             $criteria->addSelectColumn(CategoryTableMap::COL_REMOVED);
+            $criteria->addSelectColumn(CategoryTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(CategoryTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.label');
             $criteria->addSelectColumn($alias . '.created');
             $criteria->addSelectColumn($alias . '.updated');
             $criteria->addSelectColumn($alias . '.removed');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 

@@ -102,6 +102,20 @@ abstract class Category implements ActiveRecordInterface
     protected $removed;
 
     /**
+     * The value for the created_at field.
+     *
+     * @var        DateTime
+     */
+    protected $created_at;
+
+    /**
+     * The value for the updated_at field.
+     *
+     * @var        DateTime
+     */
+    protected $updated_at;
+
+    /**
      * @var        ObjectCollection|ChildTask[] Collection to store aggregation of ChildTask objects.
      */
     protected $collTasks;
@@ -427,6 +441,46 @@ abstract class Category implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTimeInterface ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [updated_at] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getUpdatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTimeInterface ? $this->updated_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -527,6 +581,46 @@ abstract class Category implements ActiveRecordInterface
     } // setRemoved()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Model\Category The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->created_at->format("Y-m-d H:i:s")) {
+                $this->created_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[CategoryTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Model\Category The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->updated_at->format("Y-m-d H:i:s")) {
+                $this->updated_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[CategoryTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setUpdatedAt()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -585,6 +679,18 @@ abstract class Category implements ActiveRecordInterface
                 $col = null;
             }
             $this->removed = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : CategoryTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : CategoryTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -593,7 +699,7 @@ abstract class Category implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = CategoryTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = CategoryTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Model\\Category'), 0, $e);
@@ -718,8 +824,20 @@ abstract class Category implements ActiveRecordInterface
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+
+                if (!$this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -824,6 +942,12 @@ abstract class Category implements ActiveRecordInterface
         if ($this->isColumnModified(CategoryTableMap::COL_REMOVED)) {
             $modifiedColumns[':p' . $index++]  = 'removed';
         }
+        if ($this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'created_at';
+        }
+        if ($this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'updated_at';
+        }
 
         $sql = sprintf(
             'INSERT INTO category (%s) VALUES (%s)',
@@ -849,6 +973,12 @@ abstract class Category implements ActiveRecordInterface
                         break;
                     case 'removed':
                         $stmt->bindValue($identifier, $this->removed ? $this->removed->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'created_at':
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'updated_at':
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -927,6 +1057,12 @@ abstract class Category implements ActiveRecordInterface
             case 4:
                 return $this->getRemoved();
                 break;
+            case 5:
+                return $this->getCreatedAt();
+                break;
+            case 6:
+                return $this->getUpdatedAt();
+                break;
             default:
                 return null;
                 break;
@@ -962,6 +1098,8 @@ abstract class Category implements ActiveRecordInterface
             $keys[2] => $this->getCreated(),
             $keys[3] => $this->getUpdated(),
             $keys[4] => $this->getRemoved(),
+            $keys[5] => $this->getCreatedAt(),
+            $keys[6] => $this->getUpdatedAt(),
         );
         if ($result[$keys[2]] instanceof \DateTime) {
             $result[$keys[2]] = $result[$keys[2]]->format('c');
@@ -973,6 +1111,14 @@ abstract class Category implements ActiveRecordInterface
 
         if ($result[$keys[4]] instanceof \DateTime) {
             $result[$keys[4]] = $result[$keys[4]]->format('c');
+        }
+
+        if ($result[$keys[5]] instanceof \DateTime) {
+            $result[$keys[5]] = $result[$keys[5]]->format('c');
+        }
+
+        if ($result[$keys[6]] instanceof \DateTime) {
+            $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1045,6 +1191,12 @@ abstract class Category implements ActiveRecordInterface
             case 4:
                 $this->setRemoved($value);
                 break;
+            case 5:
+                $this->setCreatedAt($value);
+                break;
+            case 6:
+                $this->setUpdatedAt($value);
+                break;
         } // switch()
 
         return $this;
@@ -1085,6 +1237,12 @@ abstract class Category implements ActiveRecordInterface
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setRemoved($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setCreatedAt($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setUpdatedAt($arr[$keys[6]]);
         }
     }
 
@@ -1141,6 +1299,12 @@ abstract class Category implements ActiveRecordInterface
         }
         if ($this->isColumnModified(CategoryTableMap::COL_REMOVED)) {
             $criteria->add(CategoryTableMap::COL_REMOVED, $this->removed);
+        }
+        if ($this->isColumnModified(CategoryTableMap::COL_CREATED_AT)) {
+            $criteria->add(CategoryTableMap::COL_CREATED_AT, $this->created_at);
+        }
+        if ($this->isColumnModified(CategoryTableMap::COL_UPDATED_AT)) {
+            $criteria->add(CategoryTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1232,6 +1396,8 @@ abstract class Category implements ActiveRecordInterface
         $copyObj->setCreated($this->getCreated());
         $copyObj->setUpdated($this->getUpdated());
         $copyObj->setRemoved($this->getRemoved());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1552,6 +1718,8 @@ abstract class Category implements ActiveRecordInterface
         $this->created = null;
         $this->updated = null;
         $this->removed = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1588,6 +1756,20 @@ abstract class Category implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(CategoryTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     $this|ChildCategory The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[CategoryTableMap::COL_UPDATED_AT] = true;
+
+        return $this;
     }
 
     /**
