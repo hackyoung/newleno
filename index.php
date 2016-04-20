@@ -1,8 +1,9 @@
 <?php
-require dirname(__FILE__)."/vendor/autoload.php";
+require __DIR__."/vendor/autoload.php";
+require __DIR__."/generated-conf/config.php";
 
 define('BASE_URL', preg_replace('/index.php\/$/', '',base_url()));
-define('ROOT', dirname(__FILE__));
+define('ROOT', __DIR__);
 
 \Leno\Worker::setRouterClass('\\Router');
 

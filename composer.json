@@ -9,7 +9,9 @@
         "guzzlehttp/psr7": "1.2.*"
     },
     "autoload": {
-        "psr-4": { "Leno\\": "src" },
+        "psr-4": {
+            "Leno\\": "src"
+        },
         "files": [ "src/functions.php" ]
     }
 }

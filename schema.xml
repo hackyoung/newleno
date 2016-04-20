@@ -1,51 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database name="leno">
+<database name="leno"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
+          namespace="Model">
 	<table name="user" description="用户表">
-		<column name="user_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="email" type="varchar" size="64" required="true" description="用户的Email，也是登录名" />
 		<column name="name" type="varchar" size="64" description="用户姓名" />
 		<column name="age" type="integer" description="用户的年龄" />
 		<column name="password" type="varchar" size="32" description="登录密码" />
 		<column name="created" type="timestamp" required="true" description="用户的注册时间" />
 		<column name="updated" type="timestamp" required="true" description="用户的更新时间" />
-		<column name="deleted" type="timestamp" description="用户的删除时间" />
+		<column name="removed" type="timestamp" description="用户的删除时间" />
+        <behavior name="timestampable">
+            <parameter name="created_column" value="create_on" />
+            <parameter name="updated_column" value="update_on" />
+        </behavior>
 	</table>
 	<table name="tech" description="技术表">
-		<column name="tech_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="label" type="varchar" size="32" required="true" description="技术的标签名" />
 		<column name="description" type="varchar" size="256" description="描述信息" />
 		<column name="url" type="varchar" size="1024" description="指向该技术的官方网站" />
 		<column name="hot" type="integer" required="true" description="技术的热度" />
 		<column name="created" type="timestamp" required="true" description="技术的创建时间" />
 		<column name="updated" type="timestamp" required="true" description="技术的更新时间" />
-		<column name="deleted" type="timestamp" description="技术的删除时间" />
+		<column name="removed" type="timestamp" description="技术的删除时间" />
+        <behavior name="timestampable">
+            <parameter name="created_column" value="create_on" />
+            <parameter name="updated_column" value="update_on" />
+        </behavior>
 	</table>
 	<table name="category" description="分类表">
-		<column name="cat_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="label" type="varchar" size="32" required="true" description="分类名" />
 		<column name="created" type="timestamp" required="true" description="分类的创建时间" />
 		<column name="updated" type="timestamp" required="true" description="分类的更新时间" />
-		<column name="deleted" type="timestamp" description="分类的删除时间" />
+		<column name="removed" type="timestamp" description="分类的删除时间" />
+        <behavior name="timestampable">
+            <parameter name="created_column" value="create_on" />
+            <parameter name="updated_column" value="update_on" />
+        </behavior>
 	</table>
 	<table name="task" description="任务表">
-		<column name="task_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="title" type="varchar" size="64" required="true" description="任务的标题" />
 		<column name="description" type="varchar" size="256" required="true" description="任务的描述" />
 		<column name="requirement" type="varchar" size="128" required="true" description="任务的需求" />
-		<column name="tech_ids" type="array" required="true" description="任务所涉及的技术列表" />
 		<column name="min_price" type="integer" required="true" description="任务的最小报价" />
 		<column name="max_price" type="integer" required="true" description="任务的最大报价" />
 		<column name="creator_id" type="integer" required="true" description="任务的发起者" />
 		<column name="cat_id" type="integer" required="true" description="任务的分类" />
 		<column name="created" type="timestamp" required="true" description="任务的创建时间" />
 		<column name="updated" type="timestamp" required="true" description="任务的最新修改时间" />
-		<column name="deleted" type="timestamp" description="任务的删除时间" />
+		<column name="removed" type="timestamp" description="任务的删除时间" />
 		<foreign-key foreignTable="user">
-			<reference local="creator_id" foreign="user_id" />
+			<reference local="creator_id" foreign="id" />
 		</foreign-key>
 		<foreign-key foreignTable="category">
-			<reference local="cat_id" foreign="cat_id" />
+			<reference local="cat_id" foreign="id" />
 		</foreign-key>
+        <behavior name="timestampable">
+            <parameter name="created_column" value="create_on" />
+            <parameter name="updated_column" value="update_on" />
+        </behavior>
 	</table>
 	<table name="order" description="订单表">
 		<column name="order_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
@@ -58,13 +76,27 @@
 		<column name="boss_deposit" type="integer" description="发单用户提交的订金" />
 		<column name="created" type="timestamp" required="true" description="订单的创建时间" />
 		<column name="updated" type="timestamp" required="true" description="订单的最新修改时间" />
-		<column name="deleted" type="timestamp" description="订单的删除时间" />
+		<column name="removed" type="timestamp" description="订单的删除时间" />
 		<foreign-key foreignTable="task">
-			<reference local="task_id" foreign="task_id" />
+			<reference local="task_id" foreign="id" />
 		</foreign-key>
 		<foreign-key foreignTable="user">
-			<reference local="boss_id" foreign="user_id" />
-			<reference local="worker_id" foreign="user_id" />
+			<reference local="boss_id" foreign="id" />
+			<reference local="worker_id" foreign="id" />
 		</foreign-key>
+        <behavior name="timestampable">
+            <parameter name="created_column" value="create_on" />
+            <parameter name="updated_column" value="update_on" />
+        </behavior>
 	</table>
+    <table name="task_tech" description="任务-技术关联表">
+        <column name="task_id" primaryKey="true" />
+        <column name="tech_id" primaryKey="true" />
+        <foreign-key foreignTable="task">
+            <reference local="task_id" foreign="id" />
+        </foreign-key>
+        <foreign-key foreignTable="tech">
+            <reference local="tech_id" foreign="id" />
+        </foreign-key>
+    </table>
 </database>
