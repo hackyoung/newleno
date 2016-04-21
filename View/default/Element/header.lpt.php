@@ -4,7 +4,10 @@
             <li class="item active">找助攻</li>
             <li class="item">找案子</li>
             <li>
-                <input type="text" class="leno-input search leno-lg leno-ml leno-sm" placeholder="输入关键字搜索" />
+				<div class="leno-input-group leno-lg leno-ml leno-sm">
+					<label class="zmdi zmdi-search"></label>
+                	<input type="text" class="leno-input search" placeholder="输入关键字搜索" />
+				</div>
             </li>
         </ul>
         <ul class="no-decaration-ul person">

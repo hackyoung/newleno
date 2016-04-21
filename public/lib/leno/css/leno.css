@@ -425,11 +425,12 @@ textarea,
 	resize: vertical;
 }
 
-input[type=text].leno-input {
+input.leno-input {
 	height: 32px;
 	font-size: 14px;
 	overflow: visible;
 }
+
 .leno-input-group input,
 .leno-input-group textarea,
 .leno-input-group .leno-input {
@@ -437,13 +438,17 @@ input[type=text].leno-input {
 	padding: 0px;
 	box-shadow: none;
 	border: none;
-	background-image: -moz-linear-gradient(top, #f6f6f6, #f9f9f9);
-	background-image: -webkit-linear-gradient(top, #f6f6f6, #f9f9f9);
-	background-image: -o-linear-gradient(top, #f6f6f6, #f9f9f9);
-	background-image: linear-gradient(top, #f6f6f6, #f9f9f9);
-	height: 18px;
+	background-image: -moz-linear-gradient(top, #f6f6f6, #fbfbfb);
+	background-image: -webkit-linear-gradient(top, #f6f6f6, #fbf9f9);
+	background-image: -o-linear-gradient(top, #f6f6f6, #fbfbfb);
+	background-image: linear-gradient(top, #f6f6f6, #fbfbfb);
 	font-size: 14px;
 	outline: none;
+}
+
+.leno-input-group input,
+.leno-input-group .leno-input {
+	height: 18px;
 }
 
 .leno-input-group>*:last-child {
@@ -1084,7 +1089,7 @@ select.flat-input:active {
 	border: 1px solid #aaa;
 	width: 700px;
 	height: 400px;
-	background-color: #f9f9f9;
+	background-color: #fbfbfb;
 }
 
 .leno-window-header {

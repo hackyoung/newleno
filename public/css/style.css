@@ -153,6 +153,30 @@
 		margin-right: 10px;
 	}
 /**tasks-filter end**/
+/**user index**/
+	.user .tc-row .tc-cell:first-child {
+		width: 300px;
+	}
+
+	.user.tc-container {
+		border-collapse: collapse;
+	}
+
+	.user .tc-row:first-child .tc-cell {
+		border-bottom: 1px solid #ccc;
+	}
+
+	.user .tc-row .tc-cell:first-child {
+		border-right: 1px solid #ccc;
+	}
+
+	.user .left-cell, 
+	.user .right-cell {
+		padding: 10px;
+		height: 100%;
+	} 
+
+/**user index end**/
 /**form log**/
 	.leno-form button {
 		width: 100%;
