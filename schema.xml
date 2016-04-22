@@ -67,7 +67,7 @@
             <parameter name="updated_column" value="update_on" />
         </behavior>
 	</table>
-	<table name="" description="竞价表">
+	<table name="bidding" description="竞价表">
 		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="task_id" type="integer" required="true" description="任务ID" />
 		<column name="user_id" type="integer" required="true" description="发起竞价的用户ID" />

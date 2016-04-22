@@ -14,6 +14,7 @@ CREATE TABLE `user`
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(64) NOT NULL COMMENT '用户的Email，也是登录名',
     `name` VARCHAR(64) COMMENT '用户姓名',
+    `portrait` VARCHAR(1024) COMMENT '用户头像',
     `age` INTEGER COMMENT '用户的年龄',
     `password` VARCHAR(32) COMMENT '登录密码',
     `created` DATETIME NOT NULL COMMENT '用户的注册时间',
@@ -77,6 +78,7 @@ CREATE TABLE `task`
     `requirement` VARCHAR(128) NOT NULL COMMENT '任务的需求',
     `min_price` INTEGER NOT NULL COMMENT '任务的最小报价',
     `max_price` INTEGER NOT NULL COMMENT '任务的最大报价',
+    `needed` INTEGER NOT NULL COMMENT '工期，单位为小时',
     `creator_id` INTEGER NOT NULL COMMENT '任务的发起者',
     `cat_id` INTEGER NOT NULL COMMENT '任务的分类',
     `created` DATETIME NOT NULL COMMENT '任务的创建时间',
@@ -96,6 +98,37 @@ CREATE TABLE `task`
 ) ENGINE=InnoDB COMMENT='任务表';
 
 -- ---------------------------------------------------------------------
+-- bidding
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `bidding`;
+
+CREATE TABLE `bidding`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `task_id` INTEGER NOT NULL COMMENT '任务ID',
+    `user_id` INTEGER NOT NULL COMMENT '发起竞价的用户ID',
+    `price` INTEGER NOT NULL COMMENT '价格',
+    `needed` INTEGER NOT NULL COMMENT '需要的工期,单位小时',
+    `message` VARCHAR(256) NOT NULL COMMENT '留言',
+    `status` VARCHAR(255) NOT NULL COMMENT '竞价状态，init|preorder|ordered',
+    `created` DATETIME NOT NULL,
+    `updated` DATETIME NOT NULL,
+    `removed` DATETIME,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`),
+    INDEX `bidding_fi_031dc6` (`task_id`),
+    INDEX `bidding_fi_29554a` (`user_id`),
+    CONSTRAINT `bidding_fk_031dc6`
+        FOREIGN KEY (`task_id`)
+        REFERENCES `task` (`id`),
+    CONSTRAINT `bidding_fk_29554a`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `user` (`id`)
+) ENGINE=InnoDB COMMENT='竞价表';
+
+-- ---------------------------------------------------------------------
 -- order
 -- ---------------------------------------------------------------------
 
@@ -111,6 +144,8 @@ CREATE TABLE `order`
     `progress` INTEGER NOT NULL COMMENT '任务的进度',
     `worker_deposit` INTEGER COMMENT '接单用户提交的订金',
     `boss_deposit` INTEGER COMMENT '发单用户提交的订金',
+    `done` DATETIME NOT NULL COMMENT '交付时间',
+    `status` VARCHAR(255) NOT NULL COMMENT '状态, init|boss_promise|worker_promise|doing|test|done|exception',
     `created` DATETIME NOT NULL COMMENT '订单的创建时间',
     `updated` DATETIME NOT NULL COMMENT '订单的最新修改时间',
     `removed` DATETIME COMMENT '订单的删除时间',

@@ -1,48 +1,65 @@
 <extend name="Layout.two_col">
 	<fragment name="one">
-		<h3 class="leno-piece-common-none">用Java编写一个软键盘</h3>
-		<div class="leno-piece-common-none leno-piece-success">
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-		</div>
-		<div class="leno-piece-common-none">
-			<div class="leno-btn-group">
-				<button class="leno-btn">接镖</button>
-				<button class="leno-btn">报价</button>
-				<button class="leno-btn">忽略</button>
-			</div>
-		</div>
-		<div class="leno-piece-common">
-			
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-			用java编写一个软件盘
-		</div>
+        <div class="leno-piece-common-none">
+            <div class="leno-piece">
+                <div class="leno-piece-btn-group">
+                    <div class="item">
+                        <button class="leno-btn"><span class="zmdi zmdi-thumb-up"></span>(1000)</button>
+                    </div>
+                    <div class="item">
+                        <button class="leno-btn"><span class="zmdi zmdi-account"></span>(1000)</button>
+                    </div>
+                    <div class="item">
+                        <button class="leno-btn" title="share"><span class="zmdi zmdi-share"></span>(1000)</button>
+                    </div>
+                </div>
+                <div class="leno-piece-common-none">
+                    <h1>hello world</h1>
+                    <span class="time">2015-05-05 00:00:00</span>
+                    <p>
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                        hello world
+                    </p>
+                    <div style="text-align: center; padding-bottom: 20px">
+                        <button class="leno-btn leno-btn-success">add to bid</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 	</fragment>
 	<fragment name="two">
 		<div class="leno-piece-common-none">
-			<view name="Element.recommend" />
 		</div>
 	</fragment>
 </extend>

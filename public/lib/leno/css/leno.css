@@ -269,7 +269,6 @@ input[type=password] {
 	background-image: -webkit-linear-gradient(to bottom, #cc6700 100%, #ff9900 0%);
 }
 /**warning yello end**/
-
 .leno-justify {
 	width: 100%;
 	display: table;
@@ -277,6 +276,7 @@ input[type=password] {
 
 .leno-btn-group {
 	display: table;
+    table-layout: fixed;
 	padding: 0px;
 	vertical-align: middle;
 	border: 1px solid #999;
@@ -310,7 +310,6 @@ input[type=password] {
 
 .leno-justify .leno-btn {
 	display: table-cell;
-	width: 1%;
 	float: none;
 }
 
@@ -996,6 +995,26 @@ select.flat-input:active {
 	margin: 20px;
 }
 
+.leno-piece-btn-group {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
+.leno-piece-btn-group .item {
+    border-radius: 0px;
+    display: table-cell;
+    font-size: 0px;
+}
+
+.leno-piece-btn-group .item .leno-btn {
+    background-image: inherit;
+    width: 100%;
+    margin: 0px;
+    border-radius: 0px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    color: #aaa;
+}
 .leno-piece-alert {
 	padding: 10px;
 	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
