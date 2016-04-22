@@ -3275,4 +3275,9 @@ $(document).ready(function() {
             }
         });
     });
+	$('.leno-input-group input').focus(function() {
+		$(this).parent().addClass('leno-success');
+	}).blur(function() {
+		$(this).parent().removeClass('leno-success');
+	});
 });

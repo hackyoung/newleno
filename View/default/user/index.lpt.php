@@ -1,49 +1,40 @@
 <extend name="Layout.one_col">
 	<fragment name="one">
-        <div class="tc-container">
-            <div class="tc-row">
-                <div class="tc-cell user-col-one">
-                    <div class="leno-piece user">
-                        <img src="https://avatars2.githubusercontent.com/u/3030341?v=3" />
-                    </div>
-                </div>
-                <div class="tc-cell user-col-two user-info">
-                    <div class="leno-piece user">
-						<div class="input-line">
-							<label>居住地：</label>
-							重庆市 城口县 庙坝镇
+		<div class="leno-piece-common-none">
+			<div class="leno-piece tc-container user">
+				<header class="tc-row">
+					<div class="tc-cell">
+						<div class="left-cell">
+							hello world
+							hello world
+							hello world
+							hello world
+							hello world
+							hello world
+							hello world
+							hello world
+							hello world
 						</div>
-						<div class="input-line">
-							<label>姓名：</label>
-							杨忠
+					</div>
+					<div class="tc-cell">
+						<div class="right-cell">
+							hello world
 						</div>
-						<div class="input-line">
-							<label>帐号：</label>
-							13290044523
+					</div>
+				</header>
+				<section class="tc-row">
+					<div class="tc-cell">
+						<div class="left-cell">
+							hello world
 						</div>
-						<div class="input-line">
-							<label>余额：</label>
-							￥0.00元
+					</div>
+					<div class="tc-cell">
+						<div class="right-cell">
+							hello world
 						</div>
-						<div class="input-line">
-                            <div class="leno-switch open">
-                                <span>开</span>
-                                <span>关</span>
-                            </div>
-						</div>
-                    </div>
-                </div>
-            </div>
-            <div class="tc-row">
-                <div class="tc-cell user-col-one">
-                    <div class="leno-piece user">
-                    </div>
-                </div>
-                <div class="tc-cell user-col-two">
-                    <div class="leno-piece user">
-                    </div>
-                </div>
-            </div>
-        </div>
+					</div>
+				</section>
+			</div>
+		</div>
 	</fragment>
 </extend>
