@@ -206,21 +206,21 @@ input[type=password] {
 /* success blue*/
 .leno-btn.leno-btn-success,
 .leno-btn.leno-btn-blue {
-	background-image: linear-gradient(top, #19b955, #19c055);
-	background-image: -moz-linear-gradient(top, #19b955, #19c055);
-	background-image: -webkit-linear-gradient(top, #19b955, #19c055);
+	background-image: linear-gradient(top, #19ff55, #19b955);
+	background-image: -moz-linear-gradient(top, #19ff55, #19b955);
+	background-image: -webkit-linear-gradient(top, #19ff55, #19b955);
     border-color: #19a955;
 	color: white;
 }
 
 .leno-btn.leno-btn-success:hover,
-.leno-btn.leno-btn-blue:hover {
+.leno-btn.leno-btn-green:hover {
 	background-image: none;
-	background-color: #19c055;
+	background-color: #19ff55;
 }
 
 .leno-btn.leno-btn-success:focus:active,
-.leno-btn.leno-btn-blue:focus:active {
+.leno-btn.leno-btn-green:focus:active {
 	background-image: linear-gradient(top, #4682B4, #6495ED);
 	background-image: -moz-linear-gradient(top, #4682B4, #6495ED);
 	background-image: -webkit-linear-gradient(top, #4682B4, #6495ED);
@@ -229,16 +229,17 @@ input[type=password] {
 /**error red*/
 .leno-btn.leno-btn-error,
 .leno-btn.leno-btn-red {
-	background-image: linear-gradient(top, #ff3626, #ff2323);
-	background-image: -moz-linear-gradient(top, #ff3626, #ff2323);
-	background-image: -webkit-linear-gradient(top, #ff3626, #ff2323);
+	background-image: linear-gradient(top, #ff7d23, #ee2323);
+	background-image: -moz-linear-gradient(top, #ff7d23, #ee2323);
+	background-image: -webkit-linear-gradient(top, #ff7d23, #ee2323);
+	border-color: #ff2323;
 	color: white;
 }
 
 .leno-btn.leno-btn-error:hover,
 .leno-btn.leno-btn-red:hover {
 	background-image: none;
-	background-color: #8B2252;
+	background-color: #ff2323;
 }
 
 .leno-btn.leno-btn-error:focus:active,
@@ -423,7 +424,7 @@ input[type=password] {
 .leno-input-group {
     padding: 0px 7px;
     height: 32px;
-    line-height: 26px;
+    line-height: 32px;
 }
 
 textarea,
@@ -952,6 +953,7 @@ select.flat-input:active {
 
 .leno-piece-btn-group .item .leno-btn {
     background-image: inherit;
+	text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
     width: 100%;
     margin: 0px;
     border-radius: 0px;
