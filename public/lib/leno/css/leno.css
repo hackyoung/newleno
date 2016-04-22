@@ -30,7 +30,7 @@ input[type=text],
 input[type=email],
 input[type=username],
 input[type=password] {
-	width: 210px;
+	width: 230px;
 	transition: all 0.2s ease-in-out;
 	-o-transition: all 0.2s ease-in-out;
 	-moz-transition: all 0.2s ease-in-out;
@@ -162,7 +162,7 @@ input[type=password] {
 	-o-user-select: none;
 	vertical-align: middle;
 	color: #333;
-	text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
+	text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
 	white-space: nowrap;
     font-size: 15px;
 }
@@ -206,16 +206,17 @@ input[type=password] {
 /* success blue*/
 .leno-btn.leno-btn-success,
 .leno-btn.leno-btn-blue {
-	background-image: linear-gradient(top, #4F94CD, #4682B4);
-	background-image: -moz-linear-gradient(top, #4F94CD, #4682B4);
-	background-image: -webkit-linear-gradient(top, #4F94CD, #4682B4);
+	background-image: linear-gradient(top, #19b955, #19c055);
+	background-image: -moz-linear-gradient(top, #19b955, #19c055);
+	background-image: -webkit-linear-gradient(top, #19b955, #19c055);
+    border-color: #19a955;
 	color: white;
 }
 
 .leno-btn.leno-btn-success:hover,
 .leno-btn.leno-btn-blue:hover {
 	background-image: none;
-	background-color: #6495ED;
+	background-color: #19c055;
 }
 
 .leno-btn.leno-btn-success:focus:active,
@@ -228,9 +229,9 @@ input[type=password] {
 /**error red*/
 .leno-btn.leno-btn-error,
 .leno-btn.leno-btn-red {
-	background-image: linear-gradient(top, #8B3626, #8B2323);
-	background-image: -moz-linear-gradient(top, #8B3626, #8B2323);
-	background-image: -webkit-linear-gradient(top, #8B3626, #8B2323);
+	background-image: linear-gradient(top, #ff3626, #ff2323);
+	background-image: -moz-linear-gradient(top, #ff3626, #ff2323);
+	background-image: -webkit-linear-gradient(top, #ff3626, #ff2323);
 	color: white;
 }
 
@@ -419,6 +420,12 @@ input[type=password] {
     vertical-align: middle;
 }
 
+.leno-input-group {
+    padding: 0px 7px;
+    height: 32px;
+    line-height: 26px;
+}
+
 textarea,
 .textarea {
 	resize: vertical;
@@ -538,77 +545,8 @@ hr {
 	border-color: green;
 }
 
-.select-single span,
-.select-multiple span {
-	padding:5px 10px;
-	margin: 5px;
-	display: inline-block;
-	background-image: -moz-linear-gradient(top, #aaa, #eee);
-	background-image: -webkit-linear-gradient(top, #aaa, #eee);
-	border-radius: 5px;
-	white-space: nowrap;
-}
-
-.select-single span:hover,
-.select-multiple span:hover {
-	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-	cursor: pointer;
-}
-
-.select-single .select-value,
-.select-multiple .select-value {
-	background-image: -moz-linear-gradient(top, #a00, #e00);
-	background-image: -webkit-linear-gradient(top, #a00, #e00);
-	color: white;
-}
-
-.select-single-much {
-	display: inline-block;
-	width: auto;
-}
-
-.select-single-much .ssm-down {
-/*
-	width: 0px;
-	height: 0px;
-	border-width: 8px;
-	border-style: solid;
-	border-color: #444 transparent transparent transparent;
-	display: inline-block;
-	float: right;
-*/
-}
-
-.ssm-dropdown {
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
-	-webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
-	position: absolute;
-	background-color: white;
-	overflow: auto;
-	height: 0px;
-}
-
-.ssm-dropdown span {
-	display: block;
-	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-moz-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-	background-image: linear-gradient(top, #eee, #fff);
-	-moz-background-image: linear-gradient(top, #eee, #fff);
-	-webkit-background-image: linear-gradient(top, #eee, #fff);
-	padding: 5px 20px;
-	white-space: nowrap;
-
-}
-
-.ssm-dropdown span:hover {
-	cursor: pointer;
-	background-color: #eee;
-}
-
 a {
-	color: #337ab7;
+	color: #19c055;
 	text-decoration: none;
 }
 
@@ -1556,6 +1494,7 @@ select.flat-input:active {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  vertical-align: middle;
 }
 .zmdi-hc-lg {
   font-size: 1.33333333em;
