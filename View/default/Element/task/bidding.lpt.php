@@ -5,19 +5,27 @@
 	width: 100%;
 }
 
+.bidding-form label {
+	color: #999;
+	width: 60px;
+}
 
+.bidding-form input {
+	width: auto;
+}
 </style>
 <div id="bidding-form" class="bidding-form">
 	<div class="input-line">
 		<div class="leno-input-group">
 			<label>出价</label>
-			<input type="text" />
+			<input type="text" placeholder="0.00" />
+			<label>元</label>
 		</div>
 	</div>
 	<div class="input-line">
 		<div class="leno-input-group">
 			<label>工期</label>
-			<input type="text" />
+			<input type="text" placeholder="0" />
 			<label>小时</label>
 		</div>
 	</div>

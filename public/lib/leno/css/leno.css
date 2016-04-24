@@ -270,7 +270,7 @@ input[type=password] {
 	background-image: -moz-linear-gradient(to bottom, #cc6700 100%, #ff9900 0%);
 	background-image: -webkit-linear-gradient(to bottom, #cc6700 100%, #ff9900 0%);
 }
-/**warning yello end**/
+/**warning yellow end**/
 .leno-justify {
 	width: 100%;
 	display: table;
@@ -284,6 +284,9 @@ input[type=password] {
 	border: 1px solid #999;
 	border-radius: 5px;
 	background-color: #ddd;
+	transition: all 1s ease-in;
+	-moz-transition: all 1s ease-in;
+	-webkit-transition: all 1s ease-in;
 }
 
 .leno-btn-group .leno-btn {
@@ -422,9 +425,12 @@ input[type=password] {
 }
 
 .leno-input-group {
-    padding: 0px 7px;
     height: 32px;
-    line-height: 32px;
+	display: flex;
+	display: -webkit-flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
 }
 
 textarea,
@@ -458,9 +464,14 @@ input.leno-input {
 	height: 18px;
 }
 
+.leno-input-group>* {
+	white-space: nowrap;
+}
+
 .leno-input-group>*:last-child {
 	border-radius: 0px 5px 5px 0px;
 }
+
 .leno-input-group>*:first-child {
 	border-radius: 5px 0px 0px 5px;
 }
@@ -477,10 +488,6 @@ input.leno-input {
 
 hr {
 	border-top: 1px solid green;
-}
-
-.leno-input-group {
-	vertical-align: center;
 }
 
 .leno-input-group>input,
@@ -953,6 +960,7 @@ select.flat-input:active {
 
 .leno-piece-btn-group .item .leno-btn {
     background-image: inherit;
+	background-color: white;
 	text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
     width: 100%;
     margin: 0px;
@@ -1404,29 +1412,24 @@ select.flat-input:active {
 	.leno-xs {
 		display: inline-block;
 	}
-
 	.leno-confirm {
 		width: calc(100% - 40px);
 		margin-top: 20px;
 		min-height: 2px;
 	}
-
 	.leno-alert {
 		width: calc(100% - 40px);
 		min-height: 80px;
 		margin-bottom: 20px;
 	}
-
 	.input-line {
 		margin: 20px 0px;
 	}
-
 	.leno-layer {
 		width: 100%;
 		height: 100%;
 		border: none;
 	}
-
 	.image-uploader {
 		width: 100%;
 		height: 100%;
@@ -1447,24 +1450,25 @@ select.flat-input:active {
 		background-image: none;
 		*/
 	}
-
 	.leno-piece-common-none {
 		margin: 10px 0px;
-	}
-
-	.col-sm-7,
-	.col-md-8 {
-		padding-left: 0px;
-		padding-right: 0px;
 	}
 
 	hr {
 		border: 1px solid black;
 	}
+	.tc-container .tc-two {
+		width: 0px;
+		overflow: hidden;
+	}
 }
 @media screen and (min-width: 769px) and (max-width: 992px) {
 	.leno-sm {
 		display: inline-block;
+	}
+	.tc-container .tc-two {
+		width: 0px;
+		overflow: hidden;
 	}
 }
 @media screen and (min-width: 993px) and (max-width: 1200px) {

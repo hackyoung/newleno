@@ -445,6 +445,7 @@ var leno = leno || {};
 					l.opts.toggle.css('z-index', 'auto');
 					return true;
 				}
+				opts.type = layer.TYPE_DROPDOWN;
 
 				this.layer = new layer(opts);
 			}
@@ -521,6 +522,7 @@ var leno = leno || {};
 			new layer({
 				id: '-shelter-node-'+id,
 				node: cover,
+				type: layer.TYPE_SHELTER,
 				position: layer.left_top,
 				css: 'leno-shelter',
 				style: { overflow: 'hidden' },
@@ -596,6 +598,7 @@ var leno = leno || {};
 			var node = $('<div></div>').append(new_img);
 			var big = new layer({
 				id: 'big',
+				type: layer.TYPE_BIGIMG,
 				node: node,
 				shelter: true,
                 css: 'empty',
@@ -668,11 +671,14 @@ var leno = leno || {};
 						$(this).addClass('active');
 						l.hide();
 					});
+					l.content.click(function(e) {
+						e.stopPropagation();
+					});
 					if(typeof onCreate == 'function') {
 						onCreate(l);
 					}
 				}
-				opts.trigger.click(function() {
+				opts.trigger.click(function(e) {
 					if(!$(this).attr('disabled')) {
 						var l = Layer.get(opts.id);
 						if(l != null) {
@@ -683,6 +689,7 @@ var leno = leno || {};
 							}
 						}
 					}
+					e.stopPropagation();
 				});
 			}
 			profile = leno.profile(popts);
@@ -797,6 +804,7 @@ var Layer = layer = (function() {
 				throw 'ID Not Found!';
 				return;
 			}
+			this.opts.type = this.opts.type || 0;
 			this.opts.position = opts.position || layer.center;
 			opts.style = opts.style || {};
 			opts.style.position = opts.style.position || 'fixed';
@@ -833,6 +841,10 @@ var Layer = layer = (function() {
 			}
 			layer.instance[this.opts.id] = this;
 			return this;
+		}
+
+		this.getType = function() {
+			return this.opts.type;
 		}
 
 		this.show = function() {
@@ -1091,6 +1103,14 @@ var Layer = layer = (function() {
 	layer.left_bottom = 8;
 	layer.center = 9;
 
+	layer.TYPE_MODAL = 'modal';
+	layer.TYPE_DROPDOWN = 'dropdown';
+	layer.TYPE_SHELTER = 'shelter';
+	layer.TYPE_EDITOR = 'editor';
+	layer.TYPE_CONTENT_MENU = 'content_menu';
+	layer.TYPE_BIGIMG = 'big_img';
+	layer.TYPE_NOTIFIER = 'notifier';
+
 	layer.instance = {};
 
 	layer.showInstance = {};
@@ -1212,6 +1232,7 @@ var Layer = layer = (function() {
 		opts.maxWidth = '95%';
 		opts.maxHeight = '95%';
 		opts.shelter = opts.shelter || false;
+		opts.type = layer.TYPE_MODAL;
 		return new layer(opts);
 	}
 
@@ -1243,6 +1264,7 @@ var Layer = layer = (function() {
 				node: node,
 				css: 'leno-notifier leno-alert',
 				position: layer.bottom,
+				type: layer.TYPE_NOTIFIER,
 				callback: {
 					afterHide: function() {
 						if(typeof func == 'function') {
@@ -1287,6 +1309,7 @@ var Layer = layer = (function() {
 			node: content,
 			css: 'leno-notifier leno-confirm',
 			position: layer.top,
+			type: layer.TYPE_NOTIFIER,
 			shelter: true
 		});
 	}
@@ -2002,6 +2025,16 @@ leno.editor = (function() {
 		this.config = config;
 		var html = ViewConstructor(this);
 		var editor = this;
+		editor.editorContent.getFrame().focus(function() {
+			console.log('hhh');
+			for(var i in layer.instance) {
+				var l = layer.get(i);
+				if(l.getType() == layer.TYPE_DROPDOWN) {
+					l.hide();
+				}
+			}
+			editor.focus = true;
+		});
 		window.onload = function () {
 			lenoEditor.toolbar.init(editor, lenoEditor.toolbar.items);
 			editor.setContent(html);
@@ -2229,7 +2262,6 @@ leno.editor = (function() {
 
 		var frame = this.editorContent.getFrame();
 		frame.focus();
-		this.focused = true;
 		return this;
 	}
 
@@ -2304,6 +2336,7 @@ leno.editor = (function() {
 				);
 				new layer({
 					id: 'contextmenu',
+					type: layer.TYPE_MENU,
 					node: node,
 					position: {x:e.clientX+extra.x,y:e.clientY+extra.y},
 					css: 'leno-editor-menu-container',
@@ -3279,5 +3312,13 @@ $(document).ready(function() {
 		$(this).parent().addClass('leno-success');
 	}).blur(function() {
 		$(this).parent().removeClass('leno-success');
+	});
+	$(document).click(function() {
+		var instance = layer.instance;
+		for(var i in instance) {
+			if(instance[i].getType() == layer.TYPE_DROPDOWN) {
+				instance[i].hide();
+			}
+		}
 	});
 });

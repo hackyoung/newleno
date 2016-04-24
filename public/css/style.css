@@ -1,3 +1,19 @@
+/**container**/
+	.tc-container {
+		display: flex;
+		display: -webkit-flex;
+		flex-wrap: nowrap;
+		flex-directory: row;
+		content-justify: space-between;
+		align-items: flex-start;
+	}
+	.tc-cell {
+		display: inline-block;
+	}
+	.tc-two {
+		width: 40%;
+	}
+/**container end**/
 /**header**/
     .glb-header {
         background-color: white;
@@ -153,39 +169,12 @@
 		margin-right: 10px;
 	}
 /**tasks-filter end**/
-/**user index**/
-	.user .tc-row .tc-cell:first-child {
-		width: 300px;
-	}
-
-	.user.tc-container {
-		border-collapse: collapse;
-	}
-
-	.user .tc-row:first-child .tc-cell {
-		border-bottom: 1px solid #ccc;
-	}
-
-	.user .tc-row .tc-cell:first-child {
-		border-right: 1px solid #ccc;
-	}
-
-	.user .left-cell, 
-	.user .right-cell {
-		padding: 10px;
-		height: 100%;
-	} 
-
-/**user index end**/
 /**form log**/
 	.leno-form button {
 		width: 100%;
 	}
 	.log .leno-input-group {
 		width: 100%;
-	}
-	.log .leno-input-group input {
-		width: calc(100% - 30px);
 	}
 	.log .leno-input-group label {
 		display: inline-block;
@@ -198,7 +187,6 @@
 		width: 100%;
 	}
 	.show {
-		max-width: 400px;
 		width: 100%;
 		padding: 40px 20px;
 		background-color: rgba(255, 255, 255, 0.3);
@@ -336,23 +324,6 @@
 
     .glb-header .person {
         right: 10%;
-    }
-
-    .tc-container {
-        display: table;
-        width: 100%;
-    }
-    .tc-row {
-        display: table-row;
-    }
-
-    .tc-cell {
-        display: table-cell;
-        vertical-align: top;
-    }
-
-    .tc-two {
-        width: 30%;
     }
     
     .to-container {

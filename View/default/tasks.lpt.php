@@ -13,9 +13,10 @@
         </llist>
     </fragment>
     <fragment name="two">
-		<div style="height: 20px"></div>
-		<view name="Element.recommend" />
-		<view name="Element.recommend" />
-		<view name="Element.recommend" />
+		<div class="leno-piece-common-none">
+			<view name="Element.recommend" />
+			<view name="Element.recommend" />
+			<view name="Element.recommend" />
+		</div>
     </fragment>
 </extend>

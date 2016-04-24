@@ -7,7 +7,7 @@
 <?php $ll = array_merge($ll, $ll);?>
 <div class="tc-container tasks-filter">
 	<div class="tc-cell">
-		<div id="111" class="leno-dropdown" data-type="hover">
+		<div id="111" class="leno-dropdown" data-type="click">
 			<div class="leno-piece" data-toggle="dropdown">分类</div>
 			<div class="leno-dropdown-menu select-menu">
 				<input class="leno-input" placeholder="输入关键字过滤" />
@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	<div class="tc-cell">
-		<div id="222" class="leno-dropdown" data-type="hover">
+		<div id="222" class="leno-dropdown" data-type="click">
 			<div class="leno-piece" data-toggle="dropdown">技术</div>
 			<div class="leno-dropdown-menu select-menu">
 				<input class="leno-input" placeholder="输入关键字过滤" />
@@ -45,7 +45,7 @@
 		</div>
 	</div>
 	<div class="tc-cell">
-		<div id="333" class="leno-dropdown" data-type="hover">
+		<div id="333" class="leno-dropdown" data-type="click">
 			<div class="leno-piece" data-toggle="dropdown">预算</div>
 			<div class="leno-dropdown-menu select-menu">
 				<div style="text-align: center;">
