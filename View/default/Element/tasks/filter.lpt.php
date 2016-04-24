@@ -8,7 +8,7 @@
 <div class="tc-container tasks-filter">
 	<div class="tc-cell">
 		<div id="111" class="leno-dropdown" data-type="click">
-			<div class="leno-piece" data-toggle="dropdown">分类</div>
+			<div class="leno-piece" data-toggle="dropdown">分类<span class="zmdi zmdi-caret-down"></span></div>
 			<div class="leno-dropdown-menu select-menu">
 				<input class="leno-input" placeholder="输入关键字过滤" />
 				<div>
@@ -27,7 +27,7 @@
 	</div>
 	<div class="tc-cell">
 		<div id="222" class="leno-dropdown" data-type="click">
-			<div class="leno-piece" data-toggle="dropdown">技术</div>
+			<div class="leno-piece" data-toggle="dropdown">技术<span class="zmdi zmdi-caret-down"></span></div>
 			<div class="leno-dropdown-menu select-menu">
 				<input class="leno-input" placeholder="输入关键字过滤" />
 				<div>
@@ -46,7 +46,7 @@
 	</div>
 	<div class="tc-cell">
 		<div id="333" class="leno-dropdown" data-type="click">
-			<div class="leno-piece" data-toggle="dropdown">预算</div>
+			<div class="leno-piece" data-toggle="dropdown">预算<span class="zmdi zmdi-caret-down"></span></div>
 			<div class="leno-dropdown-menu select-menu">
 				<div style="text-align: center;">
 				<input class="flat-input"  />---<input class="flat-input" /><a href="">确定</a>

@@ -26,10 +26,6 @@
 	width: 120px;
 	height: 120px;
 }
-.row-2 .leno-piece-btn-group {
-	position: relative;
-	top: -33px;
-}
 .user .row-2 ul li {
 	padding: 5px 0px;
 	list-style: none;
@@ -57,6 +53,7 @@
 							<li><a href="">经验</a></li>
 							<li><a href="">文章</a></li>
 							<li><a href="">团队</a></li>
+							<li><a href="">修改密码</a></li>
 						</ul>
 					</div>
 				</div>
@@ -87,7 +84,7 @@
 						</div>
 					</div>
 					<div class="row-2">
-						hello world
+						<fragment name="user_content" />
 					</div>
 				</div>
 			</div>
