@@ -4,14 +4,12 @@
 .bidding-form .leno-btn {
 	width: 100%;
 }
-
 .bidding-form label {
 	color: #999;
 	width: 60px;
 }
-
 .bidding-form input {
-	width: auto;
+	width: 130px;
 }
 </style>
 <div id="bidding-form" class="bidding-form">

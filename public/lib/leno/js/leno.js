@@ -1553,15 +1553,8 @@ var ImageUploader = (function() {
 			var url = e.target.result;
 			var pic = $('<div class="pic-show" data-id="'+file.size+'">'+
 						'<img src="'+url+'" title="单击查看大图" />'+
-						'<div title="点击删除该图片">删除</div>'+
-						'</div>');
-			pic.css({
-				display: 'inline-block',
-				height: '100px',
-				padding: '5px',
-				margin: '5px',
-				border: '1px solid grey'
-			}).prependTo(preview);
+						'<div title="点击删除该图片"><span>删除</span></div>'+
+						'</div>').appendTo(preview);
 			pic.find('img').click(function() {
 				leno.imgFullShow($(this));
 			}).css('height', '90px');
@@ -1575,14 +1568,6 @@ var ImageUploader = (function() {
 				}
 			}).hover(function() {
 				$(this).css('cursor', 'pointer');
-			}).css({
-				display: 'block',
-				color: 'white',
-				height: '20px',
-				position: 'relative',
-				top: '-20px',
-				textAlign: 'center',
-				backgroundColor: 'rgba(0, 0, 0, 0.7)'
 			});
 			$('.image-preview .tips').remove();
 			layer.get(upload.id).resize();

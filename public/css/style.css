@@ -51,6 +51,9 @@ body {
     .glb-header .menu>li {
         vertical-align: text-top;
     }
+    .glb-header .menu .search-wrapper {
+        margin-top: 9px;
+    }
     .glb-header .menu .search:active,
     .glb-header .menu .search:focus {
         width: 300px;
