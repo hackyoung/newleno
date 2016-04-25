@@ -1553,7 +1553,7 @@ var ImageUploader = (function() {
 			var url = e.target.result;
 			var pic = $('<div class="pic-show" data-id="'+file.size+'">'+
 						'<img src="'+url+'" title="单击查看大图" />'+
-						'<div title="点击删除该图片"><span>删除</span></div>'+
+						'<div title="点击删除该图片"><span class="zmdi zmdi-close"></span></div>'+
 						'</div>').appendTo(preview);
 			pic.find('img').click(function() {
 				leno.imgFullShow($(this));
@@ -1628,7 +1628,6 @@ var ImageUploader = (function() {
 				}
 			});
 		});
-
 		upload.upload.click(function() {
 			var files = upload.files;
 			if(leno.empty(files)) {
@@ -1674,29 +1673,19 @@ var ImageUploader = (function() {
 					data: data,
 					processData: false,
 					contentType: false,
-					success: function(data) {
-						try {
-							var ret = JSON.parse(data);
-							if(ret.status != 200) {
-								leno.alert(ret.message);
-								return;
-							}
-							if(typeof upload.image_url != 'object') {
-								upload.image_url = [];
-							}
-							upload.image_url.push(ret.data);
-							if(upload.callback.onSuccess(upload, ret)) {
-								$('[data-id='+file.size+']').remove();
-								delete upload.files[file.size];
-								uploading(upload, ++num);
-							}
-						} catch(e) {
-							leno.alert('系统错误');
-							console.log(e);
+					success: function(response) {
+						if(typeof upload.image_url != 'object') {
+							upload.image_url = [];
+						}
+						upload.image_url.push(response.responseText);
+						if(upload.callback.onSuccess(upload, response)) {
+							$('[data-id='+file.size+']').remove();
+							delete upload.files[file.size];
+							uploading(upload, ++num);
 						}
 					},
-					error: function(data) {
-						upload.callback.onError(data);
+					error: function(response) {
+						upload.callback.onError(response);
 					}
 				});
 			}
@@ -1717,133 +1706,6 @@ var ImageUploader = (function() {
 	};
 	upload.dft = 'default';
 	return upload;
-})();
-leno.imgEditor = (function() {
-	var imgEditor = function(opts) {
-		function add_to_preview(url, md5, preview, limit) {
-			if(preview.find('.img-item').length === limit) {
-				leno.alert('你只能在这里上传'+limit+'张图片');
-				return;
-			}
-			var item = $('<div class="img-item"></div>');
-			var img = new Image();
-			img.onload = function() {
-				Layer.get(opts.id).resize();
-			};
-			img.src = url+'&width=300';
-			$(img).attr('md5', md5).click(function() {
-				leno.imgFullShow($(this), url);
-			}).appendTo(item);
-			$('<div class="img-del">删除</div>').click(function() {
-				$(this).parent().remove();
-				Layer.get(opts.id).resize();
-			}).appendTo(item);
-			preview.append(item);
-		}
-		this.init = function(opts) {
-			var hold_id = opts.hold_id;
-			var get_class = opts.get_class;
-			var upload_url = opts.upload_url;
-			var get_url = opts.get_url;
-			var limit = opts.limit || 100000;
-			if(typeof opts.callback !== 'object') {
-				opts.callback = {};
-			}
-			opts.node = $(
-				'<div class="leno-img-editor leno-piece">'+
-					'<div class="lw-toolbox lie-toolbox">'+
-						'<button name="img-up" class="leno-btn-success">上传</button>'+
-						'<button name="img-em" class="leno-btn-alert">清空</button>'+
-						'<button name="img-save" class="leno-btn-success">保存</button>'+
-					'</div>'+
-					'<div class="img-preview">'+
-					'</div>'+
-				'</div>'
-			);
-			opts.callback.beforeShow = function(layer,after) {
-				$('#win').css('display', 'block');
-				var root = layer.content;
-				var preview = root.find('.img-preview').empty();
-				preview.empty();
-				$('#'+hold_id).find('img').each(function() {
-					var url = $(this).attr('src').replace(/&width=300/, '');
-					var md5 = $(this).attr('md5');
-					add_to_preview(url, md5, preview, limit);
-				});
-				after(layer);
-			};
-			opts.callback.afterShow = function(layer) {
-				var root = layer.content;
-				var images = {
-					md5: [],
-					url: []
-				};
-				root.find('[name=img-em]').click(function() {
-					leno.confirm('确定清空图片？', {
-						ok: '删除',
-						cancel: '不删除'
-					}, function(e) {
-						if(e) {
-							root.find('.img-preview').empty();
-							Layer.get(opts.id).resize();
-						}
-					});
-				});
-				root.find('[name=img-up]').click(function() {
-					var t = new ImageUploader({
-						id: 'img_up',
-						url: upload_url,
-						callback: {
-							onDone: function(upload) {
-								var preview = root.find('.img-preview');
-								var imgs = upload.image_url;
-								for(var i = 0; i < imgs.length; ++i) {
-									var url = get_url+'?md5='+imgs[i];
-									var md5 = imgs[i];
-									add_to_preview(url, md5,preview,limit);
-								}
-								Layer.get('img_up').hide();
-							}
-						}
-					});
-				});
-				root.find('[name=img-save]').click(function() {
-					var preview = root.find('.img-preview');
-					$('#'+hold_id).empty();
-					preview.find('img').each(function() {
-						images.url.push(
-							$.trim(
-								$(this).attr('src').
-								replace(/&width=300/, '')
-							)
-						);
-						images.md5.push($.trim($(this).attr('md5')));
-						$('<img class="'+get_class+'" src="'+$.trim($(this).attr('src'))+'" md5="'+$.trim($(this).attr('md5'))+'" />')
-						.click(function() {
-							leno.imgFullShow(
-								$(this), 
-								$(this).attr('src').replace(/width=300/, '')
-							);
-						}).appendTo($('#'+hold_id));
-					});
-					if(opts.save_url != null) {
-						$.post(opts.save_url, images, function(data) {
-							var ret = JSON.parse(data);
-							leno.alert(ret.message);
-							if(ret.status == 200) {
-								Layer.get(opts.id).hide();
-							}
-						});
-					} else {
-						Layer.get(opts.id).hide();
-					}
-				});
-			};
-			var win = Layer.win(opts);
-		}
-		this.init(opts);
-	}
-	return imgEditor;
 })();
 leno.editor = (function() {
 	var ViewConstructor = function(editor) {
@@ -2011,13 +1873,6 @@ leno.editor = (function() {
 		var html = ViewConstructor(this);
 		var editor = this;
 		editor.editorContent.getFrame().focus(function() {
-			console.log('hhh');
-			for(var i in layer.instance) {
-				var l = layer.get(i);
-				if(l.getType() == layer.TYPE_DROPDOWN) {
-					l.hide();
-				}
-			}
 			editor.focus = true;
 		});
 		window.onload = function () {
@@ -2569,6 +2424,15 @@ leno.editor = (function() {
 			var itemwrapper = document.createElement('ul');
 			toolbar.appendChild(itemwrapper);
 			addToView(itemwrapper, config.toolbar);
+			$(editor.editorContent.getDocument()).click(function() {
+				editor.focus();
+				for(var i in layer.instance) {
+					var l = layer.get(i);
+					if(l.getType() == layer.TYPE_DROPDOWN) {
+						l.hide();
+					}
+				}
+			});
 		},
 		items: {
 			paste: {
