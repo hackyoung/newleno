@@ -1557,7 +1557,7 @@ var ImageUploader = (function() {
 						'</div>').appendTo(preview);
 			pic.find('img').click(function() {
 				leno.imgFullShow($(this));
-			}).css('height', '90px');
+			});
 			pic.find('div').click(function() {
 				var idx = $(this).attr('name');
 				delete upload.files[file.size];

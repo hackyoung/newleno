@@ -1101,23 +1101,21 @@ select.flat-input:active {
     -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
     -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
 }
-.image-preview .pic-show>img {
-	width: 100%;
-}
 .image-preview .pic-show>div {
     color: red;
 	text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.6);
-    display: inline;
-	position: relative;
-	top: -100px;
-	float: right;
-	display: inline;
+    display: block;
+    margin-top: -33px;
+    margin-left: 3px;
     overflow: hidden;
     font-size: 15px;
 	font-size: 20px;
 }
 .image-preview .pic-show:hover {
     cursor: pointer;   
+}
+.image-preview .pic-show img {
+    height: 90px;
 }
 .image-preview .pic-show:hover>div:hover {
     cursor: pointer;
@@ -1421,6 +1419,24 @@ select.flat-input:active {
 }
 
 @media screen and (min-width: 0px) and (max-width: 768px) {
+    .l-win-close {
+        width: 20px;
+        height: 20px;
+        margin-left: calc(100% - 10px);
+        margin-top: -7px;
+    }
+    .l-win-close span {
+        line-height: 20px;
+        font-size: 13px;
+        top: -4px;
+    }
+    .image-preview .pic-show {
+        height: auto;
+    }
+    .image-preview .pic-show img {
+        height: auto;
+        width: 100%;
+    }
 	.leno-xs {
 		display: inline-block;
 	}
@@ -1463,7 +1479,6 @@ select.flat-input:active {
 	.leno-piece-common-none {
 		margin: 10px 0px;
 	}
-
 	hr {
 		border: 1px solid black;
 	}
