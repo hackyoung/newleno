@@ -123,6 +123,20 @@ abstract class Order implements ActiveRecordInterface
     protected $boss_deposit;
 
     /**
+     * The value for the done field.
+     * 交付时间
+     * @var        DateTime
+     */
+    protected $done;
+
+    /**
+     * The value for the status field.
+     * 状态, init|boss_promise|worker_promise|doing|test|done|exception
+     * @var        string
+     */
+    protected $status;
+
+    /**
      * The value for the created field.
      * 订单的创建时间
      * @var        DateTime
@@ -481,13 +495,43 @@ abstract class Order implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [done] column value.
+     * 交付时间
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getDone($format = NULL)
+    {
+        if ($format === null) {
+            return $this->done;
+        } else {
+            return $this->done instanceof \DateTimeInterface ? $this->done->format($format) : null;
+        }
+    }
+
+    /**
+     * Get the [status] column value.
+     * 状态, init|boss_promise|worker_promise|doing|test|done|exception
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
      * Get the [optionally formatted] temporal [created] column value.
      * 订单的创建时间
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -507,7 +551,7 @@ abstract class Order implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -527,7 +571,7 @@ abstract class Order implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -547,7 +591,7 @@ abstract class Order implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -567,7 +611,7 @@ abstract class Order implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -753,6 +797,46 @@ abstract class Order implements ActiveRecordInterface
     } // setBossDeposit()
 
     /**
+     * Sets the value of [done] column to a normalized version of the date/time value specified.
+     * 交付时间
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Model\Order The current object (for fluent API support)
+     */
+    public function setDone($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->done !== null || $dt !== null) {
+            if ($this->done === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->done->format("Y-m-d H:i:s")) {
+                $this->done = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[OrderTableMap::COL_DONE] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setDone()
+
+    /**
+     * Set the value of [status] column.
+     * 状态, init|boss_promise|worker_promise|doing|test|done|exception
+     * @param string $v new value
+     * @return $this|\Model\Order The current object (for fluent API support)
+     */
+    public function setStatus($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->status !== $v) {
+            $this->status = $v;
+            $this->modifiedColumns[OrderTableMap::COL_STATUS] = true;
+        }
+
+        return $this;
+    } // setStatus()
+
+    /**
      * Sets the value of [created] column to a normalized version of the date/time value specified.
      * 订单的创建时间
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -912,34 +996,25 @@ abstract class Order implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : OrderTableMap::translateFieldName('BossDeposit', TableMap::TYPE_PHPNAME, $indexType)];
             $this->boss_deposit = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : OrderTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : OrderTableMap::translateFieldName('Done', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->done = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : OrderTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->status = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : OrderTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : OrderTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : OrderTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : OrderTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : OrderTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
             $this->removed = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : OrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : OrderTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : OrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : OrderTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
@@ -949,7 +1024,7 @@ abstract class Order implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 13; // 13 = OrderTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 15; // 15 = OrderTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Model\\Order'), 0, $e);
@@ -1186,6 +1261,15 @@ abstract class Order implements ActiveRecordInterface
         if (null !== $this->order_id) {
             throw new PropelException('Cannot insert a value for auto-increment primary key (' . OrderTableMap::COL_ORDER_ID . ')');
         }
+        if (null === $this->order_id) {
+            try {
+                $dataFetcher = $con->query("SELECT nextval('order_order_id_seq')");
+                $this->order_id = (int) $dataFetcher->fetchColumn();
+            } catch (Exception $e) {
+                throw new PropelException('Unable to get sequence id.', 0, $e);
+            }
+        }
+
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(OrderTableMap::COL_ORDER_ID)) {
@@ -1211,6 +1295,12 @@ abstract class Order implements ActiveRecordInterface
         }
         if ($this->isColumnModified(OrderTableMap::COL_BOSS_DEPOSIT)) {
             $modifiedColumns[':p' . $index++]  = 'boss_deposit';
+        }
+        if ($this->isColumnModified(OrderTableMap::COL_DONE)) {
+            $modifiedColumns[':p' . $index++]  = 'done';
+        }
+        if ($this->isColumnModified(OrderTableMap::COL_STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'status';
         }
         if ($this->isColumnModified(OrderTableMap::COL_CREATED)) {
             $modifiedColumns[':p' . $index++]  = 'created';
@@ -1262,6 +1352,12 @@ abstract class Order implements ActiveRecordInterface
                     case 'boss_deposit':
                         $stmt->bindValue($identifier, $this->boss_deposit, PDO::PARAM_INT);
                         break;
+                    case 'done':
+                        $stmt->bindValue($identifier, $this->done ? $this->done->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        break;
+                    case 'status':
+                        $stmt->bindValue($identifier, $this->status, PDO::PARAM_STR);
+                        break;
                     case 'created':
                         $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
@@ -1284,13 +1380,6 @@ abstract class Order implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setOrderId($pk);
 
         $this->setNew(false);
     }
@@ -1364,18 +1453,24 @@ abstract class Order implements ActiveRecordInterface
                 return $this->getBossDeposit();
                 break;
             case 8:
-                return $this->getCreated();
+                return $this->getDone();
                 break;
             case 9:
-                return $this->getUpdated();
+                return $this->getStatus();
                 break;
             case 10:
-                return $this->getRemoved();
+                return $this->getCreated();
                 break;
             case 11:
-                return $this->getCreatedAt();
+                return $this->getUpdated();
                 break;
             case 12:
+                return $this->getRemoved();
+                break;
+            case 13:
+                return $this->getCreatedAt();
+                break;
+            case 14:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1416,18 +1511,16 @@ abstract class Order implements ActiveRecordInterface
             $keys[5] => $this->getProgress(),
             $keys[6] => $this->getWorkerDeposit(),
             $keys[7] => $this->getBossDeposit(),
-            $keys[8] => $this->getCreated(),
-            $keys[9] => $this->getUpdated(),
-            $keys[10] => $this->getRemoved(),
-            $keys[11] => $this->getCreatedAt(),
-            $keys[12] => $this->getUpdatedAt(),
+            $keys[8] => $this->getDone(),
+            $keys[9] => $this->getStatus(),
+            $keys[10] => $this->getCreated(),
+            $keys[11] => $this->getUpdated(),
+            $keys[12] => $this->getRemoved(),
+            $keys[13] => $this->getCreatedAt(),
+            $keys[14] => $this->getUpdatedAt(),
         );
         if ($result[$keys[8]] instanceof \DateTime) {
             $result[$keys[8]] = $result[$keys[8]]->format('c');
-        }
-
-        if ($result[$keys[9]] instanceof \DateTime) {
-            $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
 
         if ($result[$keys[10]] instanceof \DateTime) {
@@ -1440,6 +1533,14 @@ abstract class Order implements ActiveRecordInterface
 
         if ($result[$keys[12]] instanceof \DateTime) {
             $result[$keys[12]] = $result[$keys[12]]->format('c');
+        }
+
+        if ($result[$keys[13]] instanceof \DateTime) {
+            $result[$keys[13]] = $result[$keys[13]]->format('c');
+        }
+
+        if ($result[$keys[14]] instanceof \DateTime) {
+            $result[$keys[14]] = $result[$keys[14]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1537,18 +1638,24 @@ abstract class Order implements ActiveRecordInterface
                 $this->setBossDeposit($value);
                 break;
             case 8:
-                $this->setCreated($value);
+                $this->setDone($value);
                 break;
             case 9:
-                $this->setUpdated($value);
+                $this->setStatus($value);
                 break;
             case 10:
-                $this->setRemoved($value);
+                $this->setCreated($value);
                 break;
             case 11:
-                $this->setCreatedAt($value);
+                $this->setUpdated($value);
                 break;
             case 12:
+                $this->setRemoved($value);
+                break;
+            case 13:
+                $this->setCreatedAt($value);
+                break;
+            case 14:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1602,19 +1709,25 @@ abstract class Order implements ActiveRecordInterface
             $this->setBossDeposit($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setCreated($arr[$keys[8]]);
+            $this->setDone($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setUpdated($arr[$keys[9]]);
+            $this->setStatus($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setRemoved($arr[$keys[10]]);
+            $this->setCreated($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setCreatedAt($arr[$keys[11]]);
+            $this->setUpdated($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setUpdatedAt($arr[$keys[12]]);
+            $this->setRemoved($arr[$keys[12]]);
+        }
+        if (array_key_exists($keys[13], $arr)) {
+            $this->setCreatedAt($arr[$keys[13]]);
+        }
+        if (array_key_exists($keys[14], $arr)) {
+            $this->setUpdatedAt($arr[$keys[14]]);
         }
     }
 
@@ -1680,6 +1793,12 @@ abstract class Order implements ActiveRecordInterface
         }
         if ($this->isColumnModified(OrderTableMap::COL_BOSS_DEPOSIT)) {
             $criteria->add(OrderTableMap::COL_BOSS_DEPOSIT, $this->boss_deposit);
+        }
+        if ($this->isColumnModified(OrderTableMap::COL_DONE)) {
+            $criteria->add(OrderTableMap::COL_DONE, $this->done);
+        }
+        if ($this->isColumnModified(OrderTableMap::COL_STATUS)) {
+            $criteria->add(OrderTableMap::COL_STATUS, $this->status);
         }
         if ($this->isColumnModified(OrderTableMap::COL_CREATED)) {
             $criteria->add(OrderTableMap::COL_CREATED, $this->created);
@@ -1789,6 +1908,8 @@ abstract class Order implements ActiveRecordInterface
         $copyObj->setProgress($this->getProgress());
         $copyObj->setWorkerDeposit($this->getWorkerDeposit());
         $copyObj->setBossDeposit($this->getBossDeposit());
+        $copyObj->setDone($this->getDone());
+        $copyObj->setStatus($this->getStatus());
         $copyObj->setCreated($this->getCreated());
         $copyObj->setUpdated($this->getUpdated());
         $copyObj->setRemoved($this->getRemoved());
@@ -1953,6 +2074,8 @@ abstract class Order implements ActiveRecordInterface
         $this->progress = null;
         $this->worker_deposit = null;
         $this->boss_deposit = null;
+        $this->done = null;
+        $this->status = null;
         $this->created = null;
         $this->updated = null;
         $this->removed = null;

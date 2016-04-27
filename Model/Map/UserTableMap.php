@@ -59,7 +59,7 @@ class UserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 11;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 11;
 
     /**
      * the column name for the id field
@@ -85,6 +85,11 @@ class UserTableMap extends TableMap
      * the column name for the name field
      */
     const COL_NAME = 'user.name';
+
+    /**
+     * the column name for the portrait field
+     */
+    const COL_PORTRAIT = 'user.portrait';
 
     /**
      * the column name for the age field
@@ -133,11 +138,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Email', 'Name', 'Age', 'Password', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'email', 'name', 'age', 'password', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_EMAIL, UserTableMap::COL_NAME, UserTableMap::COL_AGE, UserTableMap::COL_PASSWORD, UserTableMap::COL_CREATED, UserTableMap::COL_UPDATED, UserTableMap::COL_REMOVED, UserTableMap::COL_CREATED_AT, UserTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'email', 'name', 'age', 'password', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'Email', 'Name', 'Portrait', 'Age', 'Password', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'email', 'name', 'portrait', 'age', 'password', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_EMAIL, UserTableMap::COL_NAME, UserTableMap::COL_PORTRAIT, UserTableMap::COL_AGE, UserTableMap::COL_PASSWORD, UserTableMap::COL_CREATED, UserTableMap::COL_UPDATED, UserTableMap::COL_REMOVED, UserTableMap::COL_CREATED_AT, UserTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'email', 'name', 'portrait', 'age', 'password', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -147,11 +152,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Email' => 1, 'Name' => 2, 'Age' => 3, 'Password' => 4, 'Created' => 5, 'Updated' => 6, 'Removed' => 7, 'CreatedAt' => 8, 'UpdatedAt' => 9, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'email' => 1, 'name' => 2, 'age' => 3, 'password' => 4, 'created' => 5, 'updated' => 6, 'removed' => 7, 'createdAt' => 8, 'updatedAt' => 9, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_EMAIL => 1, UserTableMap::COL_NAME => 2, UserTableMap::COL_AGE => 3, UserTableMap::COL_PASSWORD => 4, UserTableMap::COL_CREATED => 5, UserTableMap::COL_UPDATED => 6, UserTableMap::COL_REMOVED => 7, UserTableMap::COL_CREATED_AT => 8, UserTableMap::COL_UPDATED_AT => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'email' => 1, 'name' => 2, 'age' => 3, 'password' => 4, 'created' => 5, 'updated' => 6, 'removed' => 7, 'created_at' => 8, 'updated_at' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Email' => 1, 'Name' => 2, 'Portrait' => 3, 'Age' => 4, 'Password' => 5, 'Created' => 6, 'Updated' => 7, 'Removed' => 8, 'CreatedAt' => 9, 'UpdatedAt' => 10, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'email' => 1, 'name' => 2, 'portrait' => 3, 'age' => 4, 'password' => 5, 'created' => 6, 'updated' => 7, 'removed' => 8, 'createdAt' => 9, 'updatedAt' => 10, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_EMAIL => 1, UserTableMap::COL_NAME => 2, UserTableMap::COL_PORTRAIT => 3, UserTableMap::COL_AGE => 4, UserTableMap::COL_PASSWORD => 5, UserTableMap::COL_CREATED => 6, UserTableMap::COL_UPDATED => 7, UserTableMap::COL_REMOVED => 8, UserTableMap::COL_CREATED_AT => 9, UserTableMap::COL_UPDATED_AT => 10, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'email' => 1, 'name' => 2, 'portrait' => 3, 'age' => 4, 'password' => 5, 'created' => 6, 'updated' => 7, 'removed' => 8, 'created_at' => 9, 'updated_at' => 10, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, )
     );
 
     /**
@@ -170,10 +175,12 @@ class UserTableMap extends TableMap
         $this->setClassName('\\Model\\User');
         $this->setPackage('Model');
         $this->setUseIdGenerator(true);
+        $this->setPrimaryKeyMethodInfo('user_id_seq');
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('email', 'Email', 'VARCHAR', true, 64, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 64, null);
+        $this->addColumn('portrait', 'Portrait', 'VARCHAR', false, 1024, null);
         $this->addColumn('age', 'Age', 'INTEGER', false, null, null);
         $this->addColumn('password', 'Password', 'VARCHAR', false, 32, null);
         $this->addColumn('created', 'Created', 'TIMESTAMP', true, null, null);
@@ -195,6 +202,13 @@ class UserTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Tasks', false);
+        $this->addRelation('Bidding', '\\Model\\Bidding', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':user_id',
+    1 => ':id',
+  ),
+), null, null, 'Biddings', false);
         $this->addRelation('Order', '\\Model\\Order', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -366,6 +380,7 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_ID);
             $criteria->addSelectColumn(UserTableMap::COL_EMAIL);
             $criteria->addSelectColumn(UserTableMap::COL_NAME);
+            $criteria->addSelectColumn(UserTableMap::COL_PORTRAIT);
             $criteria->addSelectColumn(UserTableMap::COL_AGE);
             $criteria->addSelectColumn(UserTableMap::COL_PASSWORD);
             $criteria->addSelectColumn(UserTableMap::COL_CREATED);
@@ -377,6 +392,7 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.email');
             $criteria->addSelectColumn($alias . '.name');
+            $criteria->addSelectColumn($alias . '.portrait');
             $criteria->addSelectColumn($alias . '.age');
             $criteria->addSelectColumn($alias . '.password');
             $criteria->addSelectColumn($alias . '.created');

@@ -5,18 +5,18 @@ namespace Model\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Model\TaskTech as ChildTaskTech;
-use Model\TaskTechQuery as ChildTaskTechQuery;
-use Model\Tech as ChildTech;
-use Model\TechQuery as ChildTechQuery;
-use Model\Map\TaskTechTableMap;
-use Model\Map\TechTableMap;
+use Model\Bidding as ChildBidding;
+use Model\BiddingQuery as ChildBiddingQuery;
+use Model\Task as ChildTask;
+use Model\TaskQuery as ChildTaskQuery;
+use Model\User as ChildUser;
+use Model\UserQuery as ChildUserQuery;
+use Model\Map\BiddingTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -26,18 +26,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'tech' table.
+ * Base class that represents a row from the 'bidding' table.
  *
- * 技术表
+ * 竞价表
  *
 * @package    propel.generator.Model.Base
 */
-abstract class Tech implements ActiveRecordInterface
+abstract class Bidding implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Model\\Map\\TechTableMap';
+    const TABLE_MAP = '\\Model\\Map\\BiddingTableMap';
 
 
     /**
@@ -74,50 +74,64 @@ abstract class Tech implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the label field.
-     * 技术的标签名
-     * @var        string
-     */
-    protected $label;
-
-    /**
-     * The value for the description field.
-     * 描述信息
-     * @var        string
-     */
-    protected $description;
-
-    /**
-     * The value for the url field.
-     * 指向该技术的官方网站
-     * @var        string
-     */
-    protected $url;
-
-    /**
-     * The value for the hot field.
-     * 技术的热度
+     * The value for the task_id field.
+     * 任务ID
      * @var        int
      */
-    protected $hot;
+    protected $task_id;
+
+    /**
+     * The value for the user_id field.
+     * 发起竞价的用户ID
+     * @var        int
+     */
+    protected $user_id;
+
+    /**
+     * The value for the price field.
+     * 价格
+     * @var        int
+     */
+    protected $price;
+
+    /**
+     * The value for the needed field.
+     * 需要的工期,单位小时
+     * @var        int
+     */
+    protected $needed;
+
+    /**
+     * The value for the message field.
+     * 留言
+     * @var        string
+     */
+    protected $message;
+
+    /**
+     * The value for the status field.
+     * 竞价状态，init|preorder|ordered
+     * @var        string
+     */
+    protected $status;
 
     /**
      * The value for the created field.
-     * 技术的创建时间
+     *
      * @var        DateTime
      */
     protected $created;
 
     /**
      * The value for the updated field.
-     * 技术的更新时间
+     *
      * @var        DateTime
      */
     protected $updated;
 
     /**
      * The value for the removed field.
-     * 技术的删除时间
+     *
      * @var        DateTime
      */
     protected $removed;
@@ -137,10 +151,14 @@ abstract class Tech implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ObjectCollection|ChildTaskTech[] Collection to store aggregation of ChildTaskTech objects.
+     * @var        ChildTask
      */
-    protected $collTaskTeches;
-    protected $collTaskTechesPartial;
+    protected $aTask;
+
+    /**
+     * @var        ChildUser
+     */
+    protected $aUser;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -151,13 +169,7 @@ abstract class Tech implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildTaskTech[]
-     */
-    protected $taskTechesScheduledForDeletion = null;
-
-    /**
-     * Initializes internal state of Model\Base\Tech object.
+     * Initializes internal state of Model\Base\Bidding object.
      */
     public function __construct()
     {
@@ -252,9 +264,9 @@ abstract class Tech implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Tech</code> instance.  If
-     * <code>obj</code> is an instance of <code>Tech</code>, delegates to
-     * <code>equals(Tech)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Bidding</code> instance.  If
+     * <code>obj</code> is an instance of <code>Bidding</code>, delegates to
+     * <code>equals(Bidding)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -320,7 +332,7 @@ abstract class Tech implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Tech The current object, for fluid interface
+     * @return $this|Bidding The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -392,48 +404,68 @@ abstract class Tech implements ActiveRecordInterface
     }
 
     /**
-     * Get the [label] column value.
-     * 技术的标签名
-     * @return string
-     */
-    public function getLabel()
-    {
-        return $this->label;
-    }
-
-    /**
-     * Get the [description] column value.
-     * 描述信息
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Get the [url] column value.
-     * 指向该技术的官方网站
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * Get the [hot] column value.
-     * 技术的热度
+     * Get the [task_id] column value.
+     * 任务ID
      * @return int
      */
-    public function getHot()
+    public function getTaskId()
     {
-        return $this->hot;
+        return $this->task_id;
+    }
+
+    /**
+     * Get the [user_id] column value.
+     * 发起竞价的用户ID
+     * @return int
+     */
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * Get the [price] column value.
+     * 价格
+     * @return int
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Get the [needed] column value.
+     * 需要的工期,单位小时
+     * @return int
+     */
+    public function getNeeded()
+    {
+        return $this->needed;
+    }
+
+    /**
+     * Get the [message] column value.
+     * 留言
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Get the [status] column value.
+     * 竞价状态，init|preorder|ordered
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
      * Get the [optionally formatted] temporal [created] column value.
-     * 技术的创建时间
+     *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
@@ -453,7 +485,7 @@ abstract class Tech implements ActiveRecordInterface
 
     /**
      * Get the [optionally formatted] temporal [updated] column value.
-     * 技术的更新时间
+     *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
@@ -473,7 +505,7 @@ abstract class Tech implements ActiveRecordInterface
 
     /**
      * Get the [optionally formatted] temporal [removed] column value.
-     * 技术的删除时间
+     *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
@@ -535,7 +567,7 @@ abstract class Tech implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -545,98 +577,146 @@ abstract class Tech implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[TechTableMap::COL_ID] = true;
+            $this->modifiedColumns[BiddingTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [label] column.
-     * 技术的标签名
-     * @param string $v new value
-     * @return $this|\Model\Tech The current object (for fluent API support)
-     */
-    public function setLabel($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->label !== $v) {
-            $this->label = $v;
-            $this->modifiedColumns[TechTableMap::COL_LABEL] = true;
-        }
-
-        return $this;
-    } // setLabel()
-
-    /**
-     * Set the value of [description] column.
-     * 描述信息
-     * @param string $v new value
-     * @return $this|\Model\Tech The current object (for fluent API support)
-     */
-    public function setDescription($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->description !== $v) {
-            $this->description = $v;
-            $this->modifiedColumns[TechTableMap::COL_DESCRIPTION] = true;
-        }
-
-        return $this;
-    } // setDescription()
-
-    /**
-     * Set the value of [url] column.
-     * 指向该技术的官方网站
-     * @param string $v new value
-     * @return $this|\Model\Tech The current object (for fluent API support)
-     */
-    public function setUrl($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->url !== $v) {
-            $this->url = $v;
-            $this->modifiedColumns[TechTableMap::COL_URL] = true;
-        }
-
-        return $this;
-    } // setUrl()
-
-    /**
-     * Set the value of [hot] column.
-     * 技术的热度
+     * Set the value of [task_id] column.
+     * 任务ID
      * @param int $v new value
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      */
-    public function setHot($v)
+    public function setTaskId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->hot !== $v) {
-            $this->hot = $v;
-            $this->modifiedColumns[TechTableMap::COL_HOT] = true;
+        if ($this->task_id !== $v) {
+            $this->task_id = $v;
+            $this->modifiedColumns[BiddingTableMap::COL_TASK_ID] = true;
+        }
+
+        if ($this->aTask !== null && $this->aTask->getId() !== $v) {
+            $this->aTask = null;
         }
 
         return $this;
-    } // setHot()
+    } // setTaskId()
+
+    /**
+     * Set the value of [user_id] column.
+     * 发起竞价的用户ID
+     * @param int $v new value
+     * @return $this|\Model\Bidding The current object (for fluent API support)
+     */
+    public function setUserId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[BiddingTableMap::COL_USER_ID] = true;
+        }
+
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
+        }
+
+        return $this;
+    } // setUserId()
+
+    /**
+     * Set the value of [price] column.
+     * 价格
+     * @param int $v new value
+     * @return $this|\Model\Bidding The current object (for fluent API support)
+     */
+    public function setPrice($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->price !== $v) {
+            $this->price = $v;
+            $this->modifiedColumns[BiddingTableMap::COL_PRICE] = true;
+        }
+
+        return $this;
+    } // setPrice()
+
+    /**
+     * Set the value of [needed] column.
+     * 需要的工期,单位小时
+     * @param int $v new value
+     * @return $this|\Model\Bidding The current object (for fluent API support)
+     */
+    public function setNeeded($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->needed !== $v) {
+            $this->needed = $v;
+            $this->modifiedColumns[BiddingTableMap::COL_NEEDED] = true;
+        }
+
+        return $this;
+    } // setNeeded()
+
+    /**
+     * Set the value of [message] column.
+     * 留言
+     * @param string $v new value
+     * @return $this|\Model\Bidding The current object (for fluent API support)
+     */
+    public function setMessage($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->message !== $v) {
+            $this->message = $v;
+            $this->modifiedColumns[BiddingTableMap::COL_MESSAGE] = true;
+        }
+
+        return $this;
+    } // setMessage()
+
+    /**
+     * Set the value of [status] column.
+     * 竞价状态，init|preorder|ordered
+     * @param string $v new value
+     * @return $this|\Model\Bidding The current object (for fluent API support)
+     */
+    public function setStatus($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->status !== $v) {
+            $this->status = $v;
+            $this->modifiedColumns[BiddingTableMap::COL_STATUS] = true;
+        }
+
+        return $this;
+    } // setStatus()
 
     /**
      * Sets the value of [created] column to a normalized version of the date/time value specified.
-     * 技术的创建时间
+     *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      */
     public function setCreated($v)
     {
@@ -644,7 +724,7 @@ abstract class Tech implements ActiveRecordInterface
         if ($this->created !== null || $dt !== null) {
             if ($this->created === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->created->format("Y-m-d H:i:s")) {
                 $this->created = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[TechTableMap::COL_CREATED] = true;
+                $this->modifiedColumns[BiddingTableMap::COL_CREATED] = true;
             }
         } // if either are not null
 
@@ -653,10 +733,10 @@ abstract class Tech implements ActiveRecordInterface
 
     /**
      * Sets the value of [updated] column to a normalized version of the date/time value specified.
-     * 技术的更新时间
+     *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      */
     public function setUpdated($v)
     {
@@ -664,7 +744,7 @@ abstract class Tech implements ActiveRecordInterface
         if ($this->updated !== null || $dt !== null) {
             if ($this->updated === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->updated->format("Y-m-d H:i:s")) {
                 $this->updated = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[TechTableMap::COL_UPDATED] = true;
+                $this->modifiedColumns[BiddingTableMap::COL_UPDATED] = true;
             }
         } // if either are not null
 
@@ -673,10 +753,10 @@ abstract class Tech implements ActiveRecordInterface
 
     /**
      * Sets the value of [removed] column to a normalized version of the date/time value specified.
-     * 技术的删除时间
+     *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      */
     public function setRemoved($v)
     {
@@ -684,7 +764,7 @@ abstract class Tech implements ActiveRecordInterface
         if ($this->removed !== null || $dt !== null) {
             if ($this->removed === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->removed->format("Y-m-d H:i:s")) {
                 $this->removed = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[TechTableMap::COL_REMOVED] = true;
+                $this->modifiedColumns[BiddingTableMap::COL_REMOVED] = true;
             }
         } // if either are not null
 
@@ -696,7 +776,7 @@ abstract class Tech implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -704,7 +784,7 @@ abstract class Tech implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->created_at->format("Y-m-d H:i:s")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[TechTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[BiddingTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -716,7 +796,7 @@ abstract class Tech implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -724,7 +804,7 @@ abstract class Tech implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->updated_at->format("Y-m-d H:i:s")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[TechTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[BiddingTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -767,34 +847,40 @@ abstract class Tech implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : TechTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : BiddingTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TechTableMap::translateFieldName('Label', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->label = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BiddingTableMap::translateFieldName('TaskId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->task_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : TechTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->description = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BiddingTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : TechTableMap::translateFieldName('Url', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->url = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : BiddingTableMap::translateFieldName('Price', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->price = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : TechTableMap::translateFieldName('Hot', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->hot = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : BiddingTableMap::translateFieldName('Needed', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->needed = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : TechTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : BiddingTableMap::translateFieldName('Message', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->message = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : BiddingTableMap::translateFieldName('Status', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->status = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : BiddingTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TechTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : BiddingTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TechTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : BiddingTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
             $this->removed = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TechTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : BiddingTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TechTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : BiddingTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
@@ -804,10 +890,10 @@ abstract class Tech implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = TechTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 12; // 12 = BiddingTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Model\\Tech'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Model\\Bidding'), 0, $e);
         }
     }
 
@@ -826,6 +912,12 @@ abstract class Tech implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aTask !== null && $this->task_id !== $this->aTask->getId()) {
+            $this->aTask = null;
+        }
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
+            $this->aUser = null;
+        }
     } // ensureConsistency
 
     /**
@@ -849,13 +941,13 @@ abstract class Tech implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(TechTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(BiddingTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildTechQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildBiddingQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -865,8 +957,8 @@ abstract class Tech implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collTaskTeches = null;
-
+            $this->aTask = null;
+            $this->aUser = null;
         } // if (deep)
     }
 
@@ -876,8 +968,8 @@ abstract class Tech implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Tech::setDeleted()
-     * @see Tech::isDeleted()
+     * @see Bidding::setDeleted()
+     * @see Bidding::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -886,11 +978,11 @@ abstract class Tech implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(TechTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(BiddingTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildTechQuery::create()
+            $deleteQuery = ChildBiddingQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -921,7 +1013,7 @@ abstract class Tech implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(TechTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(BiddingTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -931,16 +1023,16 @@ abstract class Tech implements ActiveRecordInterface
                 $ret = $ret && $this->preInsert($con);
                 // timestampable behavior
 
-                if (!$this->isColumnModified(TechTableMap::COL_CREATED_AT)) {
+                if (!$this->isColumnModified(BiddingTableMap::COL_CREATED_AT)) {
                     $this->setCreatedAt(time());
                 }
-                if (!$this->isColumnModified(TechTableMap::COL_UPDATED_AT)) {
+                if (!$this->isColumnModified(BiddingTableMap::COL_UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(TechTableMap::COL_UPDATED_AT)) {
+                if ($this->isModified() && !$this->isColumnModified(BiddingTableMap::COL_UPDATED_AT)) {
                     $this->setUpdatedAt(time());
                 }
             }
@@ -952,7 +1044,7 @@ abstract class Tech implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                TechTableMap::addInstanceToPool($this);
+                BiddingTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -978,6 +1070,25 @@ abstract class Tech implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aTask !== null) {
+                if ($this->aTask->isModified() || $this->aTask->isNew()) {
+                    $affectedRows += $this->aTask->save($con);
+                }
+                $this->setTask($this->aTask);
+            }
+
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
+                }
+                $this->setUser($this->aUser);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -987,23 +1098,6 @@ abstract class Tech implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->taskTechesScheduledForDeletion !== null) {
-                if (!$this->taskTechesScheduledForDeletion->isEmpty()) {
-                    \Model\TaskTechQuery::create()
-                        ->filterByPrimaryKeys($this->taskTechesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->taskTechesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collTaskTeches !== null) {
-                foreach ($this->collTaskTeches as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -1026,13 +1120,13 @@ abstract class Tech implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[TechTableMap::COL_ID] = true;
+        $this->modifiedColumns[BiddingTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . TechTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . BiddingTableMap::COL_ID . ')');
         }
         if (null === $this->id) {
             try {
-                $dataFetcher = $con->query("SELECT nextval('tech_id_seq')");
+                $dataFetcher = $con->query("SELECT nextval('bidding_id_seq')");
                 $this->id = (int) $dataFetcher->fetchColumn();
             } catch (Exception $e) {
                 throw new PropelException('Unable to get sequence id.', 0, $e);
@@ -1041,39 +1135,45 @@ abstract class Tech implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(TechTableMap::COL_ID)) {
+        if ($this->isColumnModified(BiddingTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(TechTableMap::COL_LABEL)) {
-            $modifiedColumns[':p' . $index++]  = 'label';
+        if ($this->isColumnModified(BiddingTableMap::COL_TASK_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'task_id';
         }
-        if ($this->isColumnModified(TechTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'description';
+        if ($this->isColumnModified(BiddingTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(TechTableMap::COL_URL)) {
-            $modifiedColumns[':p' . $index++]  = 'url';
+        if ($this->isColumnModified(BiddingTableMap::COL_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = 'price';
         }
-        if ($this->isColumnModified(TechTableMap::COL_HOT)) {
-            $modifiedColumns[':p' . $index++]  = 'hot';
+        if ($this->isColumnModified(BiddingTableMap::COL_NEEDED)) {
+            $modifiedColumns[':p' . $index++]  = 'needed';
         }
-        if ($this->isColumnModified(TechTableMap::COL_CREATED)) {
+        if ($this->isColumnModified(BiddingTableMap::COL_MESSAGE)) {
+            $modifiedColumns[':p' . $index++]  = 'message';
+        }
+        if ($this->isColumnModified(BiddingTableMap::COL_STATUS)) {
+            $modifiedColumns[':p' . $index++]  = 'status';
+        }
+        if ($this->isColumnModified(BiddingTableMap::COL_CREATED)) {
             $modifiedColumns[':p' . $index++]  = 'created';
         }
-        if ($this->isColumnModified(TechTableMap::COL_UPDATED)) {
+        if ($this->isColumnModified(BiddingTableMap::COL_UPDATED)) {
             $modifiedColumns[':p' . $index++]  = 'updated';
         }
-        if ($this->isColumnModified(TechTableMap::COL_REMOVED)) {
+        if ($this->isColumnModified(BiddingTableMap::COL_REMOVED)) {
             $modifiedColumns[':p' . $index++]  = 'removed';
         }
-        if ($this->isColumnModified(TechTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(BiddingTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(TechTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(BiddingTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO tech (%s) VALUES (%s)',
+            'INSERT INTO bidding (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1085,17 +1185,23 @@ abstract class Tech implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'label':
-                        $stmt->bindValue($identifier, $this->label, PDO::PARAM_STR);
+                    case 'task_id':
+                        $stmt->bindValue($identifier, $this->task_id, PDO::PARAM_INT);
                         break;
-                    case 'description':
-                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
-                    case 'url':
-                        $stmt->bindValue($identifier, $this->url, PDO::PARAM_STR);
+                    case 'price':
+                        $stmt->bindValue($identifier, $this->price, PDO::PARAM_INT);
                         break;
-                    case 'hot':
-                        $stmt->bindValue($identifier, $this->hot, PDO::PARAM_INT);
+                    case 'needed':
+                        $stmt->bindValue($identifier, $this->needed, PDO::PARAM_INT);
+                        break;
+                    case 'message':
+                        $stmt->bindValue($identifier, $this->message, PDO::PARAM_STR);
+                        break;
+                    case 'status':
+                        $stmt->bindValue($identifier, $this->status, PDO::PARAM_STR);
                         break;
                     case 'created':
                         $stmt->bindValue($identifier, $this->created ? $this->created->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
@@ -1151,7 +1257,7 @@ abstract class Tech implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = TechTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = BiddingTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1171,30 +1277,36 @@ abstract class Tech implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getLabel();
+                return $this->getTaskId();
                 break;
             case 2:
-                return $this->getDescription();
+                return $this->getUserId();
                 break;
             case 3:
-                return $this->getUrl();
+                return $this->getPrice();
                 break;
             case 4:
-                return $this->getHot();
+                return $this->getNeeded();
                 break;
             case 5:
-                return $this->getCreated();
+                return $this->getMessage();
                 break;
             case 6:
-                return $this->getUpdated();
+                return $this->getStatus();
                 break;
             case 7:
-                return $this->getRemoved();
+                return $this->getCreated();
                 break;
             case 8:
-                return $this->getCreatedAt();
+                return $this->getUpdated();
                 break;
             case 9:
+                return $this->getRemoved();
+                break;
+            case 10:
+                return $this->getCreatedAt();
+                break;
+            case 11:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1221,31 +1333,25 @@ abstract class Tech implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Tech'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['Bidding'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Tech'][$this->hashCode()] = true;
-        $keys = TechTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['Bidding'][$this->hashCode()] = true;
+        $keys = BiddingTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getLabel(),
-            $keys[2] => $this->getDescription(),
-            $keys[3] => $this->getUrl(),
-            $keys[4] => $this->getHot(),
-            $keys[5] => $this->getCreated(),
-            $keys[6] => $this->getUpdated(),
-            $keys[7] => $this->getRemoved(),
-            $keys[8] => $this->getCreatedAt(),
-            $keys[9] => $this->getUpdatedAt(),
+            $keys[1] => $this->getTaskId(),
+            $keys[2] => $this->getUserId(),
+            $keys[3] => $this->getPrice(),
+            $keys[4] => $this->getNeeded(),
+            $keys[5] => $this->getMessage(),
+            $keys[6] => $this->getStatus(),
+            $keys[7] => $this->getCreated(),
+            $keys[8] => $this->getUpdated(),
+            $keys[9] => $this->getRemoved(),
+            $keys[10] => $this->getCreatedAt(),
+            $keys[11] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[5]] instanceof \DateTime) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
-        }
-
-        if ($result[$keys[6]] instanceof \DateTime) {
-            $result[$keys[6]] = $result[$keys[6]]->format('c');
-        }
-
         if ($result[$keys[7]] instanceof \DateTime) {
             $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
@@ -1258,26 +1364,49 @@ abstract class Tech implements ActiveRecordInterface
             $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
 
+        if ($result[$keys[10]] instanceof \DateTime) {
+            $result[$keys[10]] = $result[$keys[10]]->format('c');
+        }
+
+        if ($result[$keys[11]] instanceof \DateTime) {
+            $result[$keys[11]] = $result[$keys[11]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collTaskTeches) {
+            if (null !== $this->aTask) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'taskTeches';
+                        $key = 'task';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'task_teches';
+                        $key = 'task';
                         break;
                     default:
-                        $key = 'TaskTeches';
+                        $key = 'Task';
                 }
 
-                $result[$key] = $this->collTaskTeches->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->aTask->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aUser) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'user';
+                        break;
+                    default:
+                        $key = 'User';
+                }
+
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1293,11 +1422,11 @@ abstract class Tech implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Model\Tech
+     * @return $this|\Model\Bidding
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = TechTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = BiddingTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1308,7 +1437,7 @@ abstract class Tech implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Model\Tech
+     * @return $this|\Model\Bidding
      */
     public function setByPosition($pos, $value)
     {
@@ -1317,30 +1446,36 @@ abstract class Tech implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setLabel($value);
+                $this->setTaskId($value);
                 break;
             case 2:
-                $this->setDescription($value);
+                $this->setUserId($value);
                 break;
             case 3:
-                $this->setUrl($value);
+                $this->setPrice($value);
                 break;
             case 4:
-                $this->setHot($value);
+                $this->setNeeded($value);
                 break;
             case 5:
-                $this->setCreated($value);
+                $this->setMessage($value);
                 break;
             case 6:
-                $this->setUpdated($value);
+                $this->setStatus($value);
                 break;
             case 7:
-                $this->setRemoved($value);
+                $this->setCreated($value);
                 break;
             case 8:
-                $this->setCreatedAt($value);
+                $this->setUpdated($value);
                 break;
             case 9:
+                $this->setRemoved($value);
+                break;
+            case 10:
+                $this->setCreatedAt($value);
+                break;
+            case 11:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1367,37 +1502,43 @@ abstract class Tech implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = TechTableMap::getFieldNames($keyType);
+        $keys = BiddingTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setLabel($arr[$keys[1]]);
+            $this->setTaskId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setDescription($arr[$keys[2]]);
+            $this->setUserId($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setUrl($arr[$keys[3]]);
+            $this->setPrice($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setHot($arr[$keys[4]]);
+            $this->setNeeded($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setCreated($arr[$keys[5]]);
+            $this->setMessage($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUpdated($arr[$keys[6]]);
+            $this->setStatus($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setRemoved($arr[$keys[7]]);
+            $this->setCreated($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setCreatedAt($arr[$keys[8]]);
+            $this->setUpdated($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setUpdatedAt($arr[$keys[9]]);
+            $this->setRemoved($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setCreatedAt($arr[$keys[10]]);
+        }
+        if (array_key_exists($keys[11], $arr)) {
+            $this->setUpdatedAt($arr[$keys[11]]);
         }
     }
 
@@ -1418,7 +1559,7 @@ abstract class Tech implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Model\Tech The current object, for fluid interface
+     * @return $this|\Model\Bidding The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1438,37 +1579,43 @@ abstract class Tech implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(TechTableMap::DATABASE_NAME);
+        $criteria = new Criteria(BiddingTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(TechTableMap::COL_ID)) {
-            $criteria->add(TechTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(BiddingTableMap::COL_ID)) {
+            $criteria->add(BiddingTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(TechTableMap::COL_LABEL)) {
-            $criteria->add(TechTableMap::COL_LABEL, $this->label);
+        if ($this->isColumnModified(BiddingTableMap::COL_TASK_ID)) {
+            $criteria->add(BiddingTableMap::COL_TASK_ID, $this->task_id);
         }
-        if ($this->isColumnModified(TechTableMap::COL_DESCRIPTION)) {
-            $criteria->add(TechTableMap::COL_DESCRIPTION, $this->description);
+        if ($this->isColumnModified(BiddingTableMap::COL_USER_ID)) {
+            $criteria->add(BiddingTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(TechTableMap::COL_URL)) {
-            $criteria->add(TechTableMap::COL_URL, $this->url);
+        if ($this->isColumnModified(BiddingTableMap::COL_PRICE)) {
+            $criteria->add(BiddingTableMap::COL_PRICE, $this->price);
         }
-        if ($this->isColumnModified(TechTableMap::COL_HOT)) {
-            $criteria->add(TechTableMap::COL_HOT, $this->hot);
+        if ($this->isColumnModified(BiddingTableMap::COL_NEEDED)) {
+            $criteria->add(BiddingTableMap::COL_NEEDED, $this->needed);
         }
-        if ($this->isColumnModified(TechTableMap::COL_CREATED)) {
-            $criteria->add(TechTableMap::COL_CREATED, $this->created);
+        if ($this->isColumnModified(BiddingTableMap::COL_MESSAGE)) {
+            $criteria->add(BiddingTableMap::COL_MESSAGE, $this->message);
         }
-        if ($this->isColumnModified(TechTableMap::COL_UPDATED)) {
-            $criteria->add(TechTableMap::COL_UPDATED, $this->updated);
+        if ($this->isColumnModified(BiddingTableMap::COL_STATUS)) {
+            $criteria->add(BiddingTableMap::COL_STATUS, $this->status);
         }
-        if ($this->isColumnModified(TechTableMap::COL_REMOVED)) {
-            $criteria->add(TechTableMap::COL_REMOVED, $this->removed);
+        if ($this->isColumnModified(BiddingTableMap::COL_CREATED)) {
+            $criteria->add(BiddingTableMap::COL_CREATED, $this->created);
         }
-        if ($this->isColumnModified(TechTableMap::COL_CREATED_AT)) {
-            $criteria->add(TechTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(BiddingTableMap::COL_UPDATED)) {
+            $criteria->add(BiddingTableMap::COL_UPDATED, $this->updated);
         }
-        if ($this->isColumnModified(TechTableMap::COL_UPDATED_AT)) {
-            $criteria->add(TechTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(BiddingTableMap::COL_REMOVED)) {
+            $criteria->add(BiddingTableMap::COL_REMOVED, $this->removed);
+        }
+        if ($this->isColumnModified(BiddingTableMap::COL_CREATED_AT)) {
+            $criteria->add(BiddingTableMap::COL_CREATED_AT, $this->created_at);
+        }
+        if ($this->isColumnModified(BiddingTableMap::COL_UPDATED_AT)) {
+            $criteria->add(BiddingTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1486,8 +1633,8 @@ abstract class Tech implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildTechQuery::create();
-        $criteria->add(TechTableMap::COL_ID, $this->id);
+        $criteria = ChildBiddingQuery::create();
+        $criteria->add(BiddingTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1549,36 +1696,24 @@ abstract class Tech implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Model\Tech (or compatible) type.
+     * @param      object $copyObj An object of \Model\Bidding (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setLabel($this->getLabel());
-        $copyObj->setDescription($this->getDescription());
-        $copyObj->setUrl($this->getUrl());
-        $copyObj->setHot($this->getHot());
+        $copyObj->setTaskId($this->getTaskId());
+        $copyObj->setUserId($this->getUserId());
+        $copyObj->setPrice($this->getPrice());
+        $copyObj->setNeeded($this->getNeeded());
+        $copyObj->setMessage($this->getMessage());
+        $copyObj->setStatus($this->getStatus());
         $copyObj->setCreated($this->getCreated());
         $copyObj->setUpdated($this->getUpdated());
         $copyObj->setRemoved($this->getRemoved());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getTaskTeches() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addTaskTech($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1594,7 +1729,7 @@ abstract class Tech implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Model\Tech Clone of current object.
+     * @return \Model\Bidding Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1607,273 +1742,106 @@ abstract class Tech implements ActiveRecordInterface
         return $copyObj;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ChildTask object.
      *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('TaskTech' == $relationName) {
-            return $this->initTaskTeches();
-        }
-    }
-
-    /**
-     * Clears out the collTaskTeches collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addTaskTeches()
-     */
-    public function clearTaskTeches()
-    {
-        $this->collTaskTeches = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collTaskTeches collection loaded partially.
-     */
-    public function resetPartialTaskTeches($v = true)
-    {
-        $this->collTaskTechesPartial = $v;
-    }
-
-    /**
-     * Initializes the collTaskTeches collection.
-     *
-     * By default this just sets the collTaskTeches collection to an empty array (like clearcollTaskTeches());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initTaskTeches($overrideExisting = true)
-    {
-        if (null !== $this->collTaskTeches && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = TaskTechTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collTaskTeches = new $collectionClassName;
-        $this->collTaskTeches->setModel('\Model\TaskTech');
-    }
-
-    /**
-     * Gets an array of ChildTaskTech objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildTech is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildTaskTech[] List of ChildTaskTech objects
+     * @param  ChildTask $v
+     * @return $this|\Model\Bidding The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getTaskTeches(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function setTask(ChildTask $v = null)
     {
-        $partial = $this->collTaskTechesPartial && !$this->isNew();
-        if (null === $this->collTaskTeches || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collTaskTeches) {
-                // return empty collection
-                $this->initTaskTeches();
-            } else {
-                $collTaskTeches = ChildTaskTechQuery::create(null, $criteria)
-                    ->filterByTech($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collTaskTechesPartial && count($collTaskTeches)) {
-                        $this->initTaskTeches(false);
-
-                        foreach ($collTaskTeches as $obj) {
-                            if (false == $this->collTaskTeches->contains($obj)) {
-                                $this->collTaskTeches->append($obj);
-                            }
-                        }
-
-                        $this->collTaskTechesPartial = true;
-                    }
-
-                    return $collTaskTeches;
-                }
-
-                if ($partial && $this->collTaskTeches) {
-                    foreach ($this->collTaskTeches as $obj) {
-                        if ($obj->isNew()) {
-                            $collTaskTeches[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collTaskTeches = $collTaskTeches;
-                $this->collTaskTechesPartial = false;
-            }
+        if ($v === null) {
+            $this->setTaskId(NULL);
+        } else {
+            $this->setTaskId($v->getId());
         }
 
-        return $this->collTaskTeches;
-    }
+        $this->aTask = $v;
 
-    /**
-     * Sets a collection of ChildTaskTech objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $taskTeches A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildTech The current object (for fluent API support)
-     */
-    public function setTaskTeches(Collection $taskTeches, ConnectionInterface $con = null)
-    {
-        /** @var ChildTaskTech[] $taskTechesToDelete */
-        $taskTechesToDelete = $this->getTaskTeches(new Criteria(), $con)->diff($taskTeches);
-
-
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->taskTechesScheduledForDeletion = clone $taskTechesToDelete;
-
-        foreach ($taskTechesToDelete as $taskTechRemoved) {
-            $taskTechRemoved->setTech(null);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildTask object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBidding($this);
         }
 
-        $this->collTaskTeches = null;
-        foreach ($taskTeches as $taskTech) {
-            $this->addTaskTech($taskTech);
-        }
-
-        $this->collTaskTeches = $taskTeches;
-        $this->collTaskTechesPartial = false;
 
         return $this;
     }
 
+
     /**
-     * Returns the number of related TaskTech objects.
+     * Get the associated ChildTask object
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related TaskTech objects.
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildTask The associated ChildTask object.
      * @throws PropelException
      */
-    public function countTaskTeches(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function getTask(ConnectionInterface $con = null)
     {
-        $partial = $this->collTaskTechesPartial && !$this->isNew();
-        if (null === $this->collTaskTeches || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collTaskTeches) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getTaskTeches());
-            }
-
-            $query = ChildTaskTechQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByTech($this)
-                ->count($con);
+        if ($this->aTask === null && ($this->task_id !== null)) {
+            $this->aTask = ChildTaskQuery::create()->findPk($this->task_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aTask->addBiddings($this);
+             */
         }
 
-        return count($this->collTaskTeches);
+        return $this->aTask;
     }
 
     /**
-     * Method called to associate a ChildTaskTech object to this object
-     * through the ChildTaskTech foreign key attribute.
+     * Declares an association between this object and a ChildUser object.
      *
-     * @param  ChildTaskTech $l ChildTaskTech
-     * @return $this|\Model\Tech The current object (for fluent API support)
+     * @param  ChildUser $v
+     * @return $this|\Model\Bidding The current object (for fluent API support)
+     * @throws PropelException
      */
-    public function addTaskTech(ChildTaskTech $l)
+    public function setUser(ChildUser $v = null)
     {
-        if ($this->collTaskTeches === null) {
-            $this->initTaskTeches();
-            $this->collTaskTechesPartial = true;
+        if ($v === null) {
+            $this->setUserId(NULL);
+        } else {
+            $this->setUserId($v->getId());
         }
 
-        if (!$this->collTaskTeches->contains($l)) {
-            $this->doAddTaskTech($l);
+        $this->aUser = $v;
 
-            if ($this->taskTechesScheduledForDeletion and $this->taskTechesScheduledForDeletion->contains($l)) {
-                $this->taskTechesScheduledForDeletion->remove($this->taskTechesScheduledForDeletion->search($l));
-            }
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
+        if ($v !== null) {
+            $v->addBidding($this);
         }
 
-        return $this;
-    }
-
-    /**
-     * @param ChildTaskTech $taskTech The ChildTaskTech object to add.
-     */
-    protected function doAddTaskTech(ChildTaskTech $taskTech)
-    {
-        $this->collTaskTeches[]= $taskTech;
-        $taskTech->setTech($this);
-    }
-
-    /**
-     * @param  ChildTaskTech $taskTech The ChildTaskTech object to remove.
-     * @return $this|ChildTech The current object (for fluent API support)
-     */
-    public function removeTaskTech(ChildTaskTech $taskTech)
-    {
-        if ($this->getTaskTeches()->contains($taskTech)) {
-            $pos = $this->collTaskTeches->search($taskTech);
-            $this->collTaskTeches->remove($pos);
-            if (null === $this->taskTechesScheduledForDeletion) {
-                $this->taskTechesScheduledForDeletion = clone $this->collTaskTeches;
-                $this->taskTechesScheduledForDeletion->clear();
-            }
-            $this->taskTechesScheduledForDeletion[]= clone $taskTech;
-            $taskTech->setTech(null);
-        }
 
         return $this;
     }
 
 
     /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Tech is new, it will return
-     * an empty collection; or if this Tech has previously
-     * been saved, it will retrieve related TaskTeches from storage.
+     * Get the associated ChildUser object
      *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Tech.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildTaskTech[] List of ChildTaskTech objects
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
+     * @throws PropelException
      */
-    public function getTaskTechesJoinTask(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getUser(ConnectionInterface $con = null)
     {
-        $query = ChildTaskTechQuery::create(null, $criteria);
-        $query->joinWith('Task', $joinBehavior);
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUser->addBiddings($this);
+             */
+        }
 
-        return $this->getTaskTeches($query, $con);
+        return $this->aUser;
     }
 
     /**
@@ -1883,11 +1851,19 @@ abstract class Tech implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aTask) {
+            $this->aTask->removeBidding($this);
+        }
+        if (null !== $this->aUser) {
+            $this->aUser->removeBidding($this);
+        }
         $this->id = null;
-        $this->label = null;
-        $this->description = null;
-        $this->url = null;
-        $this->hot = null;
+        $this->task_id = null;
+        $this->user_id = null;
+        $this->price = null;
+        $this->needed = null;
+        $this->message = null;
+        $this->status = null;
         $this->created = null;
         $this->updated = null;
         $this->removed = null;
@@ -1911,14 +1887,10 @@ abstract class Tech implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collTaskTeches) {
-                foreach ($this->collTaskTeches as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collTaskTeches = null;
+        $this->aTask = null;
+        $this->aUser = null;
     }
 
     /**
@@ -1928,7 +1900,7 @@ abstract class Tech implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(TechTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(BiddingTableMap::DEFAULT_STRING_FORMAT);
     }
 
     // timestampable behavior
@@ -1936,11 +1908,11 @@ abstract class Tech implements ActiveRecordInterface
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     $this|ChildTech The current object (for fluent API support)
+     * @return     $this|ChildBidding The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[TechTableMap::COL_UPDATED_AT] = true;
+        $this->modifiedColumns[BiddingTableMap::COL_UPDATED_AT] = true;
 
         return $this;
     }

@@ -1,13 +1,13 @@
 <?php
 $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
 $serviceContainer->checkVersion('2.0.0-dev');
-$serviceContainer->setAdapterClass('leno', 'mysql');
+$serviceContainer->setAdapterClass('leno', 'pgsql');
 $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
 $manager->setConfiguration(array (
   'classname' => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
-  'dsn' => 'mysql:host=localhost;dbname=leno',
-  'user' => 'root',
-  'password' => 'young159357789',
+  'dsn' => 'pgsql:host=localhost;dbname=leno',
+  'user' => 'young',
+  'password' => 'yang159357789',
   'attributes' =>
   array (
     'ATTR_EMULATE_PREPARES' => false,

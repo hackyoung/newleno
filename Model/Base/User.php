@@ -5,12 +5,15 @@ namespace Model\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Model\Bidding as ChildBidding;
+use Model\BiddingQuery as ChildBiddingQuery;
 use Model\Order as ChildOrder;
 use Model\OrderQuery as ChildOrderQuery;
 use Model\Task as ChildTask;
 use Model\TaskQuery as ChildTaskQuery;
 use Model\User as ChildUser;
 use Model\UserQuery as ChildUserQuery;
+use Model\Map\BiddingTableMap;
 use Model\Map\OrderTableMap;
 use Model\Map\TaskTableMap;
 use Model\Map\UserTableMap;
@@ -91,6 +94,13 @@ abstract class User implements ActiveRecordInterface
     protected $name;
 
     /**
+     * The value for the portrait field.
+     * 用户头像
+     * @var        string
+     */
+    protected $portrait;
+
+    /**
      * The value for the age field.
      * 用户的年龄
      * @var        int
@@ -146,6 +156,12 @@ abstract class User implements ActiveRecordInterface
     protected $collTasksPartial;
 
     /**
+     * @var        ObjectCollection|ChildBidding[] Collection to store aggregation of ChildBidding objects.
+     */
+    protected $collBiddings;
+    protected $collBiddingsPartial;
+
+    /**
      * @var        ObjectCollection|ChildOrder[] Collection to store aggregation of ChildOrder objects.
      */
     protected $collOrders;
@@ -164,6 +180,12 @@ abstract class User implements ActiveRecordInterface
      * @var ObjectCollection|ChildTask[]
      */
     protected $tasksScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildBidding[]
+     */
+    protected $biddingsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -427,6 +449,16 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
+     * Get the [portrait] column value.
+     * 用户头像
+     * @return string
+     */
+    public function getPortrait()
+    {
+        return $this->portrait;
+    }
+
+    /**
      * Get the [age] column value.
      * 用户的年龄
      * @return int
@@ -453,7 +485,7 @@ abstract class User implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -473,7 +505,7 @@ abstract class User implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -493,7 +525,7 @@ abstract class User implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -513,7 +545,7 @@ abstract class User implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -533,7 +565,7 @@ abstract class User implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -605,6 +637,26 @@ abstract class User implements ActiveRecordInterface
 
         return $this;
     } // setName()
+
+    /**
+     * Set the value of [portrait] column.
+     * 用户头像
+     * @param string $v new value
+     * @return $this|\Model\User The current object (for fluent API support)
+     */
+    public function setPortrait($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->portrait !== $v) {
+            $this->portrait = $v;
+            $this->modifiedColumns[UserTableMap::COL_PORTRAIT] = true;
+        }
+
+        return $this;
+    } // setPortrait()
 
     /**
      * Set the value of [age] column.
@@ -791,40 +843,28 @@ abstract class User implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('Age', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('Portrait', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->portrait = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('Age', TableMap::TYPE_PHPNAME, $indexType)];
             $this->age = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('Password', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UserTableMap::translateFieldName('Password', TableMap::TYPE_PHPNAME, $indexType)];
             $this->password = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UserTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : UserTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
             $this->removed = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : UserTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : UserTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : UserTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : UserTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
@@ -834,7 +874,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 10; // 10 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 11; // 11 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Model\\User'), 0, $e);
@@ -896,6 +936,8 @@ abstract class User implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->collTasks = null;
+
+            $this->collBiddings = null;
 
             $this->collOrders = null;
 
@@ -1038,6 +1080,23 @@ abstract class User implements ActiveRecordInterface
                 }
             }
 
+            if ($this->biddingsScheduledForDeletion !== null) {
+                if (!$this->biddingsScheduledForDeletion->isEmpty()) {
+                    \Model\BiddingQuery::create()
+                        ->filterByPrimaryKeys($this->biddingsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->biddingsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBiddings !== null) {
+                foreach ($this->collBiddings as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             if ($this->ordersScheduledForDeletion !== null) {
                 if (!$this->ordersScheduledForDeletion->isEmpty()) {
                     \Model\OrderQuery::create()
@@ -1079,6 +1138,15 @@ abstract class User implements ActiveRecordInterface
         if (null !== $this->id) {
             throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserTableMap::COL_ID . ')');
         }
+        if (null === $this->id) {
+            try {
+                $dataFetcher = $con->query("SELECT nextval('user_id_seq')");
+                $this->id = (int) $dataFetcher->fetchColumn();
+            } catch (Exception $e) {
+                throw new PropelException('Unable to get sequence id.', 0, $e);
+            }
+        }
+
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(UserTableMap::COL_ID)) {
@@ -1089,6 +1157,9 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PORTRAIT)) {
+            $modifiedColumns[':p' . $index++]  = 'portrait';
         }
         if ($this->isColumnModified(UserTableMap::COL_AGE)) {
             $modifiedColumns[':p' . $index++]  = 'age';
@@ -1131,6 +1202,9 @@ abstract class User implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
+                    case 'portrait':
+                        $stmt->bindValue($identifier, $this->portrait, PDO::PARAM_STR);
+                        break;
                     case 'age':
                         $stmt->bindValue($identifier, $this->age, PDO::PARAM_INT);
                         break;
@@ -1159,13 +1233,6 @@ abstract class User implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -1224,24 +1291,27 @@ abstract class User implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 3:
-                return $this->getAge();
+                return $this->getPortrait();
                 break;
             case 4:
-                return $this->getPassword();
+                return $this->getAge();
                 break;
             case 5:
-                return $this->getCreated();
+                return $this->getPassword();
                 break;
             case 6:
-                return $this->getUpdated();
+                return $this->getCreated();
                 break;
             case 7:
-                return $this->getRemoved();
+                return $this->getUpdated();
                 break;
             case 8:
-                return $this->getCreatedAt();
+                return $this->getRemoved();
                 break;
             case 9:
+                return $this->getCreatedAt();
+                break;
+            case 10:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1277,18 +1347,15 @@ abstract class User implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getEmail(),
             $keys[2] => $this->getName(),
-            $keys[3] => $this->getAge(),
-            $keys[4] => $this->getPassword(),
-            $keys[5] => $this->getCreated(),
-            $keys[6] => $this->getUpdated(),
-            $keys[7] => $this->getRemoved(),
-            $keys[8] => $this->getCreatedAt(),
-            $keys[9] => $this->getUpdatedAt(),
+            $keys[3] => $this->getPortrait(),
+            $keys[4] => $this->getAge(),
+            $keys[5] => $this->getPassword(),
+            $keys[6] => $this->getCreated(),
+            $keys[7] => $this->getUpdated(),
+            $keys[8] => $this->getRemoved(),
+            $keys[9] => $this->getCreatedAt(),
+            $keys[10] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[5]] instanceof \DateTime) {
-            $result[$keys[5]] = $result[$keys[5]]->format('c');
-        }
-
         if ($result[$keys[6]] instanceof \DateTime) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
         }
@@ -1303,6 +1370,10 @@ abstract class User implements ActiveRecordInterface
 
         if ($result[$keys[9]] instanceof \DateTime) {
             $result[$keys[9]] = $result[$keys[9]]->format('c');
+        }
+
+        if ($result[$keys[10]] instanceof \DateTime) {
+            $result[$keys[10]] = $result[$keys[10]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1325,6 +1396,21 @@ abstract class User implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collTasks->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collBiddings) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'biddings';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'biddings';
+                        break;
+                    default:
+                        $key = 'Biddings';
+                }
+
+                $result[$key] = $this->collBiddings->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collOrders) {
 
@@ -1385,24 +1471,27 @@ abstract class User implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 3:
-                $this->setAge($value);
+                $this->setPortrait($value);
                 break;
             case 4:
-                $this->setPassword($value);
+                $this->setAge($value);
                 break;
             case 5:
-                $this->setCreated($value);
+                $this->setPassword($value);
                 break;
             case 6:
-                $this->setUpdated($value);
+                $this->setCreated($value);
                 break;
             case 7:
-                $this->setRemoved($value);
+                $this->setUpdated($value);
                 break;
             case 8:
-                $this->setCreatedAt($value);
+                $this->setRemoved($value);
                 break;
             case 9:
+                $this->setCreatedAt($value);
+                break;
+            case 10:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1441,25 +1530,28 @@ abstract class User implements ActiveRecordInterface
             $this->setName($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setAge($arr[$keys[3]]);
+            $this->setPortrait($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setPassword($arr[$keys[4]]);
+            $this->setAge($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setCreated($arr[$keys[5]]);
+            $this->setPassword($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setUpdated($arr[$keys[6]]);
+            $this->setCreated($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setRemoved($arr[$keys[7]]);
+            $this->setUpdated($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setCreatedAt($arr[$keys[8]]);
+            $this->setRemoved($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setUpdatedAt($arr[$keys[9]]);
+            $this->setCreatedAt($arr[$keys[9]]);
+        }
+        if (array_key_exists($keys[10], $arr)) {
+            $this->setUpdatedAt($arr[$keys[10]]);
         }
     }
 
@@ -1510,6 +1602,9 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_NAME)) {
             $criteria->add(UserTableMap::COL_NAME, $this->name);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PORTRAIT)) {
+            $criteria->add(UserTableMap::COL_PORTRAIT, $this->portrait);
         }
         if ($this->isColumnModified(UserTableMap::COL_AGE)) {
             $criteria->add(UserTableMap::COL_AGE, $this->age);
@@ -1620,6 +1715,7 @@ abstract class User implements ActiveRecordInterface
     {
         $copyObj->setEmail($this->getEmail());
         $copyObj->setName($this->getName());
+        $copyObj->setPortrait($this->getPortrait());
         $copyObj->setAge($this->getAge());
         $copyObj->setPassword($this->getPassword());
         $copyObj->setCreated($this->getCreated());
@@ -1636,6 +1732,12 @@ abstract class User implements ActiveRecordInterface
             foreach ($this->getTasks() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addTask($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getBiddings() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBidding($relObj->copy($deepCopy));
                 }
             }
 
@@ -1688,6 +1790,9 @@ abstract class User implements ActiveRecordInterface
     {
         if ('Task' == $relationName) {
             return $this->initTasks();
+        }
+        if ('Bidding' == $relationName) {
+            return $this->initBiddings();
         }
         if ('Order' == $relationName) {
             return $this->initOrders();
@@ -1942,6 +2047,256 @@ abstract class User implements ActiveRecordInterface
         $query->joinWith('Category', $joinBehavior);
 
         return $this->getTasks($query, $con);
+    }
+
+    /**
+     * Clears out the collBiddings collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addBiddings()
+     */
+    public function clearBiddings()
+    {
+        $this->collBiddings = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collBiddings collection loaded partially.
+     */
+    public function resetPartialBiddings($v = true)
+    {
+        $this->collBiddingsPartial = $v;
+    }
+
+    /**
+     * Initializes the collBiddings collection.
+     *
+     * By default this just sets the collBiddings collection to an empty array (like clearcollBiddings());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBiddings($overrideExisting = true)
+    {
+        if (null !== $this->collBiddings && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = BiddingTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collBiddings = new $collectionClassName;
+        $this->collBiddings->setModel('\Model\Bidding');
+    }
+
+    /**
+     * Gets an array of ChildBidding objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildUser is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildBidding[] List of ChildBidding objects
+     * @throws PropelException
+     */
+    public function getBiddings(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBiddingsPartial && !$this->isNew();
+        if (null === $this->collBiddings || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBiddings) {
+                // return empty collection
+                $this->initBiddings();
+            } else {
+                $collBiddings = ChildBiddingQuery::create(null, $criteria)
+                    ->filterByUser($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collBiddingsPartial && count($collBiddings)) {
+                        $this->initBiddings(false);
+
+                        foreach ($collBiddings as $obj) {
+                            if (false == $this->collBiddings->contains($obj)) {
+                                $this->collBiddings->append($obj);
+                            }
+                        }
+
+                        $this->collBiddingsPartial = true;
+                    }
+
+                    return $collBiddings;
+                }
+
+                if ($partial && $this->collBiddings) {
+                    foreach ($this->collBiddings as $obj) {
+                        if ($obj->isNew()) {
+                            $collBiddings[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBiddings = $collBiddings;
+                $this->collBiddingsPartial = false;
+            }
+        }
+
+        return $this->collBiddings;
+    }
+
+    /**
+     * Sets a collection of ChildBidding objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $biddings A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildUser The current object (for fluent API support)
+     */
+    public function setBiddings(Collection $biddings, ConnectionInterface $con = null)
+    {
+        /** @var ChildBidding[] $biddingsToDelete */
+        $biddingsToDelete = $this->getBiddings(new Criteria(), $con)->diff($biddings);
+
+
+        $this->biddingsScheduledForDeletion = $biddingsToDelete;
+
+        foreach ($biddingsToDelete as $biddingRemoved) {
+            $biddingRemoved->setUser(null);
+        }
+
+        $this->collBiddings = null;
+        foreach ($biddings as $bidding) {
+            $this->addBidding($bidding);
+        }
+
+        $this->collBiddings = $biddings;
+        $this->collBiddingsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Bidding objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Bidding objects.
+     * @throws PropelException
+     */
+    public function countBiddings(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBiddingsPartial && !$this->isNew();
+        if (null === $this->collBiddings || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBiddings) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBiddings());
+            }
+
+            $query = ChildBiddingQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUser($this)
+                ->count($con);
+        }
+
+        return count($this->collBiddings);
+    }
+
+    /**
+     * Method called to associate a ChildBidding object to this object
+     * through the ChildBidding foreign key attribute.
+     *
+     * @param  ChildBidding $l ChildBidding
+     * @return $this|\Model\User The current object (for fluent API support)
+     */
+    public function addBidding(ChildBidding $l)
+    {
+        if ($this->collBiddings === null) {
+            $this->initBiddings();
+            $this->collBiddingsPartial = true;
+        }
+
+        if (!$this->collBiddings->contains($l)) {
+            $this->doAddBidding($l);
+
+            if ($this->biddingsScheduledForDeletion and $this->biddingsScheduledForDeletion->contains($l)) {
+                $this->biddingsScheduledForDeletion->remove($this->biddingsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildBidding $bidding The ChildBidding object to add.
+     */
+    protected function doAddBidding(ChildBidding $bidding)
+    {
+        $this->collBiddings[]= $bidding;
+        $bidding->setUser($this);
+    }
+
+    /**
+     * @param  ChildBidding $bidding The ChildBidding object to remove.
+     * @return $this|ChildUser The current object (for fluent API support)
+     */
+    public function removeBidding(ChildBidding $bidding)
+    {
+        if ($this->getBiddings()->contains($bidding)) {
+            $pos = $this->collBiddings->search($bidding);
+            $this->collBiddings->remove($pos);
+            if (null === $this->biddingsScheduledForDeletion) {
+                $this->biddingsScheduledForDeletion = clone $this->collBiddings;
+                $this->biddingsScheduledForDeletion->clear();
+            }
+            $this->biddingsScheduledForDeletion[]= clone $bidding;
+            $bidding->setUser(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this User is new, it will return
+     * an empty collection; or if this User has previously
+     * been saved, it will retrieve related Biddings from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in User.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBidding[] List of ChildBidding objects
+     */
+    public function getBiddingsJoinTask(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBiddingQuery::create(null, $criteria);
+        $query->joinWith('Task', $joinBehavior);
+
+        return $this->getBiddings($query, $con);
     }
 
     /**
@@ -2204,6 +2559,7 @@ abstract class User implements ActiveRecordInterface
         $this->id = null;
         $this->email = null;
         $this->name = null;
+        $this->portrait = null;
         $this->age = null;
         $this->password = null;
         $this->created = null;
@@ -2234,6 +2590,11 @@ abstract class User implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collBiddings) {
+                foreach ($this->collBiddings as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collOrders) {
                 foreach ($this->collOrders as $o) {
                     $o->clearAllReferences($deep);
@@ -2242,6 +2603,7 @@ abstract class User implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collTasks = null;
+        $this->collBiddings = null;
         $this->collOrders = null;
     }
 

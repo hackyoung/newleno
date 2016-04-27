@@ -23,6 +23,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildUserQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     ChildUserQuery orderByName($order = Criteria::ASC) Order by the name column
+ * @method     ChildUserQuery orderByPortrait($order = Criteria::ASC) Order by the portrait column
  * @method     ChildUserQuery orderByAge($order = Criteria::ASC) Order by the age column
  * @method     ChildUserQuery orderByPassword($order = Criteria::ASC) Order by the password column
  * @method     ChildUserQuery orderByCreated($order = Criteria::ASC) Order by the created column
@@ -34,6 +35,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByEmail() Group by the email column
  * @method     ChildUserQuery groupByName() Group by the name column
+ * @method     ChildUserQuery groupByPortrait() Group by the portrait column
  * @method     ChildUserQuery groupByAge() Group by the age column
  * @method     ChildUserQuery groupByPassword() Group by the password column
  * @method     ChildUserQuery groupByCreated() Group by the created column
@@ -60,6 +62,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery rightJoinWithTask() Adds a RIGHT JOIN clause and with to the query using the Task relation
  * @method     ChildUserQuery innerJoinWithTask() Adds a INNER JOIN clause and with to the query using the Task relation
  *
+ * @method     ChildUserQuery leftJoinBidding($relationAlias = null) Adds a LEFT JOIN clause to the query using the Bidding relation
+ * @method     ChildUserQuery rightJoinBidding($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Bidding relation
+ * @method     ChildUserQuery innerJoinBidding($relationAlias = null) Adds a INNER JOIN clause to the query using the Bidding relation
+ *
+ * @method     ChildUserQuery joinWithBidding($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Bidding relation
+ *
+ * @method     ChildUserQuery leftJoinWithBidding() Adds a LEFT JOIN clause and with to the query using the Bidding relation
+ * @method     ChildUserQuery rightJoinWithBidding() Adds a RIGHT JOIN clause and with to the query using the Bidding relation
+ * @method     ChildUserQuery innerJoinWithBidding() Adds a INNER JOIN clause and with to the query using the Bidding relation
+ *
  * @method     ChildUserQuery leftJoinOrder($relationAlias = null) Adds a LEFT JOIN clause to the query using the Order relation
  * @method     ChildUserQuery rightJoinOrder($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Order relation
  * @method     ChildUserQuery innerJoinOrder($relationAlias = null) Adds a INNER JOIN clause to the query using the Order relation
@@ -70,7 +82,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery rightJoinWithOrder() Adds a RIGHT JOIN clause and with to the query using the Order relation
  * @method     ChildUserQuery innerJoinWithOrder() Adds a INNER JOIN clause and with to the query using the Order relation
  *
- * @method     \Model\TaskQuery|\Model\OrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Model\TaskQuery|\Model\BiddingQuery|\Model\OrderQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
@@ -78,6 +90,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneById(int $id) Return the first ChildUser filtered by the id column
  * @method     ChildUser findOneByEmail(string $email) Return the first ChildUser filtered by the email column
  * @method     ChildUser findOneByName(string $name) Return the first ChildUser filtered by the name column
+ * @method     ChildUser findOneByPortrait(string $portrait) Return the first ChildUser filtered by the portrait column
  * @method     ChildUser findOneByAge(int $age) Return the first ChildUser filtered by the age column
  * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column
  * @method     ChildUser findOneByCreated(string $created) Return the first ChildUser filtered by the created column
@@ -92,6 +105,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneById(int $id) Return the first ChildUser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByEmail(string $email) Return the first ChildUser filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByName(string $name) Return the first ChildUser filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByPortrait(string $portrait) Return the first ChildUser filtered by the portrait column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByAge(int $age) Return the first ChildUser filtered by the age column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPassword(string $password) Return the first ChildUser filtered by the password column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByCreated(string $created) Return the first ChildUser filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -104,6 +118,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findById(int $id) Return ChildUser objects filtered by the id column
  * @method     ChildUser[]|ObjectCollection findByEmail(string $email) Return ChildUser objects filtered by the email column
  * @method     ChildUser[]|ObjectCollection findByName(string $name) Return ChildUser objects filtered by the name column
+ * @method     ChildUser[]|ObjectCollection findByPortrait(string $portrait) Return ChildUser objects filtered by the portrait column
  * @method     ChildUser[]|ObjectCollection findByAge(int $age) Return ChildUser objects filtered by the age column
  * @method     ChildUser[]|ObjectCollection findByPassword(string $password) Return ChildUser objects filtered by the password column
  * @method     ChildUser[]|ObjectCollection findByCreated(string $created) Return ChildUser objects filtered by the created column
@@ -209,7 +224,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, email, name, age, password, created, updated, removed, created_at, updated_at FROM user WHERE id = :p0';
+        $sql = 'SELECT id, email, name, portrait, age, password, created, updated, removed, created_at, updated_at FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -396,6 +411,35 @@ abstract class UserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserTableMap::COL_NAME, $name, $comparison);
+    }
+
+    /**
+     * Filter the query on the portrait column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPortrait('fooValue');   // WHERE portrait = 'fooValue'
+     * $query->filterByPortrait('%fooValue%'); // WHERE portrait LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $portrait The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByPortrait($portrait = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($portrait)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $portrait)) {
+                $portrait = str_replace('*', '%', $portrait);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_PORTRAIT, $portrait, $comparison);
     }
 
     /**
@@ -754,6 +798,79 @@ abstract class UserQuery extends ModelCriteria
         return $this
             ->joinTask($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Task', '\Model\TaskQuery');
+    }
+
+    /**
+     * Filter the query by a related \Model\Bidding object
+     *
+     * @param \Model\Bidding|ObjectCollection $bidding the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByBidding($bidding, $comparison = null)
+    {
+        if ($bidding instanceof \Model\Bidding) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_ID, $bidding->getUserId(), $comparison);
+        } elseif ($bidding instanceof ObjectCollection) {
+            return $this
+                ->useBiddingQuery()
+                ->filterByPrimaryKeys($bidding->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBidding() only accepts arguments of type \Model\Bidding or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Bidding relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinBidding($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Bidding');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Bidding');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Bidding relation Bidding object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \Model\BiddingQuery A secondary query class using the current class as primary query
+     */
+    public function useBiddingQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinBidding($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Bidding', '\Model\BiddingQuery');
     }
 
     /**

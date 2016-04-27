@@ -28,6 +28,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrderQuery orderByProgress($order = Criteria::ASC) Order by the progress column
  * @method     ChildOrderQuery orderByWorkerDeposit($order = Criteria::ASC) Order by the worker_deposit column
  * @method     ChildOrderQuery orderByBossDeposit($order = Criteria::ASC) Order by the boss_deposit column
+ * @method     ChildOrderQuery orderByDone($order = Criteria::ASC) Order by the done column
+ * @method     ChildOrderQuery orderByStatus($order = Criteria::ASC) Order by the status column
  * @method     ChildOrderQuery orderByCreated($order = Criteria::ASC) Order by the created column
  * @method     ChildOrderQuery orderByUpdated($order = Criteria::ASC) Order by the updated column
  * @method     ChildOrderQuery orderByRemoved($order = Criteria::ASC) Order by the removed column
@@ -42,6 +44,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrderQuery groupByProgress() Group by the progress column
  * @method     ChildOrderQuery groupByWorkerDeposit() Group by the worker_deposit column
  * @method     ChildOrderQuery groupByBossDeposit() Group by the boss_deposit column
+ * @method     ChildOrderQuery groupByDone() Group by the done column
+ * @method     ChildOrderQuery groupByStatus() Group by the status column
  * @method     ChildOrderQuery groupByCreated() Group by the created column
  * @method     ChildOrderQuery groupByUpdated() Group by the updated column
  * @method     ChildOrderQuery groupByRemoved() Group by the removed column
@@ -89,6 +93,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrder findOneByProgress(int $progress) Return the first ChildOrder filtered by the progress column
  * @method     ChildOrder findOneByWorkerDeposit(int $worker_deposit) Return the first ChildOrder filtered by the worker_deposit column
  * @method     ChildOrder findOneByBossDeposit(int $boss_deposit) Return the first ChildOrder filtered by the boss_deposit column
+ * @method     ChildOrder findOneByDone(string $done) Return the first ChildOrder filtered by the done column
+ * @method     ChildOrder findOneByStatus(string $status) Return the first ChildOrder filtered by the status column
  * @method     ChildOrder findOneByCreated(string $created) Return the first ChildOrder filtered by the created column
  * @method     ChildOrder findOneByUpdated(string $updated) Return the first ChildOrder filtered by the updated column
  * @method     ChildOrder findOneByRemoved(string $removed) Return the first ChildOrder filtered by the removed column
@@ -106,6 +112,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrder requireOneByProgress(int $progress) Return the first ChildOrder filtered by the progress column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOneByWorkerDeposit(int $worker_deposit) Return the first ChildOrder filtered by the worker_deposit column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOneByBossDeposit(int $boss_deposit) Return the first ChildOrder filtered by the boss_deposit column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOrder requireOneByDone(string $done) Return the first ChildOrder filtered by the done column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOrder requireOneByStatus(string $status) Return the first ChildOrder filtered by the status column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOneByCreated(string $created) Return the first ChildOrder filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOneByUpdated(string $updated) Return the first ChildOrder filtered by the updated column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildOrder requireOneByRemoved(string $removed) Return the first ChildOrder filtered by the removed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -121,6 +129,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildOrder[]|ObjectCollection findByProgress(int $progress) Return ChildOrder objects filtered by the progress column
  * @method     ChildOrder[]|ObjectCollection findByWorkerDeposit(int $worker_deposit) Return ChildOrder objects filtered by the worker_deposit column
  * @method     ChildOrder[]|ObjectCollection findByBossDeposit(int $boss_deposit) Return ChildOrder objects filtered by the boss_deposit column
+ * @method     ChildOrder[]|ObjectCollection findByDone(string $done) Return ChildOrder objects filtered by the done column
+ * @method     ChildOrder[]|ObjectCollection findByStatus(string $status) Return ChildOrder objects filtered by the status column
  * @method     ChildOrder[]|ObjectCollection findByCreated(string $created) Return ChildOrder objects filtered by the created column
  * @method     ChildOrder[]|ObjectCollection findByUpdated(string $updated) Return ChildOrder objects filtered by the updated column
  * @method     ChildOrder[]|ObjectCollection findByRemoved(string $removed) Return ChildOrder objects filtered by the removed column
@@ -224,7 +234,7 @@ abstract class OrderQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT order_id, task_id, amount, boss_id, worker_id, progress, worker_deposit, boss_deposit, created, updated, removed, created_at, updated_at FROM order WHERE order_id = :p0';
+        $sql = 'SELECT order_id, task_id, amount, boss_id, worker_id, progress, worker_deposit, boss_deposit, done, status, created, updated, removed, created_at, updated_at FROM order WHERE order_id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -646,6 +656,78 @@ abstract class OrderQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(OrderTableMap::COL_BOSS_DEPOSIT, $bossDeposit, $comparison);
+    }
+
+    /**
+     * Filter the query on the done column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDone('2011-03-14'); // WHERE done = '2011-03-14'
+     * $query->filterByDone('now'); // WHERE done = '2011-03-14'
+     * $query->filterByDone(array('max' => 'yesterday')); // WHERE done > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $done The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function filterByDone($done = null, $comparison = null)
+    {
+        if (is_array($done)) {
+            $useMinMax = false;
+            if (isset($done['min'])) {
+                $this->addUsingAlias(OrderTableMap::COL_DONE, $done['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($done['max'])) {
+                $this->addUsingAlias(OrderTableMap::COL_DONE, $done['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(OrderTableMap::COL_DONE, $done, $comparison);
+    }
+
+    /**
+     * Filter the query on the status column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByStatus('fooValue');   // WHERE status = 'fooValue'
+     * $query->filterByStatus('%fooValue%'); // WHERE status LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $status The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildOrderQuery The current query, for fluid interface
+     */
+    public function filterByStatus($status = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($status)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $status)) {
+                $status = str_replace('*', '%', $status);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(OrderTableMap::COL_STATUS, $status, $comparison);
     }
 
     /**

@@ -4,11 +4,11 @@ return [
         'database' => [
             'connections' => [
                 'leno' => [
-                    'adapter' => 'mysql',
+                    'adapter' => 'pgsql',
                     'classname' => 'Propel\Runtime\Connection\ConnectionWrapper',
-                    'dsn' => 'mysql:host=localhost;dbname=leno',
-                    'user' => 'root',
-                    'password' => 'young159357789',
+                    'dsn' => 'pgsql:host=localhost;dbname=leno',
+                    'user' => 'young',
+                    'password' => 'yang159357789',
                     'attributes' => []
                 ]
             ]

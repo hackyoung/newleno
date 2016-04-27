@@ -2,8 +2,8 @@
 
 namespace Model\Map;
 
-use Model\Tech;
-use Model\TechQuery;
+use Model\Bidding;
+use Model\BiddingQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'tech' table.
+ * This class defines the structure of the 'bidding' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class TechTableMap extends TableMap
+class BiddingTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class TechTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'Model.Map.TechTableMap';
+    const CLASS_NAME = 'Model.Map.BiddingTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class TechTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'tech';
+    const TABLE_NAME = 'bidding';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Model\\Tech';
+    const OM_CLASS = '\\Model\\Bidding';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Model.Tech';
+    const CLASS_DEFAULT = 'Model.Bidding';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 10;
+    const NUM_COLUMNS = 12;
 
     /**
      * The number of lazy-loaded columns
@@ -69,57 +69,67 @@ class TechTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 10;
+    const NUM_HYDRATE_COLUMNS = 12;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'tech.id';
+    const COL_ID = 'bidding.id';
 
     /**
-     * the column name for the label field
+     * the column name for the task_id field
      */
-    const COL_LABEL = 'tech.label';
+    const COL_TASK_ID = 'bidding.task_id';
 
     /**
-     * the column name for the description field
+     * the column name for the user_id field
      */
-    const COL_DESCRIPTION = 'tech.description';
+    const COL_USER_ID = 'bidding.user_id';
 
     /**
-     * the column name for the url field
+     * the column name for the price field
      */
-    const COL_URL = 'tech.url';
+    const COL_PRICE = 'bidding.price';
 
     /**
-     * the column name for the hot field
+     * the column name for the needed field
      */
-    const COL_HOT = 'tech.hot';
+    const COL_NEEDED = 'bidding.needed';
+
+    /**
+     * the column name for the message field
+     */
+    const COL_MESSAGE = 'bidding.message';
+
+    /**
+     * the column name for the status field
+     */
+    const COL_STATUS = 'bidding.status';
 
     /**
      * the column name for the created field
      */
-    const COL_CREATED = 'tech.created';
+    const COL_CREATED = 'bidding.created';
 
     /**
      * the column name for the updated field
      */
-    const COL_UPDATED = 'tech.updated';
+    const COL_UPDATED = 'bidding.updated';
 
     /**
      * the column name for the removed field
      */
-    const COL_REMOVED = 'tech.removed';
+    const COL_REMOVED = 'bidding.removed';
 
     /**
      * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'tech.created_at';
+    const COL_CREATED_AT = 'bidding.created_at';
 
     /**
      * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'tech.updated_at';
+    const COL_UPDATED_AT = 'bidding.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -133,11 +143,11 @@ class TechTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Label', 'Description', 'Url', 'Hot', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('id', 'label', 'description', 'url', 'hot', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(TechTableMap::COL_ID, TechTableMap::COL_LABEL, TechTableMap::COL_DESCRIPTION, TechTableMap::COL_URL, TechTableMap::COL_HOT, TechTableMap::COL_CREATED, TechTableMap::COL_UPDATED, TechTableMap::COL_REMOVED, TechTableMap::COL_CREATED_AT, TechTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('id', 'label', 'description', 'url', 'hot', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id', 'TaskId', 'UserId', 'Price', 'Needed', 'Message', 'Status', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'taskId', 'userId', 'price', 'needed', 'message', 'status', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(BiddingTableMap::COL_ID, BiddingTableMap::COL_TASK_ID, BiddingTableMap::COL_USER_ID, BiddingTableMap::COL_PRICE, BiddingTableMap::COL_NEEDED, BiddingTableMap::COL_MESSAGE, BiddingTableMap::COL_STATUS, BiddingTableMap::COL_CREATED, BiddingTableMap::COL_UPDATED, BiddingTableMap::COL_REMOVED, BiddingTableMap::COL_CREATED_AT, BiddingTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'task_id', 'user_id', 'price', 'needed', 'message', 'status', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -147,11 +157,11 @@ class TechTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Label' => 1, 'Description' => 2, 'Url' => 3, 'Hot' => 4, 'Created' => 5, 'Updated' => 6, 'Removed' => 7, 'CreatedAt' => 8, 'UpdatedAt' => 9, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'label' => 1, 'description' => 2, 'url' => 3, 'hot' => 4, 'created' => 5, 'updated' => 6, 'removed' => 7, 'createdAt' => 8, 'updatedAt' => 9, ),
-        self::TYPE_COLNAME       => array(TechTableMap::COL_ID => 0, TechTableMap::COL_LABEL => 1, TechTableMap::COL_DESCRIPTION => 2, TechTableMap::COL_URL => 3, TechTableMap::COL_HOT => 4, TechTableMap::COL_CREATED => 5, TechTableMap::COL_UPDATED => 6, TechTableMap::COL_REMOVED => 7, TechTableMap::COL_CREATED_AT => 8, TechTableMap::COL_UPDATED_AT => 9, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'label' => 1, 'description' => 2, 'url' => 3, 'hot' => 4, 'created' => 5, 'updated' => 6, 'removed' => 7, 'created_at' => 8, 'updated_at' => 9, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'TaskId' => 1, 'UserId' => 2, 'Price' => 3, 'Needed' => 4, 'Message' => 5, 'Status' => 6, 'Created' => 7, 'Updated' => 8, 'Removed' => 9, 'CreatedAt' => 10, 'UpdatedAt' => 11, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'taskId' => 1, 'userId' => 2, 'price' => 3, 'needed' => 4, 'message' => 5, 'status' => 6, 'created' => 7, 'updated' => 8, 'removed' => 9, 'createdAt' => 10, 'updatedAt' => 11, ),
+        self::TYPE_COLNAME       => array(BiddingTableMap::COL_ID => 0, BiddingTableMap::COL_TASK_ID => 1, BiddingTableMap::COL_USER_ID => 2, BiddingTableMap::COL_PRICE => 3, BiddingTableMap::COL_NEEDED => 4, BiddingTableMap::COL_MESSAGE => 5, BiddingTableMap::COL_STATUS => 6, BiddingTableMap::COL_CREATED => 7, BiddingTableMap::COL_UPDATED => 8, BiddingTableMap::COL_REMOVED => 9, BiddingTableMap::COL_CREATED_AT => 10, BiddingTableMap::COL_UPDATED_AT => 11, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'task_id' => 1, 'user_id' => 2, 'price' => 3, 'needed' => 4, 'message' => 5, 'status' => 6, 'created' => 7, 'updated' => 8, 'removed' => 9, 'created_at' => 10, 'updated_at' => 11, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, )
     );
 
     /**
@@ -164,19 +174,21 @@ class TechTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('tech');
-        $this->setPhpName('Tech');
+        $this->setName('bidding');
+        $this->setPhpName('Bidding');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Model\\Tech');
+        $this->setClassName('\\Model\\Bidding');
         $this->setPackage('Model');
         $this->setUseIdGenerator(true);
-        $this->setPrimaryKeyMethodInfo('tech_id_seq');
+        $this->setPrimaryKeyMethodInfo('bidding_id_seq');
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('label', 'Label', 'VARCHAR', true, 32, null);
-        $this->addColumn('description', 'Description', 'VARCHAR', false, 256, null);
-        $this->addColumn('url', 'Url', 'VARCHAR', false, 1024, null);
-        $this->addColumn('hot', 'Hot', 'INTEGER', true, null, null);
+        $this->addForeignKey('task_id', 'TaskId', 'INTEGER', 'task', 'id', true, null, null);
+        $this->addForeignKey('user_id', 'UserId', 'INTEGER', 'user', 'id', true, null, null);
+        $this->addColumn('price', 'Price', 'INTEGER', true, null, null);
+        $this->addColumn('needed', 'Needed', 'INTEGER', true, null, null);
+        $this->addColumn('message', 'Message', 'VARCHAR', true, 256, null);
+        $this->addColumn('status', 'Status', 'VARCHAR', true, null, null);
         $this->addColumn('created', 'Created', 'TIMESTAMP', true, null, null);
         $this->addColumn('updated', 'Updated', 'TIMESTAMP', true, null, null);
         $this->addColumn('removed', 'Removed', 'TIMESTAMP', false, null, null);
@@ -189,13 +201,20 @@ class TechTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('TaskTech', '\\Model\\TaskTech', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('Task', '\\Model\\Task', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':tech_id',
+    0 => ':task_id',
     1 => ':id',
   ),
-), null, null, 'TaskTeches', false);
+), null, null, null, false);
+        $this->addRelation('User', '\\Model\\User', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':user_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -268,7 +287,7 @@ class TechTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? TechTableMap::CLASS_DEFAULT : TechTableMap::OM_CLASS;
+        return $withPrefix ? BiddingTableMap::CLASS_DEFAULT : BiddingTableMap::OM_CLASS;
     }
 
     /**
@@ -282,22 +301,22 @@ class TechTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Tech object, last column rank)
+     * @return array           (Bidding object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = TechTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = TechTableMap::getInstanceFromPool($key))) {
+        $key = BiddingTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = BiddingTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + TechTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + BiddingTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = TechTableMap::OM_CLASS;
-            /** @var Tech $obj */
+            $cls = BiddingTableMap::OM_CLASS;
+            /** @var Bidding $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            TechTableMap::addInstanceToPool($obj, $key);
+            BiddingTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -320,18 +339,18 @@ class TechTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = TechTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = TechTableMap::getInstanceFromPool($key))) {
+            $key = BiddingTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = BiddingTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Tech $obj */
+                /** @var Bidding $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                TechTableMap::addInstanceToPool($obj, $key);
+                BiddingTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -352,22 +371,26 @@ class TechTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(TechTableMap::COL_ID);
-            $criteria->addSelectColumn(TechTableMap::COL_LABEL);
-            $criteria->addSelectColumn(TechTableMap::COL_DESCRIPTION);
-            $criteria->addSelectColumn(TechTableMap::COL_URL);
-            $criteria->addSelectColumn(TechTableMap::COL_HOT);
-            $criteria->addSelectColumn(TechTableMap::COL_CREATED);
-            $criteria->addSelectColumn(TechTableMap::COL_UPDATED);
-            $criteria->addSelectColumn(TechTableMap::COL_REMOVED);
-            $criteria->addSelectColumn(TechTableMap::COL_CREATED_AT);
-            $criteria->addSelectColumn(TechTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(BiddingTableMap::COL_ID);
+            $criteria->addSelectColumn(BiddingTableMap::COL_TASK_ID);
+            $criteria->addSelectColumn(BiddingTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(BiddingTableMap::COL_PRICE);
+            $criteria->addSelectColumn(BiddingTableMap::COL_NEEDED);
+            $criteria->addSelectColumn(BiddingTableMap::COL_MESSAGE);
+            $criteria->addSelectColumn(BiddingTableMap::COL_STATUS);
+            $criteria->addSelectColumn(BiddingTableMap::COL_CREATED);
+            $criteria->addSelectColumn(BiddingTableMap::COL_UPDATED);
+            $criteria->addSelectColumn(BiddingTableMap::COL_REMOVED);
+            $criteria->addSelectColumn(BiddingTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(BiddingTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.label');
-            $criteria->addSelectColumn($alias . '.description');
-            $criteria->addSelectColumn($alias . '.url');
-            $criteria->addSelectColumn($alias . '.hot');
+            $criteria->addSelectColumn($alias . '.task_id');
+            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.price');
+            $criteria->addSelectColumn($alias . '.needed');
+            $criteria->addSelectColumn($alias . '.message');
+            $criteria->addSelectColumn($alias . '.status');
             $criteria->addSelectColumn($alias . '.created');
             $criteria->addSelectColumn($alias . '.updated');
             $criteria->addSelectColumn($alias . '.removed');
@@ -385,7 +408,7 @@ class TechTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(TechTableMap::DATABASE_NAME)->getTable(TechTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(BiddingTableMap::DATABASE_NAME)->getTable(BiddingTableMap::TABLE_NAME);
     }
 
     /**
@@ -393,16 +416,16 @@ class TechTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(TechTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(TechTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new TechTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(BiddingTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(BiddingTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new BiddingTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Tech or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Bidding or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Tech object or primary key or array of primary keys
+     * @param mixed               $values Criteria or Bidding object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -413,27 +436,27 @@ class TechTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(TechTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(BiddingTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Model\Tech) { // it's a model object
+        } elseif ($values instanceof \Model\Bidding) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(TechTableMap::DATABASE_NAME);
-            $criteria->add(TechTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(BiddingTableMap::DATABASE_NAME);
+            $criteria->add(BiddingTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = TechQuery::create()->mergeWith($criteria);
+        $query = BiddingQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            TechTableMap::clearInstancePool();
+            BiddingTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                TechTableMap::removeInstanceFromPool($singleval);
+                BiddingTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -441,20 +464,20 @@ class TechTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the tech table.
+     * Deletes all rows from the bidding table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return TechQuery::create()->doDeleteAll($con);
+        return BiddingQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Tech or Criteria object.
+     * Performs an INSERT on the database, given a Bidding or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Tech object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or Bidding object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -463,22 +486,22 @@ class TechTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(TechTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(BiddingTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Tech object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Bidding object
         }
 
-        if ($criteria->containsKey(TechTableMap::COL_ID) && $criteria->keyContainsValue(TechTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.TechTableMap::COL_ID.')');
+        if ($criteria->containsKey(BiddingTableMap::COL_ID) && $criteria->keyContainsValue(BiddingTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.BiddingTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = TechQuery::create()->mergeWith($criteria);
+        $query = BiddingQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -487,7 +510,7 @@ class TechTableMap extends TableMap
         });
     }
 
-} // TechTableMap
+} // BiddingTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-TechTableMap::buildTableMap();
+BiddingTableMap::buildTableMap();

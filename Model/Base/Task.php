@@ -5,6 +5,8 @@ namespace Model\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Model\Bidding as ChildBidding;
+use Model\BiddingQuery as ChildBiddingQuery;
 use Model\Category as ChildCategory;
 use Model\CategoryQuery as ChildCategoryQuery;
 use Model\Order as ChildOrder;
@@ -15,6 +17,7 @@ use Model\TaskTech as ChildTaskTech;
 use Model\TaskTechQuery as ChildTaskTechQuery;
 use Model\User as ChildUser;
 use Model\UserQuery as ChildUserQuery;
+use Model\Map\BiddingTableMap;
 use Model\Map\OrderTableMap;
 use Model\Map\TaskTableMap;
 use Model\Map\TaskTechTableMap;
@@ -116,6 +119,13 @@ abstract class Task implements ActiveRecordInterface
     protected $max_price;
 
     /**
+     * The value for the needed field.
+     * 工期，单位为小时
+     * @var        int
+     */
+    protected $needed;
+
+    /**
      * The value for the creator_id field.
      * 任务的发起者
      * @var        int
@@ -175,6 +185,12 @@ abstract class Task implements ActiveRecordInterface
     protected $aCategory;
 
     /**
+     * @var        ObjectCollection|ChildBidding[] Collection to store aggregation of ChildBidding objects.
+     */
+    protected $collBiddings;
+    protected $collBiddingsPartial;
+
+    /**
      * @var        ObjectCollection|ChildOrder[] Collection to store aggregation of ChildOrder objects.
      */
     protected $collOrders;
@@ -193,6 +209,12 @@ abstract class Task implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildBidding[]
+     */
+    protected $biddingsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -492,6 +514,16 @@ abstract class Task implements ActiveRecordInterface
     }
 
     /**
+     * Get the [needed] column value.
+     * 工期，单位为小时
+     * @return int
+     */
+    public function getNeeded()
+    {
+        return $this->needed;
+    }
+
+    /**
      * Get the [creator_id] column value.
      * 任务的发起者
      * @return int
@@ -518,7 +550,7 @@ abstract class Task implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -538,7 +570,7 @@ abstract class Task implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -558,7 +590,7 @@ abstract class Task implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -578,7 +610,7 @@ abstract class Task implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -598,7 +630,7 @@ abstract class Task implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -730,6 +762,26 @@ abstract class Task implements ActiveRecordInterface
 
         return $this;
     } // setMaxPrice()
+
+    /**
+     * Set the value of [needed] column.
+     * 工期，单位为小时
+     * @param int $v new value
+     * @return $this|\Model\Task The current object (for fluent API support)
+     */
+    public function setNeeded($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->needed !== $v) {
+            $this->needed = $v;
+            $this->modifiedColumns[TaskTableMap::COL_NEEDED] = true;
+        }
+
+        return $this;
+    } // setNeeded()
 
     /**
      * Set the value of [creator_id] column.
@@ -933,40 +985,28 @@ abstract class Task implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : TaskTableMap::translateFieldName('MaxPrice', TableMap::TYPE_PHPNAME, $indexType)];
             $this->max_price = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TaskTableMap::translateFieldName('CreatorId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : TaskTableMap::translateFieldName('Needed', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->needed = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TaskTableMap::translateFieldName('CreatorId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->creator_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : TaskTableMap::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TaskTableMap::translateFieldName('CatId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cat_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : TaskTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TaskTableMap::translateFieldName('Created', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : TaskTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : TaskTableMap::translateFieldName('Updated', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : TaskTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : TaskTableMap::translateFieldName('Removed', TableMap::TYPE_PHPNAME, $indexType)];
             $this->removed = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : TaskTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : TaskTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : TaskTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : TaskTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
@@ -976,7 +1016,7 @@ abstract class Task implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 13; // 13 = TaskTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 14; // 14 = TaskTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Model\\Task'), 0, $e);
@@ -1045,6 +1085,8 @@ abstract class Task implements ActiveRecordInterface
 
             $this->aUser = null;
             $this->aCategory = null;
+            $this->collBiddings = null;
+
             $this->collOrders = null;
 
             $this->collTaskTeches = null;
@@ -1190,6 +1232,23 @@ abstract class Task implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->biddingsScheduledForDeletion !== null) {
+                if (!$this->biddingsScheduledForDeletion->isEmpty()) {
+                    \Model\BiddingQuery::create()
+                        ->filterByPrimaryKeys($this->biddingsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->biddingsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBiddings !== null) {
+                foreach ($this->collBiddings as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             if ($this->ordersScheduledForDeletion !== null) {
                 if (!$this->ordersScheduledForDeletion->isEmpty()) {
                     \Model\OrderQuery::create()
@@ -1248,6 +1307,15 @@ abstract class Task implements ActiveRecordInterface
         if (null !== $this->id) {
             throw new PropelException('Cannot insert a value for auto-increment primary key (' . TaskTableMap::COL_ID . ')');
         }
+        if (null === $this->id) {
+            try {
+                $dataFetcher = $con->query("SELECT nextval('task_id_seq')");
+                $this->id = (int) $dataFetcher->fetchColumn();
+            } catch (Exception $e) {
+                throw new PropelException('Unable to get sequence id.', 0, $e);
+            }
+        }
+
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(TaskTableMap::COL_ID)) {
@@ -1267,6 +1335,9 @@ abstract class Task implements ActiveRecordInterface
         }
         if ($this->isColumnModified(TaskTableMap::COL_MAX_PRICE)) {
             $modifiedColumns[':p' . $index++]  = 'max_price';
+        }
+        if ($this->isColumnModified(TaskTableMap::COL_NEEDED)) {
+            $modifiedColumns[':p' . $index++]  = 'needed';
         }
         if ($this->isColumnModified(TaskTableMap::COL_CREATOR_ID)) {
             $modifiedColumns[':p' . $index++]  = 'creator_id';
@@ -1318,6 +1389,9 @@ abstract class Task implements ActiveRecordInterface
                     case 'max_price':
                         $stmt->bindValue($identifier, $this->max_price, PDO::PARAM_INT);
                         break;
+                    case 'needed':
+                        $stmt->bindValue($identifier, $this->needed, PDO::PARAM_INT);
+                        break;
                     case 'creator_id':
                         $stmt->bindValue($identifier, $this->creator_id, PDO::PARAM_INT);
                         break;
@@ -1346,13 +1420,6 @@ abstract class Task implements ActiveRecordInterface
             Propel::log($e->getMessage(), Propel::LOG_ERR);
             throw new PropelException(sprintf('Unable to execute INSERT statement [%s]', $sql), 0, $e);
         }
-
-        try {
-            $pk = $con->lastInsertId();
-        } catch (Exception $e) {
-            throw new PropelException('Unable to get autoincrement id.', 0, $e);
-        }
-        $this->setId($pk);
 
         $this->setNew(false);
     }
@@ -1420,24 +1487,27 @@ abstract class Task implements ActiveRecordInterface
                 return $this->getMaxPrice();
                 break;
             case 6:
-                return $this->getCreatorId();
+                return $this->getNeeded();
                 break;
             case 7:
-                return $this->getCatId();
+                return $this->getCreatorId();
                 break;
             case 8:
-                return $this->getCreated();
+                return $this->getCatId();
                 break;
             case 9:
-                return $this->getUpdated();
+                return $this->getCreated();
                 break;
             case 10:
-                return $this->getRemoved();
+                return $this->getUpdated();
                 break;
             case 11:
-                return $this->getCreatedAt();
+                return $this->getRemoved();
                 break;
             case 12:
+                return $this->getCreatedAt();
+                break;
+            case 13:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1476,18 +1546,15 @@ abstract class Task implements ActiveRecordInterface
             $keys[3] => $this->getRequirement(),
             $keys[4] => $this->getMinPrice(),
             $keys[5] => $this->getMaxPrice(),
-            $keys[6] => $this->getCreatorId(),
-            $keys[7] => $this->getCatId(),
-            $keys[8] => $this->getCreated(),
-            $keys[9] => $this->getUpdated(),
-            $keys[10] => $this->getRemoved(),
-            $keys[11] => $this->getCreatedAt(),
-            $keys[12] => $this->getUpdatedAt(),
+            $keys[6] => $this->getNeeded(),
+            $keys[7] => $this->getCreatorId(),
+            $keys[8] => $this->getCatId(),
+            $keys[9] => $this->getCreated(),
+            $keys[10] => $this->getUpdated(),
+            $keys[11] => $this->getRemoved(),
+            $keys[12] => $this->getCreatedAt(),
+            $keys[13] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[8]] instanceof \DateTime) {
-            $result[$keys[8]] = $result[$keys[8]]->format('c');
-        }
-
         if ($result[$keys[9]] instanceof \DateTime) {
             $result[$keys[9]] = $result[$keys[9]]->format('c');
         }
@@ -1502,6 +1569,10 @@ abstract class Task implements ActiveRecordInterface
 
         if ($result[$keys[12]] instanceof \DateTime) {
             $result[$keys[12]] = $result[$keys[12]]->format('c');
+        }
+
+        if ($result[$keys[13]] instanceof \DateTime) {
+            $result[$keys[13]] = $result[$keys[13]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1539,6 +1610,21 @@ abstract class Task implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aCategory->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collBiddings) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'biddings';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'biddings';
+                        break;
+                    default:
+                        $key = 'Biddings';
+                }
+
+                $result[$key] = $this->collBiddings->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collOrders) {
 
@@ -1623,24 +1709,27 @@ abstract class Task implements ActiveRecordInterface
                 $this->setMaxPrice($value);
                 break;
             case 6:
-                $this->setCreatorId($value);
+                $this->setNeeded($value);
                 break;
             case 7:
-                $this->setCatId($value);
+                $this->setCreatorId($value);
                 break;
             case 8:
-                $this->setCreated($value);
+                $this->setCatId($value);
                 break;
             case 9:
-                $this->setUpdated($value);
+                $this->setCreated($value);
                 break;
             case 10:
-                $this->setRemoved($value);
+                $this->setUpdated($value);
                 break;
             case 11:
-                $this->setCreatedAt($value);
+                $this->setRemoved($value);
                 break;
             case 12:
+                $this->setCreatedAt($value);
+                break;
+            case 13:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -1688,25 +1777,28 @@ abstract class Task implements ActiveRecordInterface
             $this->setMaxPrice($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setCreatorId($arr[$keys[6]]);
+            $this->setNeeded($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setCatId($arr[$keys[7]]);
+            $this->setCreatorId($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setCreated($arr[$keys[8]]);
+            $this->setCatId($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setUpdated($arr[$keys[9]]);
+            $this->setCreated($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setRemoved($arr[$keys[10]]);
+            $this->setUpdated($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setCreatedAt($arr[$keys[11]]);
+            $this->setRemoved($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setUpdatedAt($arr[$keys[12]]);
+            $this->setCreatedAt($arr[$keys[12]]);
+        }
+        if (array_key_exists($keys[13], $arr)) {
+            $this->setUpdatedAt($arr[$keys[13]]);
         }
     }
 
@@ -1766,6 +1858,9 @@ abstract class Task implements ActiveRecordInterface
         }
         if ($this->isColumnModified(TaskTableMap::COL_MAX_PRICE)) {
             $criteria->add(TaskTableMap::COL_MAX_PRICE, $this->max_price);
+        }
+        if ($this->isColumnModified(TaskTableMap::COL_NEEDED)) {
+            $criteria->add(TaskTableMap::COL_NEEDED, $this->needed);
         }
         if ($this->isColumnModified(TaskTableMap::COL_CREATOR_ID)) {
             $criteria->add(TaskTableMap::COL_CREATOR_ID, $this->creator_id);
@@ -1879,6 +1974,7 @@ abstract class Task implements ActiveRecordInterface
         $copyObj->setRequirement($this->getRequirement());
         $copyObj->setMinPrice($this->getMinPrice());
         $copyObj->setMaxPrice($this->getMaxPrice());
+        $copyObj->setNeeded($this->getNeeded());
         $copyObj->setCreatorId($this->getCreatorId());
         $copyObj->setCatId($this->getCatId());
         $copyObj->setCreated($this->getCreated());
@@ -1891,6 +1987,12 @@ abstract class Task implements ActiveRecordInterface
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
+
+            foreach ($this->getBiddings() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBidding($relObj->copy($deepCopy));
+                }
+            }
 
             foreach ($this->getOrders() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -2047,12 +2149,265 @@ abstract class Task implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
+        if ('Bidding' == $relationName) {
+            return $this->initBiddings();
+        }
         if ('Order' == $relationName) {
             return $this->initOrders();
         }
         if ('TaskTech' == $relationName) {
             return $this->initTaskTeches();
         }
+    }
+
+    /**
+     * Clears out the collBiddings collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addBiddings()
+     */
+    public function clearBiddings()
+    {
+        $this->collBiddings = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collBiddings collection loaded partially.
+     */
+    public function resetPartialBiddings($v = true)
+    {
+        $this->collBiddingsPartial = $v;
+    }
+
+    /**
+     * Initializes the collBiddings collection.
+     *
+     * By default this just sets the collBiddings collection to an empty array (like clearcollBiddings());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBiddings($overrideExisting = true)
+    {
+        if (null !== $this->collBiddings && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = BiddingTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collBiddings = new $collectionClassName;
+        $this->collBiddings->setModel('\Model\Bidding');
+    }
+
+    /**
+     * Gets an array of ChildBidding objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildTask is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildBidding[] List of ChildBidding objects
+     * @throws PropelException
+     */
+    public function getBiddings(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBiddingsPartial && !$this->isNew();
+        if (null === $this->collBiddings || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBiddings) {
+                // return empty collection
+                $this->initBiddings();
+            } else {
+                $collBiddings = ChildBiddingQuery::create(null, $criteria)
+                    ->filterByTask($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collBiddingsPartial && count($collBiddings)) {
+                        $this->initBiddings(false);
+
+                        foreach ($collBiddings as $obj) {
+                            if (false == $this->collBiddings->contains($obj)) {
+                                $this->collBiddings->append($obj);
+                            }
+                        }
+
+                        $this->collBiddingsPartial = true;
+                    }
+
+                    return $collBiddings;
+                }
+
+                if ($partial && $this->collBiddings) {
+                    foreach ($this->collBiddings as $obj) {
+                        if ($obj->isNew()) {
+                            $collBiddings[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBiddings = $collBiddings;
+                $this->collBiddingsPartial = false;
+            }
+        }
+
+        return $this->collBiddings;
+    }
+
+    /**
+     * Sets a collection of ChildBidding objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $biddings A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildTask The current object (for fluent API support)
+     */
+    public function setBiddings(Collection $biddings, ConnectionInterface $con = null)
+    {
+        /** @var ChildBidding[] $biddingsToDelete */
+        $biddingsToDelete = $this->getBiddings(new Criteria(), $con)->diff($biddings);
+
+
+        $this->biddingsScheduledForDeletion = $biddingsToDelete;
+
+        foreach ($biddingsToDelete as $biddingRemoved) {
+            $biddingRemoved->setTask(null);
+        }
+
+        $this->collBiddings = null;
+        foreach ($biddings as $bidding) {
+            $this->addBidding($bidding);
+        }
+
+        $this->collBiddings = $biddings;
+        $this->collBiddingsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Bidding objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Bidding objects.
+     * @throws PropelException
+     */
+    public function countBiddings(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBiddingsPartial && !$this->isNew();
+        if (null === $this->collBiddings || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBiddings) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBiddings());
+            }
+
+            $query = ChildBiddingQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByTask($this)
+                ->count($con);
+        }
+
+        return count($this->collBiddings);
+    }
+
+    /**
+     * Method called to associate a ChildBidding object to this object
+     * through the ChildBidding foreign key attribute.
+     *
+     * @param  ChildBidding $l ChildBidding
+     * @return $this|\Model\Task The current object (for fluent API support)
+     */
+    public function addBidding(ChildBidding $l)
+    {
+        if ($this->collBiddings === null) {
+            $this->initBiddings();
+            $this->collBiddingsPartial = true;
+        }
+
+        if (!$this->collBiddings->contains($l)) {
+            $this->doAddBidding($l);
+
+            if ($this->biddingsScheduledForDeletion and $this->biddingsScheduledForDeletion->contains($l)) {
+                $this->biddingsScheduledForDeletion->remove($this->biddingsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildBidding $bidding The ChildBidding object to add.
+     */
+    protected function doAddBidding(ChildBidding $bidding)
+    {
+        $this->collBiddings[]= $bidding;
+        $bidding->setTask($this);
+    }
+
+    /**
+     * @param  ChildBidding $bidding The ChildBidding object to remove.
+     * @return $this|ChildTask The current object (for fluent API support)
+     */
+    public function removeBidding(ChildBidding $bidding)
+    {
+        if ($this->getBiddings()->contains($bidding)) {
+            $pos = $this->collBiddings->search($bidding);
+            $this->collBiddings->remove($pos);
+            if (null === $this->biddingsScheduledForDeletion) {
+                $this->biddingsScheduledForDeletion = clone $this->collBiddings;
+                $this->biddingsScheduledForDeletion->clear();
+            }
+            $this->biddingsScheduledForDeletion[]= clone $bidding;
+            $bidding->setTask(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Task is new, it will return
+     * an empty collection; or if this Task has previously
+     * been saved, it will retrieve related Biddings from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Task.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBidding[] List of ChildBidding objects
+     */
+    public function getBiddingsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBiddingQuery::create(null, $criteria);
+        $query->joinWith('User', $joinBehavior);
+
+        return $this->getBiddings($query, $con);
     }
 
     /**
@@ -2577,6 +2932,7 @@ abstract class Task implements ActiveRecordInterface
         $this->requirement = null;
         $this->min_price = null;
         $this->max_price = null;
+        $this->needed = null;
         $this->creator_id = null;
         $this->cat_id = null;
         $this->created = null;
@@ -2602,6 +2958,11 @@ abstract class Task implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collBiddings) {
+                foreach ($this->collBiddings as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collOrders) {
                 foreach ($this->collOrders as $o) {
                     $o->clearAllReferences($deep);
@@ -2614,6 +2975,7 @@ abstract class Task implements ActiveRecordInterface
             }
         } // if ($deep)
 
+        $this->collBiddings = null;
         $this->collOrders = null;
         $this->collTaskTeches = null;
         $this->aUser = null;

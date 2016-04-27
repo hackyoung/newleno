@@ -59,7 +59,7 @@ class OrderTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 13;
+    const NUM_COLUMNS = 15;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class OrderTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 13;
+    const NUM_HYDRATE_COLUMNS = 15;
 
     /**
      * the column name for the order_id field
@@ -112,6 +112,16 @@ class OrderTableMap extends TableMap
     const COL_BOSS_DEPOSIT = 'order.boss_deposit';
 
     /**
+     * the column name for the done field
+     */
+    const COL_DONE = 'order.done';
+
+    /**
+     * the column name for the status field
+     */
+    const COL_STATUS = 'order.status';
+
+    /**
      * the column name for the created field
      */
     const COL_CREATED = 'order.created';
@@ -148,11 +158,11 @@ class OrderTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('OrderId', 'TaskId', 'Amount', 'BossId', 'WorkerId', 'Progress', 'WorkerDeposit', 'BossDeposit', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_CAMELNAME     => array('orderId', 'taskId', 'amount', 'bossId', 'workerId', 'progress', 'workerDeposit', 'bossDeposit', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(OrderTableMap::COL_ORDER_ID, OrderTableMap::COL_TASK_ID, OrderTableMap::COL_AMOUNT, OrderTableMap::COL_BOSS_ID, OrderTableMap::COL_WORKER_ID, OrderTableMap::COL_PROGRESS, OrderTableMap::COL_WORKER_DEPOSIT, OrderTableMap::COL_BOSS_DEPOSIT, OrderTableMap::COL_CREATED, OrderTableMap::COL_UPDATED, OrderTableMap::COL_REMOVED, OrderTableMap::COL_CREATED_AT, OrderTableMap::COL_UPDATED_AT, ),
-        self::TYPE_FIELDNAME     => array('order_id', 'task_id', 'amount', 'boss_id', 'worker_id', 'progress', 'worker_deposit', 'boss_deposit', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        self::TYPE_PHPNAME       => array('OrderId', 'TaskId', 'Amount', 'BossId', 'WorkerId', 'Progress', 'WorkerDeposit', 'BossDeposit', 'Done', 'Status', 'Created', 'Updated', 'Removed', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('orderId', 'taskId', 'amount', 'bossId', 'workerId', 'progress', 'workerDeposit', 'bossDeposit', 'done', 'status', 'created', 'updated', 'removed', 'createdAt', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(OrderTableMap::COL_ORDER_ID, OrderTableMap::COL_TASK_ID, OrderTableMap::COL_AMOUNT, OrderTableMap::COL_BOSS_ID, OrderTableMap::COL_WORKER_ID, OrderTableMap::COL_PROGRESS, OrderTableMap::COL_WORKER_DEPOSIT, OrderTableMap::COL_BOSS_DEPOSIT, OrderTableMap::COL_DONE, OrderTableMap::COL_STATUS, OrderTableMap::COL_CREATED, OrderTableMap::COL_UPDATED, OrderTableMap::COL_REMOVED, OrderTableMap::COL_CREATED_AT, OrderTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('order_id', 'task_id', 'amount', 'boss_id', 'worker_id', 'progress', 'worker_deposit', 'boss_deposit', 'done', 'status', 'created', 'updated', 'removed', 'created_at', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -162,11 +172,11 @@ class OrderTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('OrderId' => 0, 'TaskId' => 1, 'Amount' => 2, 'BossId' => 3, 'WorkerId' => 4, 'Progress' => 5, 'WorkerDeposit' => 6, 'BossDeposit' => 7, 'Created' => 8, 'Updated' => 9, 'Removed' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, ),
-        self::TYPE_CAMELNAME     => array('orderId' => 0, 'taskId' => 1, 'amount' => 2, 'bossId' => 3, 'workerId' => 4, 'progress' => 5, 'workerDeposit' => 6, 'bossDeposit' => 7, 'created' => 8, 'updated' => 9, 'removed' => 10, 'createdAt' => 11, 'updatedAt' => 12, ),
-        self::TYPE_COLNAME       => array(OrderTableMap::COL_ORDER_ID => 0, OrderTableMap::COL_TASK_ID => 1, OrderTableMap::COL_AMOUNT => 2, OrderTableMap::COL_BOSS_ID => 3, OrderTableMap::COL_WORKER_ID => 4, OrderTableMap::COL_PROGRESS => 5, OrderTableMap::COL_WORKER_DEPOSIT => 6, OrderTableMap::COL_BOSS_DEPOSIT => 7, OrderTableMap::COL_CREATED => 8, OrderTableMap::COL_UPDATED => 9, OrderTableMap::COL_REMOVED => 10, OrderTableMap::COL_CREATED_AT => 11, OrderTableMap::COL_UPDATED_AT => 12, ),
-        self::TYPE_FIELDNAME     => array('order_id' => 0, 'task_id' => 1, 'amount' => 2, 'boss_id' => 3, 'worker_id' => 4, 'progress' => 5, 'worker_deposit' => 6, 'boss_deposit' => 7, 'created' => 8, 'updated' => 9, 'removed' => 10, 'created_at' => 11, 'updated_at' => 12, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
+        self::TYPE_PHPNAME       => array('OrderId' => 0, 'TaskId' => 1, 'Amount' => 2, 'BossId' => 3, 'WorkerId' => 4, 'Progress' => 5, 'WorkerDeposit' => 6, 'BossDeposit' => 7, 'Done' => 8, 'Status' => 9, 'Created' => 10, 'Updated' => 11, 'Removed' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, ),
+        self::TYPE_CAMELNAME     => array('orderId' => 0, 'taskId' => 1, 'amount' => 2, 'bossId' => 3, 'workerId' => 4, 'progress' => 5, 'workerDeposit' => 6, 'bossDeposit' => 7, 'done' => 8, 'status' => 9, 'created' => 10, 'updated' => 11, 'removed' => 12, 'createdAt' => 13, 'updatedAt' => 14, ),
+        self::TYPE_COLNAME       => array(OrderTableMap::COL_ORDER_ID => 0, OrderTableMap::COL_TASK_ID => 1, OrderTableMap::COL_AMOUNT => 2, OrderTableMap::COL_BOSS_ID => 3, OrderTableMap::COL_WORKER_ID => 4, OrderTableMap::COL_PROGRESS => 5, OrderTableMap::COL_WORKER_DEPOSIT => 6, OrderTableMap::COL_BOSS_DEPOSIT => 7, OrderTableMap::COL_DONE => 8, OrderTableMap::COL_STATUS => 9, OrderTableMap::COL_CREATED => 10, OrderTableMap::COL_UPDATED => 11, OrderTableMap::COL_REMOVED => 12, OrderTableMap::COL_CREATED_AT => 13, OrderTableMap::COL_UPDATED_AT => 14, ),
+        self::TYPE_FIELDNAME     => array('order_id' => 0, 'task_id' => 1, 'amount' => 2, 'boss_id' => 3, 'worker_id' => 4, 'progress' => 5, 'worker_deposit' => 6, 'boss_deposit' => 7, 'done' => 8, 'status' => 9, 'created' => 10, 'updated' => 11, 'removed' => 12, 'created_at' => 13, 'updated_at' => 14, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, )
     );
 
     /**
@@ -185,6 +195,7 @@ class OrderTableMap extends TableMap
         $this->setClassName('\\Model\\Order');
         $this->setPackage('Model');
         $this->setUseIdGenerator(true);
+        $this->setPrimaryKeyMethodInfo('order_order_id_seq');
         // columns
         $this->addPrimaryKey('order_id', 'OrderId', 'INTEGER', true, null, null);
         $this->addForeignKey('task_id', 'TaskId', 'INTEGER', 'task', 'id', true, null, null);
@@ -194,6 +205,8 @@ class OrderTableMap extends TableMap
         $this->addColumn('progress', 'Progress', 'INTEGER', true, null, null);
         $this->addColumn('worker_deposit', 'WorkerDeposit', 'INTEGER', false, null, null);
         $this->addColumn('boss_deposit', 'BossDeposit', 'INTEGER', false, null, null);
+        $this->addColumn('done', 'Done', 'TIMESTAMP', true, null, null);
+        $this->addColumn('status', 'Status', 'VARCHAR', true, null, null);
         $this->addColumn('created', 'Created', 'TIMESTAMP', true, null, null);
         $this->addColumn('updated', 'Updated', 'TIMESTAMP', true, null, null);
         $this->addColumn('removed', 'Removed', 'TIMESTAMP', false, null, null);
@@ -389,6 +402,8 @@ class OrderTableMap extends TableMap
             $criteria->addSelectColumn(OrderTableMap::COL_PROGRESS);
             $criteria->addSelectColumn(OrderTableMap::COL_WORKER_DEPOSIT);
             $criteria->addSelectColumn(OrderTableMap::COL_BOSS_DEPOSIT);
+            $criteria->addSelectColumn(OrderTableMap::COL_DONE);
+            $criteria->addSelectColumn(OrderTableMap::COL_STATUS);
             $criteria->addSelectColumn(OrderTableMap::COL_CREATED);
             $criteria->addSelectColumn(OrderTableMap::COL_UPDATED);
             $criteria->addSelectColumn(OrderTableMap::COL_REMOVED);
@@ -403,6 +418,8 @@ class OrderTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.progress');
             $criteria->addSelectColumn($alias . '.worker_deposit');
             $criteria->addSelectColumn($alias . '.boss_deposit');
+            $criteria->addSelectColumn($alias . '.done');
+            $criteria->addSelectColumn($alias . '.status');
             $criteria->addSelectColumn($alias . '.created');
             $criteria->addSelectColumn($alias . '.updated');
             $criteria->addSelectColumn($alias . '.removed');

@@ -26,6 +26,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTaskQuery orderByRequirement($order = Criteria::ASC) Order by the requirement column
  * @method     ChildTaskQuery orderByMinPrice($order = Criteria::ASC) Order by the min_price column
  * @method     ChildTaskQuery orderByMaxPrice($order = Criteria::ASC) Order by the max_price column
+ * @method     ChildTaskQuery orderByNeeded($order = Criteria::ASC) Order by the needed column
  * @method     ChildTaskQuery orderByCreatorId($order = Criteria::ASC) Order by the creator_id column
  * @method     ChildTaskQuery orderByCatId($order = Criteria::ASC) Order by the cat_id column
  * @method     ChildTaskQuery orderByCreated($order = Criteria::ASC) Order by the created column
@@ -40,6 +41,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTaskQuery groupByRequirement() Group by the requirement column
  * @method     ChildTaskQuery groupByMinPrice() Group by the min_price column
  * @method     ChildTaskQuery groupByMaxPrice() Group by the max_price column
+ * @method     ChildTaskQuery groupByNeeded() Group by the needed column
  * @method     ChildTaskQuery groupByCreatorId() Group by the creator_id column
  * @method     ChildTaskQuery groupByCatId() Group by the cat_id column
  * @method     ChildTaskQuery groupByCreated() Group by the created column
@@ -76,6 +78,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTaskQuery rightJoinWithCategory() Adds a RIGHT JOIN clause and with to the query using the Category relation
  * @method     ChildTaskQuery innerJoinWithCategory() Adds a INNER JOIN clause and with to the query using the Category relation
  *
+ * @method     ChildTaskQuery leftJoinBidding($relationAlias = null) Adds a LEFT JOIN clause to the query using the Bidding relation
+ * @method     ChildTaskQuery rightJoinBidding($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Bidding relation
+ * @method     ChildTaskQuery innerJoinBidding($relationAlias = null) Adds a INNER JOIN clause to the query using the Bidding relation
+ *
+ * @method     ChildTaskQuery joinWithBidding($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Bidding relation
+ *
+ * @method     ChildTaskQuery leftJoinWithBidding() Adds a LEFT JOIN clause and with to the query using the Bidding relation
+ * @method     ChildTaskQuery rightJoinWithBidding() Adds a RIGHT JOIN clause and with to the query using the Bidding relation
+ * @method     ChildTaskQuery innerJoinWithBidding() Adds a INNER JOIN clause and with to the query using the Bidding relation
+ *
  * @method     ChildTaskQuery leftJoinOrder($relationAlias = null) Adds a LEFT JOIN clause to the query using the Order relation
  * @method     ChildTaskQuery rightJoinOrder($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Order relation
  * @method     ChildTaskQuery innerJoinOrder($relationAlias = null) Adds a INNER JOIN clause to the query using the Order relation
@@ -96,7 +108,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTaskQuery rightJoinWithTaskTech() Adds a RIGHT JOIN clause and with to the query using the TaskTech relation
  * @method     ChildTaskQuery innerJoinWithTaskTech() Adds a INNER JOIN clause and with to the query using the TaskTech relation
  *
- * @method     \Model\UserQuery|\Model\CategoryQuery|\Model\OrderQuery|\Model\TaskTechQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Model\UserQuery|\Model\CategoryQuery|\Model\BiddingQuery|\Model\OrderQuery|\Model\TaskTechQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildTask findOne(ConnectionInterface $con = null) Return the first ChildTask matching the query
  * @method     ChildTask findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTask matching the query, or a new ChildTask object populated from the query conditions when no match is found
@@ -107,6 +119,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTask findOneByRequirement(string $requirement) Return the first ChildTask filtered by the requirement column
  * @method     ChildTask findOneByMinPrice(int $min_price) Return the first ChildTask filtered by the min_price column
  * @method     ChildTask findOneByMaxPrice(int $max_price) Return the first ChildTask filtered by the max_price column
+ * @method     ChildTask findOneByNeeded(int $needed) Return the first ChildTask filtered by the needed column
  * @method     ChildTask findOneByCreatorId(int $creator_id) Return the first ChildTask filtered by the creator_id column
  * @method     ChildTask findOneByCatId(int $cat_id) Return the first ChildTask filtered by the cat_id column
  * @method     ChildTask findOneByCreated(string $created) Return the first ChildTask filtered by the created column
@@ -124,6 +137,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTask requireOneByRequirement(string $requirement) Return the first ChildTask filtered by the requirement column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTask requireOneByMinPrice(int $min_price) Return the first ChildTask filtered by the min_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTask requireOneByMaxPrice(int $max_price) Return the first ChildTask filtered by the max_price column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTask requireOneByNeeded(int $needed) Return the first ChildTask filtered by the needed column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTask requireOneByCreatorId(int $creator_id) Return the first ChildTask filtered by the creator_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTask requireOneByCatId(int $cat_id) Return the first ChildTask filtered by the cat_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTask requireOneByCreated(string $created) Return the first ChildTask filtered by the created column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -139,6 +153,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTask[]|ObjectCollection findByRequirement(string $requirement) Return ChildTask objects filtered by the requirement column
  * @method     ChildTask[]|ObjectCollection findByMinPrice(int $min_price) Return ChildTask objects filtered by the min_price column
  * @method     ChildTask[]|ObjectCollection findByMaxPrice(int $max_price) Return ChildTask objects filtered by the max_price column
+ * @method     ChildTask[]|ObjectCollection findByNeeded(int $needed) Return ChildTask objects filtered by the needed column
  * @method     ChildTask[]|ObjectCollection findByCreatorId(int $creator_id) Return ChildTask objects filtered by the creator_id column
  * @method     ChildTask[]|ObjectCollection findByCatId(int $cat_id) Return ChildTask objects filtered by the cat_id column
  * @method     ChildTask[]|ObjectCollection findByCreated(string $created) Return ChildTask objects filtered by the created column
@@ -244,7 +259,7 @@ abstract class TaskQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, title, description, requirement, min_price, max_price, creator_id, cat_id, created, updated, removed, created_at, updated_at FROM task WHERE id = :p0';
+        $sql = 'SELECT id, title, description, requirement, min_price, max_price, needed, creator_id, cat_id, created, updated, removed, created_at, updated_at FROM task WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -542,6 +557,47 @@ abstract class TaskQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TaskTableMap::COL_MAX_PRICE, $maxPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the needed column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNeeded(1234); // WHERE needed = 1234
+     * $query->filterByNeeded(array(12, 34)); // WHERE needed IN (12, 34)
+     * $query->filterByNeeded(array('min' => 12)); // WHERE needed > 12
+     * </code>
+     *
+     * @param     mixed $needed The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildTaskQuery The current query, for fluid interface
+     */
+    public function filterByNeeded($needed = null, $comparison = null)
+    {
+        if (is_array($needed)) {
+            $useMinMax = false;
+            if (isset($needed['min'])) {
+                $this->addUsingAlias(TaskTableMap::COL_NEEDED, $needed['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($needed['max'])) {
+                $this->addUsingAlias(TaskTableMap::COL_NEEDED, $needed['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TaskTableMap::COL_NEEDED, $needed, $comparison);
     }
 
     /**
@@ -997,6 +1053,79 @@ abstract class TaskQuery extends ModelCriteria
         return $this
             ->joinCategory($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Category', '\Model\CategoryQuery');
+    }
+
+    /**
+     * Filter the query by a related \Model\Bidding object
+     *
+     * @param \Model\Bidding|ObjectCollection $bidding the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTaskQuery The current query, for fluid interface
+     */
+    public function filterByBidding($bidding, $comparison = null)
+    {
+        if ($bidding instanceof \Model\Bidding) {
+            return $this
+                ->addUsingAlias(TaskTableMap::COL_ID, $bidding->getTaskId(), $comparison);
+        } elseif ($bidding instanceof ObjectCollection) {
+            return $this
+                ->useBiddingQuery()
+                ->filterByPrimaryKeys($bidding->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBidding() only accepts arguments of type \Model\Bidding or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Bidding relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTaskQuery The current query, for fluid interface
+     */
+    public function joinBidding($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Bidding');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Bidding');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Bidding relation Bidding object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \Model\BiddingQuery A secondary query class using the current class as primary query
+     */
+    public function useBiddingQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinBidding($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Bidding', '\Model\BiddingQuery');
     }
 
     /**

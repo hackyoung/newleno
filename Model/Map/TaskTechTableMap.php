@@ -131,8 +131,8 @@ class TaskTechTableMap extends TableMap
         $this->setPackage('Model');
         $this->setUseIdGenerator(false);
         // columns
-        $this->addForeignPrimaryKey('task_id', 'TaskId', 'VARCHAR' , 'task', 'id', true, 255, null);
-        $this->addForeignPrimaryKey('tech_id', 'TechId', 'VARCHAR' , 'tech', 'id', true, 255, null);
+        $this->addForeignPrimaryKey('task_id', 'TaskId', 'VARCHAR' , 'task', 'id', true, null, null);
+        $this->addForeignPrimaryKey('tech_id', 'TechId', 'VARCHAR' , 'tech', 'id', true, null, null);
     } // initialize()
 
     /**
