@@ -2,92 +2,6 @@
 
 namespace Leno;
 
-/**
- * 参数有效性检查，检查参数是否存在，值是否符合要求
- *
- * @example
- * $validator = new \Owl\Parameter\Validator;
- *
- * $validator->execute($vars, [
- *     'foo' => [                               // 通用配置
- *         'required' => (boolean),             // default true
- *         'allow_empty' => (boolean),          // default false
- *         'regexp' => (string),
- *         'eq' => (mixed),
- *         'same' => (mixed),
- *         'enum_eq' => [(mixed), ...],
- *         'enum_same' => [(mixed), ...],
- *         'validate' => function($value, $key, array $rule) {
- *             // ...
- *             return true;
- *         }
- *     ],
- *
- *     'foo' => [                               // 整数类型
- *         'type' => 'integer',
- *         'allow_negative' => (boolean),       // default false
- *         'allow_zero' => (boolean),           // default true
- *     ],
- *
- *     'foo' => [                               // 浮点数类型
- *         'type' => 'float',
- *         'allow_negative' => (boolean),       // default true
- *         'allow_zero' => (boolean),           // default true
- *     ],
- *
- *     'foo' => [
- *         'type' => 'ipv4',
- *     ],
- *
- *     'foo' => [
- *         'type' => 'uri',
- *     ],
- *
- *     'foo' => [
- *         'type' => 'url',
- *     ],
- *
- *     'foo' => [
- *         'type' => 'object',
- *         'instanceof' => (string),            // class name
- *     ],
- *
- *     'foo' => [
- *         'type' => 'array',                   // 普通数组
- *         'value' => [
- *             // ...
- *         ],
- *     ],
- *
- *     'foo' => [
- *         'type' => 'array',                   // hash数组
- *         'keys' => [
- *             // ...
- *         ],
- *     ],
- *
- *     'foo' => [
- *         'type' => 'array',
- *         'value' => [                         // 对数组的元素进行检查
- *             // ...
- *         ],
- *     ],
- *
- *     'foo' => [
- *         'type' => 'json',
- *         'keys' => [
- *             // ...
- *         ],
- *     ],
- *
- *     'foo' => [
- *         'type' => 'json',
- *         'value' => [
- *             // ...
- *         ],
- *     ],
- * ]);
- */
 class Validator extends \Leno\Validator\Type
 {
     /**
@@ -95,21 +9,104 @@ class Validator extends \Leno\Validator\Type
      *      'type' => '',
      *      'allow_empty' => true,
      *      'required' => true,
+     *      'onError' => callback,
+     *      'custom' => callback,
      *      'extra' => [],
      * ]
      */
     protected $rules;
 
-    public function __construct($rules)
+    public function __construct($rules, $value_name=null)
     {
         $this->rules = $rules;
+        if($value_name !== null) {
+            $this->setValueName($value_name);
+        }
     }
 
     public function check($value)
     {
+        $val = $this->rules['type'] == 'array';
+        if($this->rules['type'] == 'array') {
+            $this->checkArray($value);
+        } else {
+            $this->checkSimple($value);
+        }
     }
 
-    protected function getType($value)
+    protected function checkSimple($value)
     {
+        if(isset($this->rules['custom'])) {
+            try {
+                return $this->rules['custom']($value, $this->rules);
+            } catch(\Exception $ex) {
+                if(isset($this->rules['onError'])) {
+                    return $this->rules['onError']($value, $this->rules, $ex);
+                }
+                throw $ex;
+            }
+        }
+        return $this->typeToCheck($value);
+    }
+
+    protected function checkArray($value)
+    {
+        if(!is_array($value)) {
+            throw new \Exception($this->value_name . ' Not A Array');
+        }
+        if(isset($this->rules['allow_empty'])) {
+            $this->setAllowEmpty($this->rules['allow_empty']);   
+        }
+        if(isset($this->rules['required'])) {
+            $this->setRequired($this->rules['required']);
+        }
+        parent::check($value);
+        foreach($value as $key => $val) {
+            if(isset($this->rules['__each__'])) {
+                (new \Leno\Validator($this->rules['__each__'], $key))->check($val);
+            }
+            if(isset($this->rules['extra']) && isset($this->rules['extra'][$key])) {
+                (new \Leno\Validator($this->rules['extra'][$key], $key))->check($val);
+            }
+        }
+    }
+
+    protected function typeToCheck($value)
+    {
+        extract($this->rules['extra'] ?? []);
+        $Type = self::get($this->rules['type']);
+        switch($this->rules['type']) {
+            case 'int':
+            case 'integer':
+            case 'number':
+                $type = new $Type($min ?? null, $max ?? null);
+                break;
+            case 'string':
+                $type = new $Type(
+                    $regexp ?? null, 
+                    $min_length ?? null,
+                    $max_length ?? null
+                );
+                break;
+            case 'enum':
+                $type = new $Type($enum_list ?? null);
+                break;
+            default:
+                $type = new $Type;
+        }
+        if(isset($this->rules['allow_empty'])) {
+            $type->setAllowEmpty($this->rules['allow_empty']);   
+        }
+        if(isset($this->rules['required'])) {
+            $type->setRequired($this->rules['required']);
+        }
+        try {
+            return $type->setValueName($this->value_name)->check($value);
+        } catch(\Exception $ex) {
+            if(isset($this->rules['onError'])) {
+                return $this->rules['onError']($value, $this->rules, $ex);
+            }
+            throw $ex;
+        }
     }
 }

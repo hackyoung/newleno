@@ -8,21 +8,58 @@ abstract class Type
         'integer' => '\Leno\Validator\Type\Number',
         'number' => '\Leno\Validator\Type\Number',
         'enum' => '\Leno\Validator\Type\Enum',
-        'array' => '\Leno\Validator\Type\Arrayl',
+        'string' => '\Leno\Validator\Type\Stringl',
+        'uuid' => '\Leno\Validator\Type\Uuid',
+        'uri' => '\Leno\Validator\Type\Uri',
+        'url' => '\Leno\Validator\Type\Url',
+        'ip' => '\Leno\Validator\Type\Ipv4',
+        'ipv4' => '\Leno\Validator\Type\Ipv4',
     ];
 
-    abstract public function check($val);
+    protected $allow_empty = false;
+
+    protected $required = true;
+
+    protected $value_name = 'Value';
+
+    public function check($val) {
+        if($this->required && $val === null) {
+            throw new \Exception(' Required');
+        }
+        if(($val === '' || $val === []) && !$this->allow_empty) {
+            throw new \Exception($this->value_name .' Not Allow Empty');
+        }
+        return true;
+    }
+
+    public function setAllowEmpty($allow)
+    {
+        $this->allow_empty = $allow;
+        return $this;
+    }
+
+    public function setRequired($required)
+    {
+        $this->required = $required;
+        return $this;
+    }
+
+    public function setValueName($value_name)
+    {
+        $this->value_name = $value_name;
+        return $this;
+    }
 
     public static function get($idx)
     {
-        if(!isset(self::$handler[$idx])) {
-            throw new \Exception($idx . ' Not Surpported');
+        if(!isset(self::$types[$idx])) {
+            throw new \Exception('Type ' . $idx . ' Not Surpported');
         }
-        return self::$handler[$idx];
+        return self::$types[$idx];
     }
 
     public static function register($idx, $class)
     {
-        self::$handler[$idx] = $class;
+        self::$types[$idx] = $class;
     }
 }

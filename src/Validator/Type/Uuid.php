@@ -7,6 +7,10 @@ class Uuid extends \Leno\Validator\Type
 
     public function check($value)
     {
-        return preg_match($this->regexp, $value);
+        parent::check($value);
+        if(!preg_match($this->regexp, $value)) {
+            throw new \Exception($this->value_name . ' Not A Valid UUID');
+        }
+        return true;
     }
 }

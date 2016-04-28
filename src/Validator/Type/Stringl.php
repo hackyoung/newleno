@@ -9,7 +9,7 @@ class Stringl extends \Leno\Validator\Type
 
     protected $regexp;
 
-    public function __construct($regexp=null, $max_length=null, $min_length=null)
+    public function __construct($regexp=null, $min_length=null, $max_length=null)
     {
         $this->max_length = $max_length;
         $this->min_length = $min_length;
@@ -18,10 +18,17 @@ class Stringl extends \Leno\Validator\Type
 
     public function check($val)
     {
-        if(isset($this->regexp)) {
-            return preg_match($this->regexp, $val);
+        parent::check($val);
+        if(isset($this->regexp) && !preg_match($this->regexp, $val)) {
+            throw new \Exception($this->value_name . ' Not Matched '. $this->regexp);
         }
         $len = strlen($val);
-        return $len >= $this->min_length && $len <= $this->max_length;
+        if($this->max_length && $len > $this->max_length) {
+            throw new \Exception($this->value_name . '\'s Length Over '.$this->max_length);
+        }
+        if($this->min_length && $len < $this->min_length) {
+            throw new \Exception($this->value_name . '\'s Length Lower '.$this->min_length);
+        }
+        return true;
     }
 }
