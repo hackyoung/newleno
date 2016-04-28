@@ -1,5 +1,5 @@
 <?php
-namespace \Leno\DataMapper;
+namespace Leno\DataMapper;
 
 /**
  *
@@ -15,6 +15,10 @@ abstract class Table
     const R_OR = 'OR'; 
 
     const R_AND = 'AND';
+
+	const EXP_QUOTE_BEGIN = '(';
+
+	const EXP_QUOTE_END = ')';
 
     protected $table;
 
@@ -33,8 +37,8 @@ abstract class Table
         }
         $type = $series[0];
         array_splice($series, 0, 1);
-        if($type == 'by') {
-            $this->callBy($series, $parameters);
+        if($type == 'by' && $ret = $this->callBy($series, $parameters)) {
+           return $ret;
         }
         throw new \Exception(get_class() . '::' . $method . ' Not Found');
     }
@@ -69,15 +73,20 @@ abstract class Table
 
     public function quoteBegin()
     {
-        $this->where[] = '(';
+        $this->where[] = self::EXP_QUOTE_BEGIN;
         return $this;
     }
 
     public function quoteEnd()
     {
-        $this->where[] = ')';
+        $this->where[] = self::EXP_QUOTE_END;
         return $this;
     }
+
+	public function quote($str)
+	{
+		return '`'.$str.'`';
+	}
 
     public static function selector($table)
     {
@@ -103,35 +112,71 @@ abstract class Table
     {
     }
 
-    protected function handleWhere()
+    protected function useWhere()
     {
         $where = $this->where;
         $ret = [];
+		$eq_arr = [
+			self::EXP_QUOTE_BEGIN,
+			self::EXP_QUOTE_END,
+			self::R_OR,
+			self::R_AND,
+		];
         foreach($where as $item) {
-            if($item === self::R_OR || $item === self::R_AND) {
-                $ret[] = $item;
-                continue;
-            }
-            $item[] = sprintf('%s %s \'%s\'', 
-                $this->quote($item['field']),
-                $this->expr($item['expr']),
-                $item['value']
-            );
+			if(in_array($item, $eq_arr)) {
+				$ret[] = $item;
+				continue;
+			}
+			$ret[] = $this->expr($item);
         }
-        return implode(' ', $ret);
+        return implode(' AND ', $ret);
     }
+
+	private function expr($item)
+	{
+		$like = [
+			'like' => 'LIKE', 'not_like' => 'NOT LIKE',
+		];
+		$in = [
+			'in' => '', 'not_in' => '',
+		];
+		$expr = [
+			'eq' => '=', 'not_eq' => '!=', 'gt' => '>',
+			'lt' => '<', 'gte' => '>=', 'lte' => '<=',
+		];
+		if(isset($like[$item['expr']])) {
+			return sprintf('%s %s %%s%', 
+				$this->quote($this->table) .'.'. $this->quote($item['field']),
+				$like[$item['expr']],
+				$item['value']
+			);
+		}
+		if(isset($in[$item['expr']])) {
+			return '';
+		}
+		if(isset($expr[$item['expr']])) {
+			return sprintf('%s %s \'%s\'', 
+				$this->quote($this->table) . '.' . $this->quote($item['field']),
+				$expr[$item['expr']],
+				$item['value']
+			);
+		}
+		throw new \Exception($item['expr'] . ' Not Supported');
+	}
 
     private function callBy($where, $value)
     {
         $exprs = [
-            'gt', 'lt', 'gte', 'lte', 'in',
+            'gt', 'lt', 'gte', 'lte', 'in', 'eq'
         ];
         if(isset($where[0]) && $where[0] === 'not') {
             $not = true;
             array_splice($where, 0, 1);
-        }
-        if(!isset($where[0]) || in_array($where[0], $exprs)) {
-            return false;
+		} else {
+			$not = false;
+		}
+        if(!isset($where[0]) || !in_array($where[0], $exprs)) {
+			return false;
         }
         if($not) {
             $expr = 'not_'.$where[0];
@@ -140,7 +185,7 @@ abstract class Table
         }
         array_splice($where, 0, 1);
         $field = implode('_', $where);
-        return $this->by($expr, $field, $value);
+        return $this->by($expr, $field, $value[0]);
     }
 
     abstract public function execute($sql);
