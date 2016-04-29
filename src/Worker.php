@@ -26,7 +26,7 @@ class Worker
         $this->request->withAttribute('path', strtolower($uri));
         $this->response = new Response;
         \Leno\Configure::init();
-        $this->errorToException();
+//        $this->errorToException();
         $this->autoload();
         $this->exception_handler = function($e, $request, $response) {
             throw $e;

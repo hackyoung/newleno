@@ -43,14 +43,18 @@ abstract class Table
         throw new \Exception(get_class() . '::' . $method . ' Not Found');
     }
 
+	public function __get($key)
+	{
+		if(preg_match('^field', '', $key)) {
+			return $this->quote($this->table) . '.' . $this->quote(
+				unCamelCase(strtolower(str_replace('field')))
+			);
+		}
+	}
+
     public function by($expr, $field, $value)
     {
-        if(count($this->where) > 1) {
-            $top = $this->where[count($this->where) - 1];
-            if($top !== self::R_OR && $top !== self::R_AND) {
-                $this->and();
-            }
-        }
+		$this->attachAdd();
         $this->where[] = [
             'expr' => $expr,
             'field' => $field,
@@ -73,6 +77,7 @@ abstract class Table
 
     public function quoteBegin()
     {
+		$this->attachAdd();
         $this->where[] = self::EXP_QUOTE_BEGIN;
         return $this;
     }
@@ -129,7 +134,7 @@ abstract class Table
 			}
 			$ret[] = $this->expr($item);
         }
-        return implode(' AND ', $ret);
+        return implode(' ', $ret);
     }
 
 	private function expr($item)
@@ -167,7 +172,7 @@ abstract class Table
     private function callBy($where, $value)
     {
         $exprs = [
-            'gt', 'lt', 'gte', 'lte', 'in', 'eq'
+            'gt', 'lt', 'gte', 'lte', 'in', 'eq', 'like',
         ];
         if(isset($where[0]) && $where[0] === 'not') {
             $not = true;
@@ -187,6 +192,19 @@ abstract class Table
         $field = implode('_', $where);
         return $this->by($expr, $field, $value[0]);
     }
+
+	private function attachAdd()
+	{
+		$map = [
+			self::R_OR,
+			self::R_AND,
+			self::EXP_QUOTE_BEGIN,
+		];
+		$len = count($this->where);
+		if($len > 0 && !in_array($this->where[$len - 1], $map)) {
+        	$this->and();
+        }
+	}
 
     abstract public function execute($sql);
 }

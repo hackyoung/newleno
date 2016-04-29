@@ -40,6 +40,8 @@ class Selector extends \Leno\DataMapper\Table
                     return $this->callOrder($series, $parameters);
                 case 'group':
                     return $this->callGroup($series);
+                case 'field':
+                    return $this->callField($series);
             }
         	throw new \Exception(get_class() . '::' . $method . ' Not Found');
         }
@@ -55,6 +57,8 @@ class Selector extends \Leno\DataMapper\Table
 
     public function order($field, $order)
     {
+		var_dump($field);
+		var_dump($order);
         $this->order[$field] = $order;
         return $this;
     }
@@ -220,6 +224,12 @@ class Selector extends \Leno\DataMapper\Table
     private function callOrder($series, $order)
     {
         $field = implode('_', $series);
-        return $this->order($field, $order ?? self::ORDER_ASC);
+        return $this->order($field, $order[0] ?? self::ORDER_ASC);
     }
+
+	private function callField($series, $alias)
+	{
+		$field = implode('_', $series);
+		return $this->field($field, $alias[0] ?? false);
+	}
 }

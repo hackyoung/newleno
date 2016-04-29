@@ -9,10 +9,20 @@ class Index extends App
 		Table::selector('hello')
 			->field(['name', 'age', 'gendar' => 'male'])
 			->byEqName('young')
+			->quoteBegin()
+				->byLtAge(12)
+				->or()
+				->byLtName('world')
+			->quoteEnd()
 			->byGtAge(13)
-			->order('name', Selector::ORDER_DESC)
-			->order('age', Selector::ORDER_DESC)
+			->orderName(Selector::ORDER_DESC)
+			->orderAge(Selector::ORDER_DESC)
+			->join(Table::selector('world')
+				->field()
+				->byEqId(Table::selector('hello')->fieldId)
+			)
 			->groupName()
+			->groupAge()
 			->fetch();
     }
 }
