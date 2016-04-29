@@ -16,7 +16,9 @@ class Enum extends \Leno\Validator\Type
 
     public function check($val)
     {
-        parent::check($val);
+        if(!parent::check($val)) {
+            return false;
+        }
         if(!in_array($val, $this->val_list)) {
             throw new \Exception($this->value_name . ' Not In ['.implode(',', $this->val_list).']');
         }

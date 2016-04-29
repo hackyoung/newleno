@@ -14,6 +14,7 @@ abstract class Type
         'url' => '\Leno\Validator\Type\Url',
         'ip' => '\Leno\Validator\Type\Ipv4',
         'ipv4' => '\Leno\Validator\Type\Ipv4',
+        'datetime' => '\Leno\Validator\Type\Datetime',
     ];
 
     protected $allow_empty = false;
@@ -23,11 +24,17 @@ abstract class Type
     protected $value_name = 'Value';
 
     public function check($val) {
-        if($this->required && $val === null) {
-            throw new \Exception(' Required');
+        if($val === null) {
+            if($this->required) {
+                throw new \Exception(' Required');
+            }
+            return false;
         }
-        if(($val === '' || $val === []) && !$this->allow_empty) {
-            throw new \Exception($this->value_name .' Not Allow Empty');
+        if(($val === '' || $val === [])) {
+            if(!$this->allow_empty) {
+                throw new \Exception($this->value_name .' Not Allow Empty');
+            }
+            return false;
         }
         return true;
     }

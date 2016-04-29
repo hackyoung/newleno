@@ -14,10 +14,9 @@ class Configure
 
 	public static function read($key) {
 		$key = strtoupper($key);
-		if(!self::is($key)) {
-			throw new \Exception('Configure ' . $key . ' not found');
-		}
-		return self::$_conf[$key];
+        if(isset(self::$_conf[$key])) {
+		    return self::$_conf[$key];
+        }
 	}
 
 	public static function write($key, $value) {

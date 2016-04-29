@@ -95,7 +95,7 @@ function randString($len = 32, $mode = RAND_MOD_ALL)
     $tl = strlen($template);
     $ret = '';
     for($i = 0; $i < $len; ++$i) {
-        $ret .= $template(rand(0, $tl-1));
+        $ret .= $template[rand(0, $tl-1)];
     }
     return $ret;
 }

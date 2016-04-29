@@ -18,7 +18,9 @@ class Stringl extends \Leno\Validator\Type
 
     public function check($val)
     {
-        parent::check($val);
+        if(!parent::check($val)) {
+            return true;
+        }
         if(isset($this->regexp) && !preg_match($this->regexp, $val)) {
             throw new \Exception($this->value_name . ' Not Matched '. $this->regexp);
         }

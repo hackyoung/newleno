@@ -20,9 +20,29 @@ abstract class Table
 
 	const EXP_QUOTE_END = ')';
 
+	const JOIN_LEFT = 'LEFT_JOIN';
+
+	const JOIN_INNER = 'INNER_JOIN';
+
+	const JOIN_RIGHT = 'RIGHT_JOIN';
+
+	const JOIN_OUTER = 'OUTER_JOIN';
+
+    const TYPE_CONDI_BY = 'by';
+
+    const TYPE_CONDI_ON = 'on';
+
     protected $table;
 
     protected $where = [];
+
+	protected $joins = [];
+
+    protected $on = [];
+
+    protected $data = [];
+
+    private $mapper;
 
     public function __construct($table)
     {
@@ -37,25 +57,82 @@ abstract class Table
         }
         $type = $series[0];
         array_splice($series, 0, 1);
-        if($type == 'by' && $ret = $this->callBy($series, $parameters)) {
+        $condi = [self::TYPE_CONDI_BY, self::TYPE_CONDI_ON];
+        if(in_array($type, $condi) && $ret = $this->callCondition($series, $parameters, $type)) {
            return $ret;
+        }
+        if($type === 'set') {
+            return $this->set(implode('_', $series), $parameters[0]);
+        }
+        if($type === 'reset') {
+            return $this->reset(implode('_', $series));
         }
         throw new \Exception(get_class() . '::' . $method . ' Not Found');
     }
 
 	public function __get($key)
 	{
-		if(preg_match('^field', '', $key)) {
-			return $this->quote($this->table) . '.' . $this->quote(
-				unCamelCase(strtolower(str_replace('field')))
-			);
+		if(preg_match('/^field/', $key)) {
+            return $this->getFieldExpr(
+                unCamelCase(strtolower(str_replace('field', '', $key)))
+            );
 		}
+        throw new \Exception(get_class() . '::'.$key. ' Not Defined');
 	}
+
+    public function setMapper($mapper)
+    {
+        $this->mapper = $mapper;
+        return $this;
+    }
+
+	public function join($selector, $type = self::JOIN_LEFT)
+	{
+		$this->joins[] = [
+			'selector' => $selector,
+			'type' => $type,
+		];
+        return $this;
+	}
+
+    public function reset($attr)
+    {
+        $this->$attr = [];
+        if($attr === 'joins') {
+            $this->on = [];
+        }
+    }
+
+    public function resetAll()
+    {
+        $this->data = [];
+        $this->joins = [];
+        $this->on = [];
+        $this->where = [];
+        return $this;
+    }
+
+    public function set($field, $value)
+    {
+        $this->data[$field] = $value;
+        return $this;
+    }
 
     public function by($expr, $field, $value)
     {
 		$this->attachAdd();
         $this->where[] = [
+            'expr' => $expr,
+            'field' => $field,
+            'value' => $value,
+        ];
+        return $this;
+    }
+
+    public function on($expr, $field, $value)
+    {
+		$this->attachAdd();
+        $this->on[] = [
             'expr' => $expr,
             'field' => $field,
             'value' => $value,
@@ -93,6 +170,26 @@ abstract class Table
 		return '`'.$str.'`';
 	}
 
+    public function getOn()
+    {
+        return $this->getCondition(self::TYPE_CONDI_ON);
+    }
+
+    public function getWhere()
+    {
+        return $this->getCondition(self::TYPE_CONDI_BY);
+    }
+
+    public function getName()
+    {
+        return new \Leno\DataMapper\Expr($this->quote($this->table));
+    }
+
+    public function getFieldExpr($field)
+    {
+        return new \Leno\DataMapper\Expr($this->getName() . '.' . $this->quote($field));
+    }
+
     public static function selector($table)
     {
         return new \Leno\DataMapper\Table\Selector($table);
@@ -115,11 +212,113 @@ abstract class Table
 
     public static function getDriver()
     {
+        return new \Leno\DataMapper\Driver\PdoDriver;
+    }
+
+    protected function useOn()
+    {
+        return implode(' ', $this->getOn());
     }
 
     protected function useWhere()
     {
-        $where = $this->where;
+        $ret = $this->getWhere();
+        foreach($this->joins as $join) {
+            $ret[] = self::R_AND;
+            $ret = array_merge($ret, $join['selector']->getWhere());
+        }
+        return implode(' ', $ret);
+    }
+
+	protected function useJoin()
+	{
+		$map = [
+			self::JOIN_INNER => 'INNER JOIN',
+			self::JOIN_LEFT => 'LEFT JOIN',
+			self::JOIN_RIGHT => 'RIGHT JOIN',
+			self::JOIN_OUTER => 'OUTER JOIN',
+		];
+		$ret = [];
+		foreach($this->joins as $join) {
+			$ret[] = sprintf('%s %s ON %s', 
+				$map[$join['type']],
+				$join['selector']->getName(),
+				$join['selector']->useOn()
+			);
+		}
+		return implode(' ', $ret);
+	}
+
+    protected function valueQuote($value)
+    {
+        if(is_string($value) && !$value instanceof \Leno\DataMapper\Expr) {
+            return '\''.$value.'\'';  
+        }
+        return $value;
+    }
+
+    protected function Mapper()
+    {
+        if(!isset($this->mapper)) {
+            throw new \Exception('Mapper Not Set');
+        }
+        return $this->mapper;
+    }
+
+    private function callCondition($where, $value, $type=self::TYPE_CONDI_BY)
+    {
+        $exprs = [
+            'gt', 'lt', 'gte', 'lte', 'in', 'eq', 'like',
+        ];
+        if(isset($where[0]) && $where[0] === 'not') {
+            $not = true;
+            array_splice($where, 0, 1);
+		} else {
+			$not = false;
+		}
+        if(!isset($where[0]) || !in_array($where[0], $exprs)) {
+			return false;
+        }
+        if($not) {
+            $expr = 'not_'.$where[0];
+        } else {
+            $expr = $where[0];
+        }
+        array_splice($where, 0, 1);
+        $field = implode('_', $where);
+        switch($type) {
+            case self::TYPE_CONDI_ON:
+                return $this->on($expr, $field, $value[0]);
+            case self::TYPE_CONDI_BY:
+                return $this->by($expr, $field, $value[0]);
+        }
+    }
+
+	private function attachAdd()
+	{
+		$map = [
+			self::R_OR,
+			self::R_AND,
+			self::EXP_QUOTE_BEGIN,
+		];
+		$len = count($this->where);
+		if($len > 0 && !in_array($this->where[$len - 1], $map)) {
+        	$this->and();
+        }
+	}
+
+    private function getCondition($type)
+    {
+        switch($type) {
+            case self::TYPE_CONDI_BY:
+                $where = $this->where;
+                break;
+            case self::TYPE_CONDI_ON:
+                $where = $this->on;
+                break;
+            default:
+                return [];
+        }
         $ret = [];
 		$eq_arr = [
 			self::EXP_QUOTE_BEGIN,
@@ -134,7 +333,7 @@ abstract class Table
 			}
 			$ret[] = $this->expr($item);
         }
-        return implode(' ', $ret);
+        return $ret;
     }
 
 	private function expr($item)
@@ -160,51 +359,22 @@ abstract class Table
 			return '';
 		}
 		if(isset($expr[$item['expr']])) {
-			return sprintf('%s %s \'%s\'', 
+			return sprintf('%s %s %s', 
 				$this->quote($this->table) . '.' . $this->quote($item['field']),
 				$expr[$item['expr']],
-				$item['value']
+				$this->valueQuote($item['value'])
 			);
 		}
 		throw new \Exception($item['expr'] . ' Not Supported');
 	}
 
-    private function callBy($where, $value)
-    {
-        $exprs = [
-            'gt', 'lt', 'gte', 'lte', 'in', 'eq', 'like',
-        ];
-        if(isset($where[0]) && $where[0] === 'not') {
-            $not = true;
-            array_splice($where, 0, 1);
-		} else {
-			$not = false;
-		}
-        if(!isset($where[0]) || !in_array($where[0], $exprs)) {
-			return false;
+    public function execute($sql = null) {
+        if($sql === null) {
+            $sql = $this->getSql();
         }
-        if($not) {
-            $expr = 'not_'.$where[0];
-        } else {
-            $expr = $where[0];
-        }
-        array_splice($where, 0, 1);
-        $field = implode('_', $where);
-        return $this->by($expr, $field, $value[0]);
+        var_dump(self::getDriver());
+        return self::getDriver()->exec($sql);
     }
 
-	private function attachAdd()
-	{
-		$map = [
-			self::R_OR,
-			self::R_AND,
-			self::EXP_QUOTE_BEGIN,
-		];
-		$len = count($this->where);
-		if($len > 0 && !in_array($this->where[$len - 1], $map)) {
-        	$this->and();
-        }
-	}
-
-    abstract public function execute($sql);
+    abstract public function getSql();
 }

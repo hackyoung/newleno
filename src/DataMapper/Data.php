@@ -1,19 +1,34 @@
 <?php
-namespace \Leno\DataMapper;
+namespace Leno\DataMapper;
 
-class Data implements \JsonSerializable
+class Data implements \JsonSerializable, \Iterator
 {
     /**
      * @var ['value' => '', 'dirty' => '',];
      */
     protected $data;
 
+    /**
+     * @var [
+     *      'value' => [
+     *          'type' => '',
+     *          'required' => '', 
+     *          'allow_empty' => '', 
+     *          'extra' => []
+     *      ],
+     * ];
+     */
     protected $config = [];
 
-    public function __construct($config = null)
+    protected $position = 0;
+
+    public function __construct($data = [], $config = null)
     {
         if(is_array($config)) {
-            $this->config = config;
+            $this->config = $config;
+        }
+        foreach($data as $k=>$v) {
+            $this->set($k, $v, false);
         }
     }
 
@@ -25,7 +40,7 @@ class Data implements \JsonSerializable
         if(preg_match('/^set\w+/', $method)) {
             return $this->set(unComelCase(preg_replace('/^set/', '', $method)), $paramters);
         }
-        throw new \Exception($method . ' Not Define');
+        throw new \Exception($method . ' Not Defined');
     }
 
     public function __set($key, $val)
@@ -38,24 +53,19 @@ class Data implements \JsonSerializable
         return $this->get($key);
     }
 
-    public function set($key, $val)
+    public function set($key, $val, $dirty = true)
     {
         $data = $this->data[$key] ?? null;
-        if($data) {
-            $dirty = true;
-        } else {
-            $dirty = false;
-        }
         if($data && $val === $data['value']) {
-            return true;
+            $this->data[$key]['dirty'] = true;
+            return;
         }
         if(!$this->validate($key, $val)) {
-            return false;
+            return;
         }
         $this->data[$key] = [
             'value' => $val, 'dirty' => $dirty
         ];
-        return true;
     }
 
     public function get($key)
@@ -77,6 +87,15 @@ class Data implements \JsonSerializable
         return $this->data[$key]['dirty'];
     }
 
+    public function each($callback)
+    {
+        foreach($this->data as $key=>$value) {
+            if($callback($key, $this) === false) {
+                return;
+            }
+        }
+    }
+
     public function validate($key, $val)
     {
         if(!isset($this->config[$key])) {
@@ -86,6 +105,16 @@ class Data implements \JsonSerializable
         return (new \Leno\Validator($config, $key))->check($val);
     }
 
+    public function getConfig($key)
+    {
+        return $this->config[$key] ?? false;
+    }
+
+    public function getConfigs()
+    {
+        return $this->config;
+    }
+    /**实现json**/
     public function jsonSerialize()
     {
         $data = [];
@@ -99,13 +128,52 @@ class Data implements \JsonSerializable
         return json_encode($data);
     }
 
-    public function getConfig($key)
+    /**实现iterator**/
+    public function rewind()
     {
-        return $this->config[$key] ?? false;
+        $this->position = 0;
     }
 
-    public function getConfigs()
+    public function valid()
     {
-        return $this->config;
+        if($k = $this->key()) {
+            return $this->isset($k);
+        }
+        return false;
+    }
+
+    public function current()
+    {
+        if($k = $this->key()) {
+            return $this->$k;
+        }
+    }
+
+    public function key()
+    {
+        $pos = 0;
+        $idx = null;
+        foreach($this->data as $k => $val) {
+            if($pos == $this->position) {
+                break;
+            }
+            $idx = $k;
+            $pos++;
+        }
+        if($pos < $this->position) {
+            return false;
+        }
+        return $k;
+    }
+
+    public function next()
+    {
+        $this->position++;
+        $pos = 0;
+        foreach($this->data as $k=>$v) {
+            if($pos++ === $this->position) {
+                return $v;
+            }
+        }
     }
 }

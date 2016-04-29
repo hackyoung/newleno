@@ -7,21 +7,11 @@ class Selector extends \Leno\DataMapper\Table
 
     const ORDER_ASC = 'ASC';
 
-	const JOIN_LEFT = 'LEFT_JOIN';
-
-	const JOIN_INNER = 'INNER_JOIN';
-
-	const JOIN_RIGHT = 'RIGHT_JOIN';
-
-	const JOIN_OUTER = 'OUTER_JOIN';
-
     protected $group = [];
 
     protected $order = [];
 
 	protected $field = [];
-
-	protected $joins = [];
 
 	protected $limit = [];
 
@@ -47,18 +37,8 @@ class Selector extends \Leno\DataMapper\Table
         }
     }
 
-	public function join($selector, $type = self::JOIN_LEFT)
-	{
-		$this->joins[] = [
-			'selector' => $selector,
-			'type' => $type,
-		];
-	}
-
     public function order($field, $order)
     {
-		var_dump($field);
-		var_dump($order);
         $this->order[$field] = $order;
         return $this;
     }
@@ -82,7 +62,7 @@ class Selector extends \Leno\DataMapper\Table
 			}
 			$this->field = array_merge($this->field, $new_field);
 			return $this;
-		}
+	}
 		if(is_string($field)) {
 			$this->field[$field] = $alias;
 			return $this;
@@ -134,29 +114,40 @@ class Selector extends \Leno\DataMapper\Table
 		return $ret;
 	}
 
-    public function fetch()
+    public function find()
     {
-        $sql = sprintf('SELECT %s FROM %s %s WHERE %s %s %s',
+        $ret = [];
+        $result = $this->execute();
+        echo "<pre>";
+        foreach($result as $k=>$row) {
+            $ret[$k] = $this->toMapper($row);
+        }
+        return $ret;
+    }
+
+    public function findOne()
+    {
+        $this->limit(0,1);
+        return array_values($this->find())[0];
+    }
+
+    public function execute($sql = null)
+    {
+        if($sql === null) {
+            $sql = $this->getSql();
+        }
+        $sth = self::getDriver()->query($sql);
+        $sth->setFetchMode(\PDO::FETCH_ASSOC);
+        return $sth;
+    }
+
+    public function getSql()
+    {
+        return sprintf('SELECT %s FROM %s %s WHERE %s %s %s',
 			$this->useField(), $this->quote($this->table),
 			$this->useJoin(), $this->useWhere(), $this->useGroup(), 
 			$this->useOrder(), $this->useLimit()
         );
-        $this->execute($sql);
-		return $this;
-    }
-
-    public function fetchAll()
-    {
-    }
-
-    public function find()
-    {
-    }
-
-    public function execute($sql)
-    {
-		echo $sql;
-    //    $result = self::getDriver()->query($sql);
     }
 
 	protected function useField()
@@ -194,26 +185,18 @@ class Selector extends \Leno\DataMapper\Table
 
     protected function useLimit()
     {
+        return sprintf('LIMIT %s, %s',
+            $this->limit['row'] ?? 0,
+            $this->limit['limit'] ?? -1
+        );
     }
 
-	protected function useJoin()
-	{
-		$map = [
-			self::JOIN_INNER => 'INNER JOIN',
-			self::JOIN_LEFT => 'LEFT JOIN',
-			self::JOIN_RIGHT => 'RIGHT JOIN',
-			self::JOIN_OUTER => 'OUTER JOIN',
-		];
-		$ret = [];
-		foreach($this->joins as $join) {
-			$ret[] = sprintf('%s %s ON %s', 
-				$map[$join['type']],
-				$join['selector']->table,
-				$join['selector']->useWhere()
-			);
-		}
-		return implode(' ', $ret);
-	}
+    private function toMapper($row)
+    {
+        $Mapper = get_class($this->Mapper());
+        $mapper = new $Mapper($row);
+        return $mapper;
+    }
 
     private function callGroup($series)
     {
