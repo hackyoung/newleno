@@ -7,12 +7,23 @@ class Index extends App
 {
     public function index()
     {
-        $Entitis = (new \Model\Entity)->selector()
-            ->byEqName('hello')
-            ->find();
-        foreach($Entitis as $en) {
-            var_dump($en);
-        }
+		/**
+		$entity = new \Model\Entity;
+		$entity->setName('young')
+			->setAge(24)
+			->setCreated(new \Datetime);
+		$entity->save();
+		*/
+
+        $Entitis = \Model\Entity::find('63885eea-8b48-d25f-70f5-d5afadc0b792');
+		$Entitis->setName('hello')->save();
+			
+		/*
+		foreach($Entitis as $entity) {
+			var_dump($entity->getCreated());
+			var_dump($entity->isFresh());
+		}
+		 */
         /**
         Table::deletor('hello')
             ->byEqName('hello')

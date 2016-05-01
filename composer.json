@@ -1,17 +1,7 @@
 {
-    "name": "young/leno",
-    "description": "A simple clean framework",
-    "license": "MIT",
+    "name": "young/newleno",
     "require": {
-        "monolog/monolog": "1.0.*",
-        "propel/propel": "~2.0@dev",
-        "leno/view": "dev-master",
-        "guzzlehttp/psr7": "1.2.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Leno\\": "src"
-        },
-        "files": [ "src/functions.php" ]
+        "hackyoung/leno": "dev-master",
+        "leno/view": "dev-master"
     }
 }
