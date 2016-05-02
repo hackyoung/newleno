@@ -660,11 +660,74 @@ select.flat-input:active {
 
 /** leno-profile **/
 .leno-profile {
+	z-index: 1;
 	background-color: #f0f0f0;
 	border-radius: 3px;
 	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 	-webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+}
+.leno-profile.top.xs>.arrow,
+.leno-profile.bottom.xs>.arrow {
+	width: 10px;
+	height: 10px;
+	left: calc(50% - 5px);
+}
+.leno-profile.top.xs>.arrow {
+	top: -5px;
+}
+
+.leno-profile.top.xs>.arrow {
+	bottom: -5px;
+}
+.leno-profile.top.sm>.arrow,
+.leno-profile.bottom.sm>.arrow {
+	width: 14px;
+	height: 14px;
+}
+.leno-profile.top.sm>.arrow {
+	top: -7px;
+}
+.leno-profile.bottom.sm>.arrow {
+	bottom: -7px;
+}
+.leno-profile.top.normal>.arrow,
+.leno-profile.bottom.normal>.arrow {
+	width: 20px;
+	height: 20px;
+	left: calc(50% - 5px);
+}
+.leno-profile.top.normal>.arrow {
+	top: -10px;
+}
+.leno-profile.bottom.normal>.arrow {
+	bottom: -10px;
+}
+.leno-profile.top>.arrow,
+.leno-profile.bottom>.arrow {
+	z-index: 0;
+	border: 1px solid #aaa;
+	content: ".";
+	display: block;
+	position: relative;
+	color: rgba(0, 0, 0, 0);
+	transform: rotate(45deg);
+	background-color: inherit;
+	width: 20px;
+	height: 20px;
+}
+
+.leno-profile.top>.arrow {
+	border-right: 1px solid rgba(0, 0, 0, 0);
+	border-bottom: 1px solid rgba(0, 0, 0, 0);
+	top: -10px;
+	left: calc(50% - 10px);
+}
+
+.leno-profile.bottom>.arrow {
+	border-top: 1px solid rgba(0, 0, 0, 0);
+	border-left: 1px solid rgba(0, 0, 0, 0);
+	bottom: -10px;
 }
 
 .leno-profile .ccc {

@@ -274,7 +274,7 @@ var leno = leno || {};
 					};
 					opts.node.find('.arrow').after(opts.node.find('.ccc'));
 					opts.node.find('.arrow').css(
-						'marginTop', -2*arrow.width
+						'marginTop', -2*arrow.width + 1
 					);
 					opts.node.find('.arrow-border').css({
 						top: (-arrow.width+1)+'px',
@@ -1294,7 +1294,7 @@ var Layer = layer = (function() {
 		}
 		var toolbar = $('<div></div>').css('text-align', 'center')
 					.appendTo(content);
-		$('<button class="leno-btn leno-btn-blue">'+opts.ok+'</button>')
+		$('<button class="leno-btn leno-btn-success">'+opts.ok+'</button>')
 		.css({marginRight: '20px'}).click(function() {
 			callback(true);
 			Layer.get('confirm').hide();

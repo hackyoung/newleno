@@ -3,8 +3,8 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
           namespace="Model">
-	<table name="user" description="用户表">
-		<column name="id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
+	<table name="user" parent="\Model\Entity" description="用户表">
+		<column name="user_id" type="integer" required="true" primaryKey="true" autoIncrement="true" />
 		<column name="email" type="varchar" size="64" required="true" description="用户的Email，也是登录名" />
 		<column name="name" type="varchar" size="64" description="用户姓名" />
 		<column name="portrait" type="varchar" size="1024" description="用户头像" />
