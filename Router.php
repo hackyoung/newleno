@@ -16,4 +16,12 @@ class Router extends \Leno\Routing\Router
     public function beforeRoute()
     {
     }
+
+    public function exceptionHandler($e, $request, $response)
+    {
+        if($e instanceof \Leno\Http\Exception) {
+            $response->withStatus($e->getCode())
+                ->write($e->getMessage());
+        }
+    }
 }

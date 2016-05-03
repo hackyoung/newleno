@@ -1,6 +1,9 @@
 <?php
 namespace Controller\User;
 
+use \Model\Service\User\Login as Login;
+use \Leno\Http\Exception;
+
 class Login extends \Controller\App
 {
 	public function index()
@@ -10,9 +13,13 @@ class Login extends \Controller\App
 
 	public function modify()
 	{
-		$this->checkParameters($_POST, [
-			'username' => ['type' => 'string'],
-			'password' => ['type' => 'string'],
-		]);
+        $username = $this->input('username');
+        $passowrd = $this->input('password');
+        try {
+            (new Login($username, $password))->execute();
+        } catch(\Exception $ex) {
+            throw new Exception(400, $ex->getMessage());
+        }
+        return '操作成功';
 	}
 }
