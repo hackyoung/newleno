@@ -6,7 +6,7 @@ class Login extends \Model\Service\User
     public function execute()
     {
         $user = \Model\Entity\User::selector()
-            ->byEqEmail($username)
+            ->byEqEmail($this->username)
             ->findOne();
         if(empty($user)) {
             throw new \Exception('用户名不存在');
