@@ -12,7 +12,7 @@ class Editor extends \Controller\App
 			$this->response = $this->response->withStatus(400);
 			return '参数不可用';
 		}
-		$this->setTask($task);
+		$this->setTask($task ?? []);
         $this->render('task.editor');
     }
 }

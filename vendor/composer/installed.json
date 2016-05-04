@@ -111,31 +111,6 @@
         ]
     },
     {
-        "name": "leno/view",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/hackyoung/lenoview.git",
-            "reference": "b1976c85a0d06b4497352769f607cc9cd97673bd"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/b1976c85a0d06b4497352769f607cc9cd97673bd",
-            "reference": "b1976c85a0d06b4497352769f607cc9cd97673bd",
-            "shasum": ""
-        },
-        "time": "2016-04-08 12:26:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Leno\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/"
-    },
-    {
         "name": "monolog/monolog",
         "version": "1.0.2",
         "version_normalized": "1.0.2.0",
@@ -181,18 +156,43 @@
         ]
     },
     {
+        "name": "leno/view",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/hackyoung/lenoview.git",
+            "reference": "eed2579ecde23167cbc7767c6d8cb161dce926af"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/hackyoung/lenoview/zipball/eed2579ecde23167cbc7767c6d8cb161dce926af",
+            "reference": "eed2579ecde23167cbc7767c6d8cb161dce926af",
+            "shasum": ""
+        },
+        "time": "2016-05-03 13:18:56",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Leno\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/"
+    },
+    {
         "name": "hackyoung/leno",
         "version": "dev-master",
         "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "https://github.com/hackyoung/leno.git",
-            "reference": "c9218ac89be24fc8331a710fa3c31c610fd0c4a1"
+            "reference": "135417477f2835d0b06dc35eace0df251ff91407"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/hackyoung/leno/zipball/c9218ac89be24fc8331a710fa3c31c610fd0c4a1",
-            "reference": "c9218ac89be24fc8331a710fa3c31c610fd0c4a1",
+            "url": "https://api.github.com/repos/hackyoung/leno/zipball/135417477f2835d0b06dc35eace0df251ff91407",
+            "reference": "135417477f2835d0b06dc35eace0df251ff91407",
             "shasum": ""
         },
         "require": {
@@ -200,7 +200,7 @@
             "leno/view": "dev-master",
             "monolog/monolog": "1.0.*"
         },
-        "time": "2016-05-03 12:02:03",
+        "time": "2016-05-04 11:02:49",
         "type": "library",
         "installation-source": "source",
         "autoload": {
