@@ -7,6 +7,10 @@ abstract class Service
 
     abstract public function execute();
 
+    public static function getService()
+    {
+    }
+
     public static function setCurrentUser(\Model\Entity\User $user)
     {
     }

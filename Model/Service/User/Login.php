@@ -1,5 +1,5 @@
 <?php
-namespace Model\Service;
+namespace Model\Service\User;
 
 class Login extends \Model\Service\User
 {

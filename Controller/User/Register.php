@@ -10,9 +10,11 @@ class Register extends \Controller\App
 
 	public function modify()
 	{
-		$this->checkParameters($_POST, [
-			'username' => ['type' => 'string'],
-			'password' => ['type' => 'string'],
-		]);
+        $user = $this->inputs(['username', 'password']);
+        try {
+            $this->getService('user.register', $user)->execute();
+        } catch(\Exception $e) {
+            throw new Exception(500, $ex->getMessage());
+        }
 	}
 }

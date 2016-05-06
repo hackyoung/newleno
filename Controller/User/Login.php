@@ -1,7 +1,6 @@
 <?php
 namespace Controller\User;
 
-use \Model\Service\User\Login as Login;
 use \Leno\Http\Exception;
 
 class Login extends \Controller\App
@@ -16,10 +15,12 @@ class Login extends \Controller\App
         $username = $this->input('username');
         $passowrd = $this->input('password');
         try {
-            (new Login($username, $password))->execute();
+            $this->getService('user.login', [
+                $username, $password
+            ])->execute();
         } catch(\Exception $ex) {
-            throw new Exception(400, $ex->getMessage());
+            throw new Exception(500, $ex->getMessage());
         }
-        return '操作成功';
+        return $this->output('操作成功');
 	}
 }

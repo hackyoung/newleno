@@ -9,8 +9,7 @@ class Editor extends \Controller\App
 		try {
 			$task_id && $task = \Model\Entity\Task::findOrFail($task_id);
 		} catch(\Exception $ex) {
-			$this->response = $this->response->withStatus(400);
-			return '参数不可用';
+            throw new \Leno\Http\Exception(400, '未找到认为');
 		}
 		$this->setTask($task ?? []);
         $this->render('task.editor');
